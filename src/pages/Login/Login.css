@@ -1,0 +1,71 @@
+/* Define que a página ocupa toda a tela */
+body, html {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    background-color: #047cb4;
+  }
+  
+  /* O container do login */
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  /* Ajusta o logo */
+  .logo {
+    width: 180px;
+    margin-bottom: 20px;
+  }
+  
+  /* Formulário de login */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 350px;
+    padding: 25px;
+    border-radius: 10px;
+    background: white;
+  }
+  
+  .login-form h2 {
+    text-align: center;
+    color: #047cb4; /* Azul TUB */
+    margin-bottom: 20px;
+  }
+  
+  .login-form input {
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: black;
+  }
+  
+  .login-form button {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #047cb4; /* Azul TUB */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .login-form button:hover {
+    background-color: #003366; /* Tom mais escuro para efeito hover */
+  }
+  
