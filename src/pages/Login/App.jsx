@@ -4,10 +4,22 @@ import "./Login.css";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // "success" ou "error"
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
+
+    if (email === "admin@gmail.com" && password === "12345") {
+      setMessage("Login bem-sucedido!");
+      setMessageType("success"); // Define a cor verde
+    } else {
+      setMessage("Email ou password incorretos!");
+      setMessageType("error"); // Define a cor vermelha
+    }
+
+    // Remove a notificação após 3 segundos
+    setTimeout(() => setMessage(""), 3000);
   };
 
   return (
@@ -31,6 +43,9 @@ function Login() {
         />
         <button type="submit">Entrar</button>
       </form> 
+
+      {}
+      {message && <div className={`notification ${messageType}`}>{message}</div>}
     </div>
   );
 }

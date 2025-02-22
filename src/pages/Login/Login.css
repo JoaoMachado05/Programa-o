@@ -68,4 +68,54 @@ body, html {
   .login-form button:hover {
     background-color: #003366; /* Tom mais escuro para efeito hover */
   }
+
+/* Notificação estilizada */
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
+  }
+
+  /* Cores para sucesso e erro */
+  .success {
+    background-color: #28a745; /* Verde */
+  }
+
+  .error {
+    background-color: #dc3545; /* Vermelho */
+  }
+
+  /* Animação de fade-in */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Animação de fade-out */
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+  }
+
+
+  
   
