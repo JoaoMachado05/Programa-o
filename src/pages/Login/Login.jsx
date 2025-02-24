@@ -1,24 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
-function Login() {
+function Login({ setIsAuthenticated }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState(""); // "success" ou "error"
+  const [messageType, setMessageType] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (email === "admin@gmail.com" && password === "12345") {
       setMessage("Login bem-sucedido!");
-      setMessageType("success"); // Define a cor verde
+      setMessageType("success");
+      setIsAuthenticated(true); 
+  
+      setTimeout(() => navigate("/home"), 1500);
     } else {
       setMessage("Email ou password incorretos!");
-      setMessageType("error"); // Define a cor vermelha
+      setMessageType("error");
     }
-
-    // Remove a notificação após 3 segundos
+  
     setTimeout(() => setMessage(""), 3000);
   };
 
@@ -44,7 +49,6 @@ function Login() {
         <button type="submit">Entrar</button>
       </form> 
 
-      {}
       {message && <div className={`notification ${messageType}`}>{message}</div>}
     </div>
   );
