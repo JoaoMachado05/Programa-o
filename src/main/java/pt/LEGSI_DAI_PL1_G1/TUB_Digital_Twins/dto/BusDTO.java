@@ -1,17 +1,22 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto;
 
-public record BusDTO(
-        Long id,
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-        String linha,
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BusDTO {
 
-        int passageiros,
-
-        double velocidade,
-
-        double temperatura,
-
-        double latitude,
-
-        double longitude
-) {}
+    private Long id;
+    private String matricula;
+    private Integer capacidadeMaxima;
+    private Integer lotacaoAtual;
+    private Double percentagemOcupacao;
+    private String linhaAtual;
+    private Double velocidade;
+    private Double temperaturaAtual;
+    private Double latitude;
+    private Double longitude;
+}

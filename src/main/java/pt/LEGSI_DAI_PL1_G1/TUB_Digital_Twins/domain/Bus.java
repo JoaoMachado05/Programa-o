@@ -1,36 +1,31 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain;
 
-import jakarta.persistence.*;
-import lombok.Getter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "buses")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Bus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String linha;
-
-    @Column(nullable = false)
-    private int passageiros;
-
-    @Column(nullable = false)
-    private double velocidade;
-
-    @Column(nullable = false)
-    private double temperatura;
-
-    @Column(nullable = false)
-    private double latitude;
-
-    @Column(nullable = false)
-    private double longitude;
+    private String matricula;
+    private Integer capacidadeMaxima;
+    private Integer lotacaoAtual;
+    private String linhaAtual;
+    private Double velocidade;
+    private Double temperaturaAtual;
+    private Double latitude;
+    private Double longitude;
 }

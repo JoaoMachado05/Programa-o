@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Bus;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.BusDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.BusRepository;
-import jakarta.transaction.Transactional;
+
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,41 +16,50 @@ import java.util.stream.Collectors;
 
 @Service
 public class BusService {
-    private final BusRepository busRepository;
 
-    public BusService(BusRepository busRepository) {
-        this.busRepository = busRepository;
-    }
+    @Autowired
+    private BusRepository busRepository;
 
-    @Transactional
-    public BusDTO createBus(BusDTO busDTO) {
-        Bus bus = new Bus();
-        updateBusFromDTO(bus, busDTO);
-        Bus savedBus = busRepository.save(bus);
-        return convertToDTO(savedBus);
-    }
-
-    public List<BusDTO> getAllBuses() {
+    public List<BusDTO> findAll() {
         return busRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<BusDTO> getBusById(Long id) {
-        return busRepository.findById(id).map(this::convertToDTO);
+    public BusDTO findById(Long id) {
+        Optional<Bus> busOptional = busRepository.findById(id);
+        return busOptional.map(this::convertToDTO).orElse(null);
+    }
+
+    public BusDTO findByMatricula(String matricula) {
+        Optional<Bus> busOptional = busRepository.findByMatricula(matricula);
+        return busOptional.map(this::convertToDTO).orElse(null);
     }
 
     @Transactional
-    public Optional<BusDTO> updateBus(Long id, BusDTO busDTO) {
-        return busRepository.findById(id).map(bus -> {
-            updateBusFromDTO(bus, busDTO);
+    public BusDTO save(BusDTO busDTO) {
+        Bus bus = convertToEntity(busDTO);
+        Bus savedBus = busRepository.save(bus);
+        return convertToDTO(savedBus);
+    }
+
+    @Transactional
+    public BusDTO update(Long id, BusDTO busDTO) {
+        Optional<Bus> existingBusOptional = busRepository.findById(id);
+
+        if (existingBusOptional.isPresent()) {
+            Bus existingBus = existingBusOptional.get();
+            Bus bus = convertToEntity(busDTO);
+            bus.setId(id);
             Bus updatedBus = busRepository.save(bus);
             return convertToDTO(updatedBus);
-        });
+        }
+
+        return null;
     }
 
     @Transactional
-    public boolean deleteBus(Long id) {
+    public boolean delete(Long id) {
         if (busRepository.existsById(id)) {
             busRepository.deleteById(id);
             return true;
@@ -55,26 +67,58 @@ public class BusService {
         return false;
     }
 
-    // Conversão de Entity para DTO
-    private BusDTO convertToDTO(Bus bus) {
-        return new BusDTO(
-                bus.getId(),
-                bus.getLinha(),
-                bus.getPassageiros(),
-                bus.getVelocidade(),
-                bus.getTemperatura(),
-                bus.getLatitude(),
-                bus.getLongitude()
-        );
+    @Transactional
+    public BusDTO updateLocalizacao(Long id, Double latitude, Double longitude) {
+        Optional<Bus> busOptional = busRepository.findById(id);
+
+        if (busOptional.isPresent()) {
+            Bus bus = busOptional.get();
+            bus.setLatitude(latitude);
+            bus.setLongitude(longitude);
+            Bus updatedBus = busRepository.save(bus);
+            return convertToDTO(updatedBus);
+        }
+        return null;
     }
 
-    // Atualiza Entity a partir de DTO
-    private void updateBusFromDTO(Bus bus, BusDTO busDTO) {
-        bus.setLinha(busDTO.linha());
-        bus.setPassageiros(busDTO.passageiros());
-        bus.setVelocidade(busDTO.velocidade());
-        bus.setTemperatura(busDTO.temperatura());
-        bus.setLatitude(busDTO.latitude());
-        bus.setLongitude(busDTO.longitude());
+    @Transactional
+    public BusDTO updateLotacao(Long id, Integer lotacaoAtual) {
+        Optional<Bus> busOptional = busRepository.findById(id);
+
+        if (busOptional.isPresent()) {
+            Bus bus = busOptional.get();
+            bus.setLotacaoAtual(lotacaoAtual);
+            Bus updatedBus = busRepository.save(bus);
+            return convertToDTO(updatedBus);
+        }
+
+        return null;
+    }
+
+    public Double getPercentagemOcupacaoAtual(Long id) {
+        Optional<Bus> busOptional = busRepository.findById(id);
+
+        if (busOptional.isPresent()) {
+            Bus bus = busOptional.get();
+            if (bus.getCapacidadeMaxima() != null && bus.getCapacidadeMaxima() > 0) {
+                return (double) bus.getLotacaoAtual() / bus.getCapacidadeMaxima() * 100;
+            }
+        }
+
+        return null;
+    }
+
+
+    private BusDTO convertToDTO(Bus bus) {
+        BusDTO busDTO = new BusDTO();
+        BeanUtils.copyProperties(bus, busDTO);
+        busDTO.setPercentagemOcupacao(getPercentagemOcupacaoAtual(bus.getId()));
+        return busDTO;
+    }
+
+    private Bus convertToEntity(BusDTO busDTO) {
+        Bus bus = new Bus();
+        BeanUtils.copyProperties(busDTO, bus);
+        return bus;
     }
 }
