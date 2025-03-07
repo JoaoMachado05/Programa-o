@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class StopService {
@@ -23,6 +24,19 @@ public class StopService {
 
     public Optional<StopDTO> getStopById(Long id) {
         return stopRepository.findById(id).map(this::convertToDTO);
+    }
+
+    @Transactional
+    public StopDTO createStop(StopDTO stopDTO) {
+        Stop stop = new Stop();
+        stop.setNome(stopDTO.nome());
+        stop.setCapacidadeMaxima(stopDTO.capacidadeMaxima());
+        stop.setLotacaoAtual(stopDTO.lotacaoAtual());
+        stop.setTemperaturaAtual(stopDTO.temperaturaAtual());
+        stop.setLongitude(stopDTO.longitude());
+        stop.setLatitude(stopDTO.latitude());
+        Stop savedStop = stopRepository.save(stop);
+        return convertToDTO(savedStop);
     }
 
     @Transactional
@@ -40,6 +54,24 @@ public class StopService {
             return convertToDTO(updatedStop);
         }
         return null;
+    }
+
+    @Transactional
+    public boolean deleteStop(Long id) {
+        if (stopRepository.existsById(id)) {
+            stopRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public Optional<Double> getStopOccupancyPercentage(Long id) {
+        return stopRepository.findById(id).map(stop -> {
+            if (stop.getCapacidadeMaxima() != null && stop.getCapacidadeMaxima() > 0) {
+                return (double) stop.getLotacaoAtual() / stop.getCapacidadeMaxima() * 100;
+            }
+            return null;
+        });
     }
 
     private StopDTO convertToDTO(Stop stop) {
