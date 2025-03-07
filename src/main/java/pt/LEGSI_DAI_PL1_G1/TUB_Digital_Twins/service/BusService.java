@@ -1,24 +1,21 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Bus;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.BusDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.BusRepository;
-
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BusService {
 
-    @Autowired
-    private BusRepository busRepository;
+    private final BusRepository busRepository;
 
     public List<BusDTO> findAll() {
         return busRepository.findAll().stream()
@@ -26,14 +23,12 @@ public class BusService {
                 .collect(Collectors.toList());
     }
 
-    public BusDTO findById(Long id) {
-        Optional<Bus> busOptional = busRepository.findById(id);
-        return busOptional.map(this::convertToDTO).orElse(null);
+    public Optional<BusDTO> findById(Long id) {
+        return busRepository.findById(id).map(this::convertToDTO);
     }
 
-    public BusDTO findByMatricula(String matricula) {
-        Optional<Bus> busOptional = busRepository.findByMatricula(matricula);
-        return busOptional.map(this::convertToDTO).orElse(null);
+    public Optional<BusDTO> findByMatricula(String matricula) {
+        return busRepository.findByMatricula(matricula).map(this::convertToDTO);
     }
 
     @Transactional
@@ -44,18 +39,13 @@ public class BusService {
     }
 
     @Transactional
-    public BusDTO update(Long id, BusDTO busDTO) {
-        Optional<Bus> existingBusOptional = busRepository.findById(id);
-
-        if (existingBusOptional.isPresent()) {
-            Bus existingBus = existingBusOptional.get();
+    public Optional<BusDTO> update(Long id, BusDTO busDTO) {
+        return busRepository.findById(id).map(existingBus -> {
             Bus bus = convertToEntity(busDTO);
             bus.setId(id);
             Bus updatedBus = busRepository.save(bus);
             return convertToDTO(updatedBus);
-        }
-
-        return null;
+        });
     }
 
     @Transactional
@@ -68,57 +58,57 @@ public class BusService {
     }
 
     @Transactional
-    public BusDTO updateLocalizacao(Long id, Double latitude, Double longitude) {
-        Optional<Bus> busOptional = busRepository.findById(id);
-
-        if (busOptional.isPresent()) {
-            Bus bus = busOptional.get();
+    public Optional<BusDTO> updateLocalizacao(Long id, Double latitude, Double longitude) {
+        return busRepository.findById(id).map(bus -> {
             bus.setLatitude(latitude);
             bus.setLongitude(longitude);
             Bus updatedBus = busRepository.save(bus);
             return convertToDTO(updatedBus);
-        }
-        return null;
+        });
     }
 
     @Transactional
-    public BusDTO updateLotacao(Long id, Integer lotacaoAtual) {
-        Optional<Bus> busOptional = busRepository.findById(id);
-
-        if (busOptional.isPresent()) {
-            Bus bus = busOptional.get();
+    public Optional<BusDTO> updateLotacao(Long id, Integer lotacaoAtual) {
+        return busRepository.findById(id).map(bus -> {
             bus.setLotacaoAtual(lotacaoAtual);
             Bus updatedBus = busRepository.save(bus);
             return convertToDTO(updatedBus);
-        }
-
-        return null;
+        });
     }
 
     public Double getPercentagemOcupacaoAtual(Long id) {
-        Optional<Bus> busOptional = busRepository.findById(id);
-
-        if (busOptional.isPresent()) {
-            Bus bus = busOptional.get();
-            if (bus.getCapacidadeMaxima() != null && bus.getCapacidadeMaxima() > 0) {
-                return (double) bus.getLotacaoAtual() / bus.getCapacidadeMaxima() * 100;
-            }
-        }
-
-        return null;
+        return busRepository.findById(id)
+                .filter(bus -> bus.getCapacidadeMaxima() != null && bus.getCapacidadeMaxima() > 0)
+                .map(bus -> (double) bus.getLotacaoAtual() / bus.getCapacidadeMaxima() * 100)
+                .orElse(null);
     }
 
-
     private BusDTO convertToDTO(Bus bus) {
-        BusDTO busDTO = new BusDTO();
-        BeanUtils.copyProperties(bus, busDTO);
-        busDTO.setPercentagemOcupacao(getPercentagemOcupacaoAtual(bus.getId()));
-        return busDTO;
+        return new BusDTO(
+                bus.getId(),
+                bus.getMatricula(),
+                bus.getCapacidadeMaxima(),
+                bus.getLotacaoAtual(),
+                getPercentagemOcupacaoAtual(bus.getId()),
+                bus.getLinhaAtual(),
+                bus.getVelocidade(),
+                bus.getTemperaturaAtual(),
+                bus.getLatitude(),
+                bus.getLongitude()
+        );
     }
 
     private Bus convertToEntity(BusDTO busDTO) {
-        Bus bus = new Bus();
-        BeanUtils.copyProperties(busDTO, bus);
-        return bus;
+        return new Bus(
+                busDTO.id(),
+                busDTO.matricula(),
+                busDTO.capacidadeMaxima(),
+                busDTO.lotacaoAtual(),
+                busDTO.linhaAtual(),
+                busDTO.velocidade(),
+                busDTO.temperaturaAtual(),
+                busDTO.latitude(),
+                busDTO.longitude()
+        );
     }
 }

@@ -5,23 +5,28 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "buses")
 @Data
-@NoArgsConstructor
+@Table(name = "stops")
 @AllArgsConstructor
-public class Bus {
+@NoArgsConstructor
+@Entity
+public class Stop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String matricula;
+    private String nome;
     private Integer capacidadeMaxima;
     private Integer lotacaoAtual;
-    private String linhaAtual;
-    private Double velocidade;
     private Double temperaturaAtual;
-    private Double latitude;
     private Double longitude;
+    private Double latitude;
+
+    public double getPercentagemOcupacao() {
+        if (capacidadeMaxima != null && capacidadeMaxima > 0) {
+            return (double) lotacaoAtual / capacidadeMaxima * 100;
+        }
+        return 0;
+    }
 }

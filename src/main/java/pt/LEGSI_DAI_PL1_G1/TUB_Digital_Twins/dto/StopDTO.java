@@ -1,14 +1,13 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto;
 
-public record BusDTO(
+
+public record StopDTO(
         Long id,
-        String matricula,
+        String nome,
         Integer capacidadeMaxima,
         Integer lotacaoAtual,
-        Double percentagemOcupacao,
-        String linhaAtual,
-        Double velocidade,
         Double temperaturaAtual,
+        Double longitude,
         Double latitude,
-        Double longitude) {
+        double percentagemOcupacao) {
 }
