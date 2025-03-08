@@ -13,6 +13,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/stops")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class StopController {
 
     private final StopService stopService;

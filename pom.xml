@@ -11,7 +11,8 @@
 	<groupId>pt.LEGSI-DAI-PL1-G1</groupId>
 	<artifactId>TUB-Digital-Twins</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TUB-Digital-Twins</name>
+    <packaging>pom</packaging>
+    <name>TUB-Digital-Twins</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -20,7 +21,10 @@
 	<developers>
 		<developer/>
 	</developers>
-	<scm>
+    <modules>
+        <module>untitled</module>
+    </modules>
+    <scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>
