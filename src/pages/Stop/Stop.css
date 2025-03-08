@@ -1,0 +1,102 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  /* Container principal */
+  .container {
+    width: 100vw;
+    height: 100vh;
+    background-color: #047cb4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden; /* Evita scroll na página */
+  }
+  
+  /* Título */
+  h1 {
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  /* Wrapper da lista de paragens */
+  .scroll-container {
+    width: 90%;
+    max-width: 800px;
+    flex-grow: 1; /* Ocupa todo o espaço disponível */
+    overflow-y: auto; /* Scroll apenas na lista */
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+  
+  /* Estilo da linha de paragens */
+  .stop-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    width: 100%;
+  }
+  
+  .stop-row:hover {
+    transform: translateY(-3px);
+  }
+  
+  /* Texto dentro da linha */
+  .stop-row h2 {
+    font-size: 1.3rem;
+    color: #003366;
+    margin-right: 15px;
+  }
+  
+  .stop-row p {
+    font-size: 1rem;
+    color: #333;
+    margin-right: 15px;
+  }
+  
+  /* Botão de detalhes */
+  .details-button {
+    background-color: #003366;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .details-button:hover {
+    background-color: #002244;
+  }
+  
+  /* Scroll personalizado */
+  .scroll-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: #003366;
+    border-radius: 10px;
+  }
+  
+  .scroll-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+  }
+  
