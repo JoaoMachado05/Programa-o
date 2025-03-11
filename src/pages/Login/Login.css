@@ -1,121 +1,415 @@
-/* Define que a página ocupa toda a tela */
-body, html {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: "Poppins", sans-serif;
-    background-color: #047cb4;
-  }
-  
-  /* O container do login */
-  .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-  }
-  
-  /* Ajusta o logo */
-  .logo {
-    width: 180px;
-    margin-bottom: 20px;
-  }
-  
-  /* Formulário de login */
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 350px;
-    padding: 25px;
-    border-radius: 10px;
-    background: white;
-  }
-  
-  .login-form h2 {
-    text-align: center;
-    color: #047cb4; /* Azul TUB */
-    margin-bottom: 20px;
-  }
-  
-  .login-form input {
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #ffffff;
-    color: black;
-  }
-  
-  .login-form button {
-    margin-top: 15px;
-    padding: 12px;
-    background-color: #047cb4; /* Azul TUB */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .login-form button:hover {
-    background-color: #003366; /* Tom mais escuro para efeito hover */
-  }
+/* Reset global e variáveis */
+:root {
+  --primary-color: #047cb4;
+  --primary-dark: #036391;
+  --primary-light: #0590cf;
+  --accent-color: #ffc107;
+  --text-dark: #333333;
+  --text-light: #ffffff;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+  --transition: all 0.3s ease;
+}
 
-/* Notificação estilizada */
+/* Reset completo */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilos base para garantir tela cheia */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container principal ocupando 100% da tela */
+.login-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ondas decorativas na parte inferior */
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 15vh;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.15' d='M0,224L48,208C96,192,192,160,288,160C384,160,480,192,576,202.7C672,213,768,203,864,170.7C960,139,1056,85,1152,80C1248,75,1344,117,1392,138.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") bottom center;
+  background-size: cover;
+  z-index: 1;
+}
+
+/* Container do conteúdo */
+.content-wrapper {
+  display: flex;
+  width: 80%;
+  height: 80%;
+  max-width: 1400px;
+  max-height: 800px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  z-index: 2;
+}
+
+/* Seção de imagem/branding (lado esquerdo) */
+.branding-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  background: rgba(3, 99, 145, 0.8);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.branding-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+  opacity: 0.3;
+}
+
+.logo {
+  width: 220px;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+  z-index: 2;
+}
+
+.branding-content {
+  color: var(--text-light);
+  text-align: center;
+  z-index: 2;
+}
+
+.branding-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.branding-content p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Seção de login (lado direito) */
+.login-section {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--text-light);
+}
+
+.login-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.login-header h2 {
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.login-header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Formulário de login */
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.input-group {
+  margin-bottom: 25px;
+  position: relative;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  color: var(--text-dark);
+  transition: var(--transition);
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background-color: var(--text-light);
+  box-shadow: 0 0 0 3px rgba(4, 124, 180, 0.2);
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.remember-me input[type="checkbox"] {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-color);
+}
+
+.remember-me label {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.login-button {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.login-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.login-button:hover::before {
+  left: 100%;
+}
+
+.login-button:active {
+  transform: translateY(1px);
+}
+
+/* Notificações */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 16px 25px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 10px;
+  color: var(--text-light);
+  box-shadow: var(--shadow-md);
+  animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.notification::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.success {
+  background-color: var(--success-color);
+  border-left: 5px solid #1e7e34;
+}
+
+.success::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath d='M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-.997-6l7.07-7.071-1.414-1.414-5.656 5.657-2.829-2.829-1.414 1.414L11.003 16z' fill='white'/%3E%3C/svg%3E");
+}
+
+.error {
+  background-color: var(--error-color);
+  border-left: 5px solid #c82333;
+}
+
+.error::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath d='M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z' fill='white'/%3E%3C/svg%3E");
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .content-wrapper {
+    width: 90%;
+    height: 85%;
+  }
+  
+  .branding-content h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .content-wrapper {
+    flex-direction: column;
+    height: auto;
+    max-height: 90%;
+    overflow-y: auto;
+  }
+  
+  .branding-section,
+  .login-section {
+    width: 100%;
+    padding: 30px;
+  }
+  
+  .branding-section {
+    padding: 50px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    width: 95%;
+    border-radius: 15px;
+  }
+  
+  .branding-section {
+    display: none;
+  }
+  
+  .login-section {
+    padding: 30px 20px;
+  }
+  
   .notification {
-    position: fixed;
-    top: 20px;
+    left: 20px;
     right: 20px;
-    padding: 15px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 8px;
-    color: white;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
+    bottom: 20px;
+    top: auto;
   }
+}
 
-  /* Cores para sucesso e erro */
-  .success {
-    background-color: #28a745; /* Verde */
+@media (max-height: 700px) {
+  .content-wrapper {
+    height: 95%;
   }
-
-  .error {
-    background-color: #dc3545; /* Vermelho */
-  }
-
-  /* Animação de fade-in */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  /* Animação de fade-out */
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-  }
-
-
   
+  .branding-content h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
   
+  .branding-content p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .login-section {
+    background-color: #2d2d2d;
+  }
+  
+  .login-header h2 {
+    color: var(--primary-light);
+  }
+  
+  .login-header p,
+  .input-group label,
+  .remember-me label {
+    color: #e0e0e0;
+  }
+  
+  .input-group input {
+    background-color: #3d3d3d;
+    border-color: #4d4d4d;
+    color: var(--text-light);
+  }
+  
+  .input-group input:focus {
+    background-color: #424242;
+  }
+}

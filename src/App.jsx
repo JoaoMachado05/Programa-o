@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Stop from "./pages/Stop/Stop.jsx";
-import StopDetails from "./pages/Home/StopDetails/StopDetails.jsx";
+import StopDetails from "./pages/StopDetails/StopDetails.jsx";
 import { useState, useEffect } from "react";
 
 function App() {

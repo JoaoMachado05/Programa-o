@@ -7,7 +7,6 @@ function Home({ setIsAuthenticated }) {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    localStorage.setItem("isAuthenticated", "false");
     navigate("/");
   };
 
@@ -27,7 +26,7 @@ function Home({ setIsAuthenticated }) {
       <div className="options">
         <h1 className="title">Escolha uma opção</h1>
         <div className="buttons">
-          <button className="option-button" onClick={() => navigateTo("/vias")}>Vias</button>
+          <button className="option-button" onClick={() => navigateTo("/brts")}>BRTs</button>
           <button className="option-button" onClick={() => navigateTo("/stop")}>Paragens</button>
           <button className="option-button" onClick={() => navigateTo("/semaforos")}>Semáforos</button>
         </div>
