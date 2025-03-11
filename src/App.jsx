@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Stop from "./pages/Stop/Stop.jsx";
+import StopDetails from "./pages/Home/StopDetails/StopDetails.jsx";
 import { useState, useEffect } from "react";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/home" element={isAuthenticated ? <Home setIsAuthenticated={setIsAuthenticated} /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/stop" element={isAuthenticated? <Stop /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/stops/:id" element={<StopDetails />} />
       </Routes>
     </Router>
   );
