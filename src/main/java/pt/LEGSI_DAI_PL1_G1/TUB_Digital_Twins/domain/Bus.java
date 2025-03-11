@@ -24,4 +24,32 @@ public class Bus {
     private Double temperaturaAtual;
     private Double latitude;
     private Double longitude;
+
+
+    //mostra o estado atual do autcarro
+    /*public enum BusStatus {
+        OPERATIONAL, DELAYED, EMERGENCY
+    }
+    */
+
+    public double calcularPercentagemOcupacao() {
+        if (capacidadeTotal == null || capacidadeTotal == 0 || lotacaoAtual == null) {
+            return 0.0;
+        }
+        return (double) lotacaoAtual / capacidadeTotal * 100;
+    }
+
+    // verifica se a lotação do autocarro está proximo dos 85% (valor suscetivel a alterações) para poder avisar na paragem
+    public boolean proximoLotacaoMaxima() {
+        double percentagem = calcularPercentagemOcupacao();
+        return percentagem >= 85.0;
+    }
+
+
+    public boolean necessitaAjusteTemperatura() {
+        if (temperaturaInterior == null) {
+            return false;
+        }
+        return Math.abs(temperaturaInterior - 21.0) > 1.5;
+    }
 }

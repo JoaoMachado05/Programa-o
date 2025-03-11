@@ -1,6 +1,7 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.controllers;
 
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.BusDTO;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.ObstrucaoDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.BusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,13 @@ public class BusController {
         return percentagem != null ? ResponseEntity.ok(percentagem) : ResponseEntity.notFound().build();
     }
 
+    // Novo endpoint para obter velocidade atual
+    @GetMapping("/{id}/velocidade")
+    public ResponseEntity<Double> getVelocidadeAtual(@PathVariable Long id) {
+        Double velocidade = busService.getVelocidadeAtual(id);
+        return velocidade != null ? ResponseEntity.ok(velocidade) : ResponseEntity.notFound().build();
+    }
+
     @PostMapping
     public ResponseEntity<BusDTO> createBus(@RequestBody BusDTO busDTO) {
         BusDTO savedBus = busService.save(busDTO);
@@ -76,6 +84,32 @@ public class BusController {
     public ResponseEntity<BusDTO> updateLotacao(@PathVariable Long id, @RequestBody Map<String, Integer> lotacao) {
         Integer lotacaoAtual = lotacao.get("lotacao");
         return busService.updateLotacao(id, lotacaoAtual)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Novos endpoints para as funcionalidades solicitadas
+
+    @PatchMapping("/{id}/velocidade")
+    public ResponseEntity<BusDTO> updateVelocidade(@PathVariable Long id, @RequestBody Map<String, Double> velocidadeMap) {
+        Double velocidade = velocidadeMap.get("velocidade");
+        return busService.updateVelocidade(id, velocidade)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/temperatura")
+    public ResponseEntity<BusDTO> updateTemperaturas(@PathVariable Long id, @RequestBody Map<String, Double> temperaturasMap) {
+        Double temperaturaInterior = temperaturasMap.get("interior");
+        Double temperaturaExterior = temperaturasMap.get("exterior");
+        return busService.updateTemperaturas(id, temperaturaInterior, temperaturaExterior)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{id}/obstrucao")
+    public ResponseEntity<BusDTO> reportarObstrucao(@PathVariable Long id, @RequestBody ObstrucaoDTO obstrucaoDTO) {
+        return busService.reportarObstrucao(id, obstrucaoDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
