@@ -24,4 +24,5 @@ public class Bus {
     private Double temperaturaAtual;
     private Double latitude;
     private Double longitude;
+
 }
