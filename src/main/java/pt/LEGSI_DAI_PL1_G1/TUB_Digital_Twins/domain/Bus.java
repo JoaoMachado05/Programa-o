@@ -47,7 +47,7 @@ public class Bus {
 
 
     public boolean necessitaAjusteTemperatura() {
-        if (temperaturaInterior == null) {
+        if (temperaturaAtual == null) {
             return false;
         }
         return Math.abs(temperaturaInterior - 21.0) > 1.5;

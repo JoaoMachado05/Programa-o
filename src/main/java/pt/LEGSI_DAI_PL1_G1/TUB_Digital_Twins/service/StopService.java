@@ -81,7 +81,7 @@ public class StopService {
                 stop.getCapacidadeMaxima(),
                 stop.getLotacaoAtual(),
                 stop.getTemperaturaAtual(),
-                stop.getLongitude(),
+                stop.getLongitude(),    
                 stop.getLatitude(),
                 stop.getPercentagemOcupacao()
         );
