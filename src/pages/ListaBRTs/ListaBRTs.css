@@ -51,81 +51,69 @@
   background-color: #002244;
 }
 
-/* Seção de busca e filtros */
-.search-filter-section {
-  width: 90%;
-  max-width: 1200px;
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.search-input {
-  flex-grow: 1;
-  padding: 12px 15px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.filter-select {
-  min-width: 180px;
-  padding: 12px 15px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color: white;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Grid de BRTs */
-.brts-grid {
+/* Lista de BRTs */
+.brts-list {
   width: 90%;
   max-width: 1200px;
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 10px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   margin-bottom: 20px;
+  padding: 10px;
 }
 
-/* Cartão de BRT */
-.brt-card {
+/* Linha de BRT */
+.brt-row {
   background-color: white;
   border-radius: 10px;
   padding: 20px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
   cursor: pointer;
+  margin-bottom: 15px;
 }
 
-.brt-card:hover {
+.brt-row:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Cabeçalho do cartão */
-.brt-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+/* Estilos para BRTs ativos/parados */
+.brt-row.status-active {
+  border-left: 5px solid #4CAF50;
 }
 
-.brt-header h3 {
+.brt-row.status-inactive {
+  border-left: 5px solid #F44336;
+}
+
+/* Informações do BRT */
+.brt-info {
+  flex-grow: 1;
+}
+
+.brt-info h3 {
   font-size: 1.5rem;
   color: #003366;
+  margin-bottom: 5px;
+}
+
+.brt-info p {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Status do BRT */
+.brt-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20px;
 }
 
 /* Indicador de status */
@@ -134,6 +122,7 @@
   font-weight: 500;
   padding: 5px 10px;
   border-radius: 15px;
+  margin-bottom: 5px;
 }
 
 .status-indicator.active {
@@ -141,29 +130,13 @@
   color: white;
 }
 
-.status-indicator.stopped {
+.status-indicator.inactive {
   background-color: #F44336;
   color: white;
 }
 
-/* Estilos para BRTs ativos/parados */
-.brt-card.status-active {
-  border-left: 5px solid #4CAF50;
-}
-
-.brt-card.status-stopped {
-  border-left: 5px solid #F44336;
-}
-
-/* Informações do BRT */
-.brt-info {
-  margin-bottom: 15px;
-  flex-grow: 1;
-}
-
-.brt-info p {
-  margin-bottom: 8px;
-  font-size: 1rem;
+.brt-occupancy {
+  font-size: 0.9rem;
   color: #333;
 }
 
@@ -177,8 +150,6 @@
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s ease;
-  align-self: center;
-  width: 100%;
 }
 
 .view-details-button:hover {
@@ -221,6 +192,11 @@
   font-size: 1.5rem;
   text-align: center;
   margin: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 1200px;
 }
 
 /* Mensagem de erro */
@@ -235,6 +211,8 @@
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  width: 90%;
+  max-width: 1200px;
 }
 
 .retry-button {
@@ -253,45 +231,24 @@
 
 /* Mensagem de nenhum resultado */
 .no-results {
-  grid-column: 1 / -1;
   text-align: center;
   color: white;
   font-size: 1.2rem;
   padding: 30px;
-}
-
-/* Indicador de conexão WebSocket */
-.connection-status {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.connection-status.connected {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.connection-status.disconnected {
-  background-color: #F44336;
-  color: white;
+  width: 100%;
 }
 
 /* Scroll personalizado */
-.brts-grid::-webkit-scrollbar {
+.brts-list::-webkit-scrollbar {
   width: 8px;
 }
 
-.brts-grid::-webkit-scrollbar-thumb {
+.brts-list::-webkit-scrollbar-thumb {
   background-color: #003366;
   border-radius: 10px;
 }
 
-.brts-grid::-webkit-scrollbar-track {
+.brts-list::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
 }
@@ -302,11 +259,33 @@
     font-size: 2rem;
   }
   
-  .search-filter-section {
+  .brt-row {
     flex-direction: column;
+    align-items: flex-start;
   }
   
-  .brts-grid {
-    grid-template-columns: 1fr;
+  .brt-status {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .view-details-button {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .refresh-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .refresh-button {
+    width: 100%;
+  }
+  
+  .last-update {
+    text-align: center;
   }
 }

@@ -1,0 +1,177 @@
+/* Estilos para a página detalhada do BRT */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-y: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .brt-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+  }
+  
+  /* Cabeçalho da página */
+  .brt-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .brt-header h1 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+    color: #0066cc;
+  }
+  
+  .back-button {
+    padding: 10px 20px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .back-button:hover {
+    background-color: #333;
+  }
+  
+  .status-indicator {
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 20px;
+  }
+  
+  .status-indicator.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .status-indicator.stopped {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  /* Seção de informações */
+  .brt-info-section {
+    margin-bottom: 30px;
+  }
+  
+  .info-panel {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .info-panel h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .info-label {
+    font-weight: bold;
+    min-width: 120px;
+    color: #555;
+  }
+  
+  .info-value {
+    color: #333;
+  }
+  
+  /* Visualizações - Mapa e Modelo */
+  .brt-visuals {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .map-container, .model-container {
+    flex: 1;
+    aspect-ratio: 1/1;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .map-container {
+    border: 3px solid #000;
+  }
+  
+  .model-container {
+    border: 3px solid #0099cc;
+  }
+  
+  .map-placeholder, .model-placeholder {
+    color: #777;
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  /* Última atualização */
+  .last-update-info {
+    text-align: right;
+    font-style: italic;
+    color: #666;
+    margin-top: 20px;
+  }
+  
+  /* Estados de carregamento e erro */
+  .brt-container.loading,
+  .brt-container.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70vh;
+    font-size: 18px;
+    color: #555;
+  }
+  
+  .brt-container.error {
+    color: #f44336;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .brt-visuals {
+      flex-direction: column;
+    }
+    
+    .brt-header {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .status-indicator {
+      margin-left: 0;
+    }
+    
+    .map-container, .model-container {
+      width: 100%;
+    }
+  }

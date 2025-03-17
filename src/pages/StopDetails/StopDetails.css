@@ -396,3 +396,45 @@ body, html {
 .btn-refresh {
   display: none;
 }
+
+.model-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.model-container {
+  position: relative;
+  flex-grow: 1;
+  min-height: 400px;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.model-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.model-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.model-label {
+  font-weight: bold;
+  margin-right: 10px;
+}

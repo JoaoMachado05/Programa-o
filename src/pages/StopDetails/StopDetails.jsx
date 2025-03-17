@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./StopDetails.css";
+import BusStop3D from "./BusStop3D"; 
 
 // Componente para atualizar a view do mapa quando as coordenadas mudarem
 const MapUpdater = ({ center }) => {
@@ -106,7 +107,6 @@ const StopDetails = () => {
     // Configurar atualização a cada segundo, independente do tipo de conexão
     const updateInterval = setInterval(() => {
       fetchStopData(); // Atualiza os dados a cada segundo
-      setCameraTimestamp(Date.now()); // Atualiza timestamp da câmera
     }, 1000);
     
     // Atualizações de relógio
@@ -145,9 +145,6 @@ const StopDetails = () => {
     // Implementar lógica de logout aqui
     navigate("/");
   };
-
-  // Função para atualizar a imagem da câmera
-  const [cameraTimestamp, setCameraTimestamp] = useState(Date.now());
 
   if (!stop) return (
     <div className="fullpage-container">
@@ -266,22 +263,15 @@ const StopDetails = () => {
           </div>
 
           <div className="right-section">
-            <div className="camera-card">
-              <h2 className="card-title">Imagem em Direto</h2>
-              <div className="camera-container">
-                <img 
-                  src={`http://localhost:8080/cameras/${id}?t=${cameraTimestamp}`} 
-                  alt="Imagem em direto da paragem" 
-                  className="camera-feed"
-                />
-                <div className="camera-overlay">
-                  <div className="camera-info">
-                    <div className="camera-details">
-                      <span className="camera-label">Em direto</span>
-                      <div className="live-indicator">
-                        <span className="live-dot"></span>
-                        <span>AO VIVO</span>
-                      </div>
+            {/* Substitui a câmera pelo modelo 3D aqui */}
+            <div className="model-card">
+              <h2 className="card-title">Modelo 3D da Paragem</h2>
+              <div className="model-container" style={{ height: "400px", width: "100%" }}>
+                <BusStop3D />
+                <div className="model-overlay">
+                  <div className="model-info">
+                    <div className="model-details">
+                      <span className="model-label">Modelo Interativo</span>
                     </div>
                     <div className="timestamp">
                       {currentTime}
