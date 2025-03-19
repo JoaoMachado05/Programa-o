@@ -1,4 +1,4 @@
-/* Reset básico */
+/* Reset completo para garantir tela cheia */
 * {
   margin: 0;
   padding: 0;
@@ -6,7 +6,31 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* Container principal da lista de BRTs */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Classe específica para remover a borda superior */
+.no-top-border {
+  border-top: none !important;
+  outline: none !important;
+}
+
+/* Container principal - forçando tela cheia */
 .brts-list-container {
   width: 100vw;
   height: 100vh;
@@ -14,54 +38,74 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow: hidden;
 }
 
 /* Cabeçalho com título e botão voltar */
 .brts-header {
-  width: 90%;
-  max-width: 1200px;
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  padding: 20px;
+  margin: 0;
   position: relative;
+  height: 80px;
+  background-color: #047cb4;
+  z-index: 100;
 }
 
 .brts-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   color: white;
   text-align: center;
-  flex-grow: 1;
 }
 
+/* Botão voltar reposicionado no canto absoluto */
 .back-button {
   background-color: #003366;
   color: white;
-  padding: 10px 15px;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s ease;
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  z-index: 101;
 }
 
 .back-button:hover {
   background-color: #002244;
 }
 
-/* Lista de BRTs */
+/* Lista de BRTs - ocupando todo o espaço disponível */
 .brts-list {
-  width: 90%;
-  max-width: 1200px;
-  flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+  width: 95%;
+  max-width: 1600px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
-  margin-bottom: 20px;
-  padding: 10px;
+  border: none;
+  padding: 20px;
+  position: absolute;
+  top: 100px;
+  bottom: 100px; /* Espaço aumentado para o botão de atualizar */
+  left: 50%;
+  transform: translateX(-50%);
+  overflow-y: auto;
 }
 
 /* Linha de BRT */
@@ -70,20 +114,19 @@
   border-radius: 10px;
   padding: 20px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
   cursor: pointer;
-  margin-bottom: 15px;
 }
 
 .brt-row:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Estilos para BRTs ativos/parados */
+/* Status styles */
 .brt-row.status-active {
   border-left: 5px solid #4CAF50;
 }
@@ -94,50 +137,74 @@
 
 /* Informações do BRT */
 .brt-info {
-  flex-grow: 1;
+  flex: 2;
 }
 
 .brt-info h3 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: #003366;
   margin-bottom: 5px;
 }
 
-.brt-info p {
-  font-size: 1rem;
+.brt-linha {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.brt-detalhes {
+  display: flex;
+  gap: 20px;
+}
+
+.brt-detalhes p {
   color: #333;
 }
 
-/* Status do BRT */
-.brt-status {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 20px;
-}
-
-/* Indicador de status */
-.status-indicator {
-  font-size: 0.9rem;
+.detalhe-label {
   font-weight: 500;
-  padding: 5px 10px;
-  border-radius: 15px;
-  margin-bottom: 5px;
+  color: #555;
 }
 
-.status-indicator.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.status-indicator.inactive {
-  background-color: #F44336;
-  color: white;
+/* Status do BRT (lotação) */
+.brt-status {
+  flex: 1;
+  padding: 0 15px;
+  display: flex;
+  justify-content: center;
 }
 
 .brt-occupancy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brt-occupancy-label {
   font-size: 0.9rem;
-  color: #333;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.brt-occupancy-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.occupancy-low {
+  color: #4CAF50;
+}
+
+.occupancy-medium {
+  color: #FF9800;
+}
+
+.occupancy-high {
+  color: #F44336;
 }
 
 /* Botão ver detalhes */
@@ -150,20 +217,27 @@
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s ease;
+  white-space: nowrap;
+  width: 150px;
+  text-align: center;
 }
 
 .view-details-button:hover {
   background-color: #002244;
 }
 
-/* Seção de atualização */
+/* Seção de atualização - reposicionada para o canto inferior esquerdo */
 .refresh-section {
-  width: 90%;
-  max-width: 1200px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  margin-top: 10px;
+  padding: 15px;
+  border: none;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: none;
+  z-index: 100;
 }
 
 .refresh-button {
@@ -175,6 +249,8 @@
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s ease;
+  margin-right: 10px;
+  white-space: nowrap;
 }
 
 .refresh-button:hover {
@@ -184,6 +260,7 @@
 .last-update {
   color: white;
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 /* Mensagem de carregamento */
@@ -191,12 +268,7 @@
   color: white;
   font-size: 1.5rem;
   text-align: center;
-  margin: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 30px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 1200px;
+  margin: 40px 0;
 }
 
 /* Mensagem de erro */
@@ -211,8 +283,6 @@
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  width: 90%;
-  max-width: 1200px;
 }
 
 .retry-button {
@@ -235,12 +305,11 @@
   color: white;
   font-size: 1.2rem;
   padding: 30px;
-  width: 100%;
 }
 
 /* Scroll personalizado */
 .brts-list::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 .brts-list::-webkit-scrollbar-thumb {
@@ -251,41 +320,4 @@
 .brts-list::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-  .brts-header h1 {
-    font-size: 2rem;
-  }
-  
-  .brt-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .brt-status {
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    margin: 10px 0;
-  }
-  
-  .view-details-button {
-    width: 100%;
-    text-align: center;
-  }
-  
-  .refresh-section {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .refresh-button {
-    width: 100%;
-  }
-  
-  .last-update {
-    text-align: center;
-  }
 }

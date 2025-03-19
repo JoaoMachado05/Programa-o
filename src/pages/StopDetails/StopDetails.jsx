@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./StopDetails.css";
-import BusStop3D from "./BusStop3D"; 
+import BusStop3D from "./BusStop3D.jsx"; 
 
 // Componente para atualizar a view do mapa quando as coordenadas mudarem
 const MapUpdater = ({ center }) => {

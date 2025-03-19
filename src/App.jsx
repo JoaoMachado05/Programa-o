@@ -4,6 +4,9 @@ import Home from "./pages/Home/Home.jsx";
 import Stop from "./pages/Stop/Stop.jsx";
 import StopDetails from "./pages/StopDetails/StopDetails.jsx";
 import ListaBRTs from "./pages/ListaBRTs/ListaBRTs.jsx";  
+import BRT from "./pages/BRT/BRT.jsx";
+import ListaSemaforos from "./pages/TrafficLight/ListaSemaforos.jsx";
+import TrafficLightDetails from "./pages/TrafficLightDetails/TrafficLightDetails.jsx";
 import { useState, useEffect } from "react";
 
 function App() {
@@ -23,6 +26,9 @@ function App() {
         <Route path="/stop" element={isAuthenticated? <Stop /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/stops/:id" element={<StopDetails />} />
         <Route path="/brts" element={<ListaBRTs />} />
+        <Route path="/brts/:id" element={<BRT />} /> 
+        <Route path="/traffic-lights" element={<ListaSemaforos />} />
+        <Route path="/traffic-light/:id" element={<TrafficLightDetails />} /> 
       </Routes>
     </Router>
   );

@@ -6,8 +6,8 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* Container principal da lista de BRTs */
-.brts-list-container {
+/* Container principal */
+.container {
   width: 100vw;
   height: 100vh;
   background-color: #047cb4;
@@ -16,34 +16,33 @@
   align-items: center;
   padding: 20px;
   overflow: hidden;
-}
-
-/* Cabeçalho com título e botão voltar */
-.brts-header {
-  width: 90%;
-  max-width: 1200px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
   position: relative;
 }
 
-.brts-header h1 {
+/* Título da página com botão voltar */
+.container h1 {
   font-size: 2.5rem;
   color: white;
   text-align: center;
-  flex-grow: 1;
+  margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .back-button {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
   background-color: #003366;
   color: white;
-  padding: 10px 15px;
+  padding: 6px 10px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.85rem;
   transition: background-color 0.3s ease;
 }
 
@@ -51,142 +50,75 @@
   background-color: #002244;
 }
 
-/* Seção de busca e filtros */
-.search-filter-section {
-  width: 90%;
-  max-width: 1200px;
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.search-input {
-  flex-grow: 1;
-  padding: 12px 15px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.filter-select {
-  min-width: 180px;
-  padding: 12px 15px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color: white;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Grid de BRTs */
-.brts-grid {
+/* Container com scroll para as paragens */
+.scroll-container {
   width: 90%;
   max-width: 1200px;
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   padding: 10px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   margin-bottom: 20px;
 }
 
-/* Cartão de BRT */
-.brt-card {
+/* Cada linha de paragem */
+.stop-row {
   background-color: white;
   border-radius: 10px;
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
   cursor: pointer;
+  border-left: 5px solid #003366;
 }
 
-.brt-card:hover {
-  transform: translateY(-5px);
+.stop-row:hover {
+  transform: translateY(-3px);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Cabeçalho do cartão */
-.brt-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-.brt-header h3 {
-  font-size: 1.5rem;
+/* Título da paragem */
+.stop-row h2 {
+  font-size: 1.3rem;
   color: #003366;
-}
-
-/* Indicador de status */
-.status-indicator {
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 5px 10px;
-  border-radius: 15px;
-}
-
-.status-indicator.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.status-indicator.stopped {
-  background-color: #F44336;
-  color: white;
-}
-
-/* Estilos para BRTs ativos/parados */
-.brt-card.status-active {
-  border-left: 5px solid #4CAF50;
-}
-
-.brt-card.status-stopped {
-  border-left: 5px solid #F44336;
-}
-
-/* Informações do BRT */
-.brt-info {
-  margin-bottom: 15px;
-  flex-grow: 1;
-}
-
-.brt-info p {
   margin-bottom: 8px;
-  font-size: 1rem;
+}
+
+/* Informações da paragem */
+.stop-row p {
+  margin-bottom: 6px;
+  font-size: 0.95rem;
   color: #333;
 }
 
-/* Botão ver detalhes */
-.view-details-button {
+/* Botão de detalhes */
+.details-button {
   background-color: #003366;
   color: white;
-  padding: 10px 15px;
+  padding: 8px 12px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.9rem;
   transition: background-color 0.3s ease;
-  align-self: center;
-  width: 100%;
+  margin-top: 8px;
+  align-self: flex-end;
 }
 
-.view-details-button:hover {
+.details-button:hover {
   background-color: #002244;
 }
 
-/* Seção de atualização */
-.refresh-section {
+/* Controles na parte inferior */
+.bottom-controls {
   width: 90%;
   max-width: 1200px;
   display: flex;
@@ -198,11 +130,12 @@
 .refresh-button {
   background-color: #003366;
   color: white;
-  padding: 10px 20px;
+  padding: 8px 15px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.9rem;
   transition: background-color 0.3s ease;
 }
 
@@ -212,101 +145,70 @@
 
 .last-update {
   color: white;
-  font-size: 0.9rem;
-}
-
-/* Mensagem de carregamento */
-.loading-message {
-  color: white;
-  font-size: 1.5rem;
-  text-align: center;
-  margin: 20px;
-}
-
-/* Mensagem de erro */
-.error-message {
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  color: #F44336;
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
-
-.retry-button {
-  background-color: #F44336;
-  color: white;
-  padding: 8px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.retry-button:hover {
-  background-color: #D32F2F;
-}
-
-/* Mensagem de nenhum resultado */
-.no-results {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: white;
-  font-size: 1.2rem;
-  padding: 30px;
-}
-
-/* Indicador de conexão WebSocket */
-.connection-status {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  font-size: 0.85rem;
   padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.connection-status.connected {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.connection-status.disconnected {
-  background-color: #F44336;
-  color: white;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
 }
 
 /* Scroll personalizado */
-.brts-grid::-webkit-scrollbar {
-  width: 8px;
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
 }
 
-.brts-grid::-webkit-scrollbar-thumb {
+.scroll-container::-webkit-scrollbar-thumb {
   background-color: #003366;
   border-radius: 10px;
 }
 
-.brts-grid::-webkit-scrollbar-track {
+.scroll-container::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
 }
 
+/* Cores para indicadores de ocupação */
+.ocupacao-baixa {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.ocupacao-media {
+  color: #f57f17;
+  font-weight: bold;
+}
+
+.ocupacao-alta {
+  color: #c62828;
+  font-weight: bold;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
-  .brts-header h1 {
-    font-size: 2rem;
+  .container h1 {
+    font-size: 1.8rem;
   }
   
-  .search-filter-section {
+  .back-button {
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .stop-row {
+    padding: 12px;
+  }
+  
+  .details-button {
+    width: 100%;
+  }
+  
+  .bottom-controls {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
   
-  .brts-grid {
-    grid-template-columns: 1fr;
+  .refresh-button {
+    width: 100%;
   }
 }

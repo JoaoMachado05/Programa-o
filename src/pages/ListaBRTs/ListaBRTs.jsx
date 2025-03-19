@@ -14,6 +14,14 @@ const ListaBRTs = () => {
   // Fetch data on component mount
   useEffect(() => {
     fetchData();
+    
+    // Adicionar classe ao body para remover margens ou bordas indesejadas
+    document.body.classList.add('no-top-border');
+    
+    // Cleanup function
+    return () => {
+      document.body.classList.remove('no-top-border');
+    };
   }, []);
 
   // Fetch data using REST API
@@ -51,7 +59,31 @@ const ListaBRTs = () => {
   // Navigate to BRT details page
   const handleBRTClick = (brtId) => {
     console.log("Navegando para o BRT com ID:", brtId);
-    navigate(`/brt/${brtId}`);
+    navigate(`/brts/${brtId}`);
+  };
+
+  // Formatar velocidade para mostrar em km/h com uma casa decimal
+  const formatVelocidade = (velocidade) => {
+    return `${velocidade.toFixed(1)} km/h`;
+  };
+
+  // Formatar temperatura para mostrar em graus Celsius com uma casa decimal
+  const formatTemperatura = (temperatura) => {
+    return `${temperatura.toFixed(1)} °C`;
+  };
+
+  // Determinar status baseado na velocidade
+  const determinarStatus = (velocidade) => {
+    return velocidade > 0 ? 'active' : 'inactive';
+  };
+
+  // Exibir apenas texto de ocupação
+  const formatarOcupacao = (lotacaoAtual, capacidadeMaxima) => {
+    const percentual = (lotacaoAtual / capacidadeMaxima) * 100;
+    return {
+      texto: `${percentual.toFixed(0)}% (${lotacaoAtual}/${capacidadeMaxima})`,
+      classe: percentual < 50 ? 'low' : percentual < 85 ? 'medium' : 'high'
+    };
   };
 
   return (
@@ -62,7 +94,7 @@ const ListaBRTs = () => {
       </div>
 
       {loading ? (
-        <div className="loading-message">Carregando BRTs...</div>
+        <div className="loading-message">Carregando autocarros...</div>
       ) : error ? (
         <div className="error-message">
           {error}
@@ -72,35 +104,38 @@ const ListaBRTs = () => {
         <>
           <div className="brts-list">
             {brts.length > 0 ? (
-              brts.map(brt => (
-                <div 
-                  key={brt.id} 
-                  className={`brt-row status-${brt.status}`}
-                  onClick={() => handleBRTClick(brt.id)}
-                >
-                  <div className="brt-info">
-                    <h3>{brt.nome}</h3>
-                    <p>{brt.rota}</p>
-                  </div>
-                  <div className="brt-status">
-                    <span className={`status-indicator ${brt.status}`}>
-                      {brt.status === 'active' ? 'Ativo' : 'Parado'}
-                    </span>
-                    <p className="brt-occupancy">{brt.lotacao}</p>
-                  </div>
-                  <button 
-                    className="view-details-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleBRTClick(brt.id);
-                    }}
+              brts.map(brt => {
+                const ocupacao = formatarOcupacao(brt.lotacaoAtual, brt.capacidadeMaxima);
+                
+                return (
+                  <div 
+                    key={brt.id} 
+                    className={`brt-row status-${determinarStatus(brt.velocidade)}`}
+                    onClick={() => handleBRTClick(brt.id)}
                   >
-                    Ver Detalhes
-                  </button>
-                </div>
-              ))
+                    <div className="brt-info">
+                      <h3>Matrícula: {brt.matricula}</h3>
+                      <p className="brt-linha">Linha: {brt.linhaAtual}</p>
+                      <div className="brt-detalhes">
+                        <p><span className="detalhe-label">Velocidade:</span> {formatVelocidade(brt.velocidade)}</p>
+                        <p><span className="detalhe-label">Temperatura:</span> {formatTemperatura(brt.temperaturaAtual)}</p>
+                        <p><span className="detalhe-label">Lotação:</span> <span className={`occupancy-${ocupacao.classe}`}>{ocupacao.texto}</span></p>
+                      </div>
+                    </div>
+                    <button 
+                      className="view-details-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBRTClick(brt.id);
+                      }}
+                    >
+                      Ver Detalhes
+                    </button>
+                  </div>
+                );
+              })
             ) : (
-              <div className="no-results">Nenhum BRT encontrado.</div>
+              <div className="no-results">Nenhum autocarro encontrado.</div>
             )}
           </div>
 

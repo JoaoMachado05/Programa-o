@@ -28,7 +28,7 @@ function Home({ setIsAuthenticated }) {
         <div className="buttons">
           <button className="option-button" onClick={() => navigateTo("/brts")}>BRTs</button>
           <button className="option-button" onClick={() => navigateTo("/stop")}>Paragens</button>
-          <button className="option-button" onClick={() => navigateTo("/semaforos")}>Semáforos</button>
+          <button className="option-button" onClick={() => navigateTo("/traffic-lights")}>Semáforos</button>
         </div>
       </div>
     </div>
