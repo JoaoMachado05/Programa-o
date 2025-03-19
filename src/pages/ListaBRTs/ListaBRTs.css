@@ -1,4 +1,4 @@
-/* Reset completo para garantir tela cheia */
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -6,31 +6,11 @@
   font-family: "Poppins", sans-serif;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+body.no-top-border {
+  overflow-x: hidden;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Classe específica para remover a borda superior */
-.no-top-border {
-  border-top: none !important;
-  outline: none !important;
-}
-
-/* Container principal - forçando tela cheia */
+/* Container principal da lista de BRTs */
 .brts-list-container {
   width: 100vw;
   height: 100vh;
@@ -38,74 +18,59 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0;
-  margin: 0;
-  border: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  padding: 20px;
   overflow: hidden;
+  position: relative;
 }
 
 /* Cabeçalho com título e botão voltar */
 .brts-header {
   width: 100%;
+  max-width: 1200px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  margin: 0;
+  margin-bottom: 20px;
   position: relative;
-  height: 80px;
-  background-color: #047cb4;
-  z-index: 100;
 }
 
 .brts-header h1 {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   color: white;
   text-align: center;
 }
 
-/* Botão voltar reposicionado no canto absoluto */
 .back-button {
+  position: absolute;
+  left: 0;
   background-color: #003366;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s ease;
-  position: absolute;
-  left: 20px;
-  top: 20px;
-  z-index: 101;
 }
 
 .back-button:hover {
   background-color: #002244;
 }
 
-/* Lista de BRTs - ocupando todo o espaço disponível */
+/* Lista de BRTs */
 .brts-list {
-  width: 95%;
-  max-width: 1600px;
+  width: 90%;
+  max-width: 1200px;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
-  border: none;
-  padding: 20px;
-  position: absolute;
-  top: 100px;
-  bottom: 100px; /* Espaço aumentado para o botão de atualizar */
-  left: 50%;
-  transform: translateX(-50%);
-  overflow-y: auto;
+  margin-bottom: 20px;
 }
 
 /* Linha de BRT */
@@ -117,7 +82,7 @@ body {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
   cursor: pointer;
 }
 
@@ -126,7 +91,7 @@ body {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Status styles */
+/* Estilos para BRTs ativos/inativos */
 .brt-row.status-active {
   border-left: 5px solid #4CAF50;
 }
@@ -137,11 +102,12 @@ body {
 
 /* Informações do BRT */
 .brt-info {
-  flex: 2;
+  flex: 1;
+  padding-right: 15px;
 }
 
 .brt-info h3 {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #003366;
   margin-bottom: 5px;
 }
@@ -149,62 +115,48 @@ body {
 .brt-linha {
   font-size: 1.1rem;
   color: #555;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
+/* Detalhes do BRT */
 .brt-detalhes {
   display: flex;
-  gap: 20px;
+  gap: 15px;
 }
 
 .brt-detalhes p {
+  margin: 0;
+  font-size: 1rem;
   color: #333;
-}
-
-.detalhe-label {
-  font-weight: 500;
-  color: #555;
-}
-
-/* Status do BRT (lotação) */
-.brt-status {
-  flex: 1;
-  padding: 0 15px;
   display: flex;
-  justify-content: center;
-}
-
-.brt-occupancy {
-  display: flex;
-  flex-direction: column;
   align-items: center;
 }
 
-.brt-occupancy-label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #555;
-  margin-bottom: 5px;
+.detalhe-label {
+  font-weight: bold;
+  margin-right: 5px;
 }
 
-.brt-occupancy-value {
-  font-size: 1.1rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 5px;
-  text-align: center;
-}
-
+/* Classes para indicar ocupação */
 .occupancy-low {
-  color: #4CAF50;
+  background-color: #c8e6c9;
+  color: #2e7d32;
+  padding: 4px 8px;
+  border-radius: 12px;
 }
 
 .occupancy-medium {
-  color: #FF9800;
+  background-color: #fff9c4;
+  color: #f57f17;
+  padding: 4px 8px;
+  border-radius: 12px;
 }
 
 .occupancy-high {
-  color: #F44336;
+  background-color: #ffcdd2;
+  color: #c62828;
+  padding: 4px 8px;
+  border-radius: 12px;
 }
 
 /* Botão ver detalhes */
@@ -218,26 +170,20 @@ body {
   font-weight: 500;
   transition: background-color 0.3s ease;
   white-space: nowrap;
-  width: 150px;
-  text-align: center;
 }
 
 .view-details-button:hover {
   background-color: #002244;
 }
 
-/* Seção de atualização - reposicionada para o canto inferior esquerdo */
+/* Seção de atualização */
 .refresh-section {
+  width: 90%;
+  max-width: 1200px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  border: none;
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background: none;
-  z-index: 100;
+  margin-top: 10px;
 }
 
 .refresh-button {
@@ -249,8 +195,6 @@ body {
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s ease;
-  margin-right: 10px;
-  white-space: nowrap;
 }
 
 .refresh-button:hover {
@@ -260,7 +204,9 @@ body {
 .last-update {
   color: white;
   font-size: 0.9rem;
-  white-space: nowrap;
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
 }
 
 /* Mensagem de carregamento */
@@ -268,7 +214,7 @@ body {
   color: white;
   font-size: 1.5rem;
   text-align: center;
-  margin: 40px 0;
+  margin: 20px;
 }
 
 /* Mensagem de erro */
@@ -309,7 +255,7 @@ body {
 
 /* Scroll personalizado */
 .brts-list::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 .brts-list::-webkit-scrollbar-thumb {
@@ -320,4 +266,37 @@ body {
 .brts-list::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .brts-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .brt-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .view-details-button {
+    margin-top: 15px;
+    align-self: flex-end;
+    width: 100%;
+  }
+  
+  .brt-detalhes {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .refresh-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .refresh-button {
+    width: 100%;
+  }
 }

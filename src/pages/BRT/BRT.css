@@ -1,4 +1,5 @@
-/* BRT.css - Layout com fundo branco e suporte para modelo 3D */
+/* BRT.css - Enhanced styling based on TrafficLightDetails.css */
+
 * {
   margin: 0;
   padding: 0;
@@ -15,6 +16,7 @@ body, html {
   color: #2c3e50;
 }
 
+/* BRT Container */
 .brt-container {
   display: flex;
   flex-direction: column;
@@ -24,7 +26,7 @@ body, html {
   background-color: #ffffff;
 }
 
-/* Estilos do cabeçalho */
+/* Header Styles */
 .brt-header {
   display: flex;
   justify-content: space-between;
@@ -38,7 +40,12 @@ body, html {
   z-index: 1000;
 }
 
-.back-button {
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.back-button, .logout-button {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
@@ -48,6 +55,9 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.back-button {
   background-color: rgba(255, 255, 255, 0.9);
   color: #003f7f;
 }
@@ -57,14 +67,17 @@ body, html {
   transform: translateY(-2px);
 }
 
-.connection-status {
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.2);
+.logout-button {
+  background-color: rgba(220, 53, 69, 0.9);
+  color: white;
 }
 
-/* Estilos para loading */
+.logout-button:hover {
+  background-color: #dc3545;
+  transform: translateY(-2px);
+}
+
+/* Loading State */
 .loading {
   flex: 1;
   display: flex;
@@ -76,17 +89,34 @@ body, html {
   color: #666;
 }
 
+.loading::before {
+  content: "";
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #003f7f;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error State */
 .error {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.2rem;
   color: #dc3545;
-  font-size: 1.5rem;
-  font-weight: bold;
+  background-color: rgba(220, 53, 69, 0.1);
 }
 
-/* Seção de informações do BRT */
+/* Info Section */
 .brt-info-section {
   padding: 20px;
   background-color: #ffffff;
@@ -97,26 +127,29 @@ body, html {
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  padding: 20px;
+  overflow: hidden;
 }
 
 .info-panel h2 {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
   color: #003f7f;
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  font-weight: 600;
+  font-size: 1.3rem;
+  font-weight: 500;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .info-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 20px;
+  gap: 25px;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 }
 
 .info-label {
@@ -126,55 +159,68 @@ body, html {
 }
 
 .info-value {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #003f7f;
+  line-height: 1;
 }
 
-/* Status específicos */
+/* Status colors */
 .status-active {
   background-color: rgba(40, 167, 69, 0.2);
   color: #28a745;
-  padding: 3px 8px;
-  border-radius: 4px;
   border-left: 4px solid #28a745;
+  font-size: 1.2rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .status-inactive {
-  background-color: rgba(108, 117, 125, 0.2);
-  color: #6c757d;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border-left: 4px solid #6c757d;
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border-left: 4px solid #dc3545;
+  font-size: 1.2rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Visualizações do BRT */
+/* BRT Visuals */
 .brt-visuals {
-  flex: 1;
   display: flex;
+  flex-direction: column;
+  flex: 1;
   padding: 20px;
   gap: 20px;
-  height: calc(100vh - 95px - 100px - 50px);
+  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  overflow: auto;
+}
+
+.map-container, .model-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .map-container {
-  flex: 3;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  height: 100%;
+  flex: 1;
+  min-height: 300px;
 }
 
 .model-container {
-  flex: 2;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  flex: 1;
+  min-height: 350px;
   position: relative;
-  height: 100%;
 }
 
-/* Canvas para o modelo 3D */
 .model-container canvas {
   outline: none;
   width: 100%;
@@ -182,79 +228,21 @@ body, html {
   display: block;
 }
 
-/* Informações de última atualização */
+/* Last update info */
 .last-update-info {
-  padding: 15px 20px;
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
-  color: #666;
-  font-size: 14px;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size: 12px;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 8px 15px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 
-/* Seção de depuração */
-.debug-info {
-  padding: 0 20px 10px;
-  font-size: 13px;
-  color: #6c757d;
-}
-
-.debug-info details {
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.debug-info summary {
-  cursor: pointer;
-  padding: 8px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-}
-
-.debug-info summary:hover {
-  background-color: #e9ecef;
-}
-
-/* Responsividade */
-@media (max-width: 992px) {
-  .info-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .brt-visuals {
-    flex-direction: column;
-  }
-  
-  .map-container, .model-container {
-    width: 100%;
-    height: 300px;
-  }
-}
-
-@media (max-width: 768px) {
-  .info-list {
-    grid-template-columns: 1fr;
-  }
-  
-  .brt-header {
-    height: 70px;
-  }
-  
-  .brt-visuals {
-    height: auto;
-  }
-}
-
-/* Animação para o modelo 3D */
-@keyframes rotate {
-  0% { transform: rotateY(0deg); }
-  100% { transform: rotateY(360deg); }
-}
-
-.animate-model {
-  animation: rotate 20s infinite linear;
-}
-
-/* Dica de controles de órbita */
+/* 3D Model specific styles */
 .orbit-controls-hint {
   position: absolute;
   bottom: 10px;
@@ -269,13 +257,49 @@ body, html {
   z-index: 2;
 }
 
-/* Animações extras */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+/* Media Queries for different screen sizes */
+@media (min-width: 768px) {
+  .info-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-.pulse-effect {
-  animation: pulse 2s infinite;
+@media (min-width: 992px) {
+  .brt-visuals {
+    flex-direction: row;
+  }
+  
+  .map-container, .model-container {
+    width: 50%;
+    height: 100%;
+  }
+  
+  .model-container {
+    min-height: 400px;
+  }
+}
+
+/* Animation for moving bus */
+@keyframes move {
+  0% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  100% { transform: translateX(-5px); }
+}
+
+.status-active::before {
+  content: "•";
+  margin-right: 5px;
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* Enhance the 3D model container */
+.model-container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
