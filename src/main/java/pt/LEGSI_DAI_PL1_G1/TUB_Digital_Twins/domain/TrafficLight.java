@@ -31,7 +31,10 @@ public class TrafficLight {
     private Long id;
 
     @Column(nullable = false)
-    private String location;
+    private double latitude;
+
+    @Column(nullable = false)
+    private double longitude;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "current_state", nullable = false)
@@ -40,9 +43,4 @@ public class TrafficLight {
     @Column(nullable = false)
     private boolean operational;
 
-    public TrafficLight(String location) {
-        this.location = location;
-        this.currentState = State.RED;
-        this.operational = true;
-    }
 }

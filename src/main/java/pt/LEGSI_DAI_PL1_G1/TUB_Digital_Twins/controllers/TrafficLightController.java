@@ -21,7 +21,7 @@ public class TrafficLightController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TrafficLightDTO> getTrafficLightById(@PathVariable String id) {
+    public ResponseEntity<TrafficLightDTO> getTrafficLightById(@PathVariable Long id) {
         return ResponseEntity.ok(trafficLightService.getTrafficLightById(id));
     }
 
@@ -32,12 +32,12 @@ public class TrafficLightController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TrafficLightDTO> updateTrafficLight(
-            @PathVariable String id, @RequestBody TrafficLightDTO dto) {
+            @PathVariable Long id, @RequestBody TrafficLightDTO dto) {
         return ResponseEntity.ok(trafficLightService.updateTrafficLight(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTrafficLight(@PathVariable String id) {
+    public ResponseEntity<Void> deleteTrafficLight(@PathVariable Long id) {
         trafficLightService.deleteTrafficLight(id);
         return ResponseEntity.noContent().build();
     }

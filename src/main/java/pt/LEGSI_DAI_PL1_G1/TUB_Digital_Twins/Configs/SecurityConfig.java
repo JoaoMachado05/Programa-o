@@ -1,4 +1,4 @@
-package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins;
+package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.Configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

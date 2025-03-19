@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/buses")
+@RequestMapping("/brts")
 @RequiredArgsConstructor
 public class BusController {
 

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.TrafficLight;
 
 @Repository
-public interface TrafficLightRepository extends JpaRepository<TrafficLight, String> {
+public interface TrafficLightRepository extends JpaRepository<TrafficLight, Long> {
 
 }

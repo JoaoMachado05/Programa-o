@@ -9,7 +9,6 @@ import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.TrafficLightDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.TrafficLightRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +23,7 @@ public class TrafficLightService {
                 .collect(Collectors.toList());
     }
 
-    public TrafficLightDTO getTrafficLightById(String id) {
+    public TrafficLightDTO getTrafficLightById(Long id) {
         TrafficLight trafficLight = trafficLightRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Semaforo nao encontrado"));
         return convertToDTO(trafficLight);
@@ -32,27 +31,27 @@ public class TrafficLightService {
 
     @Transactional
     public TrafficLightDTO createTrafficLight(TrafficLightDTO dto) {
-        TrafficLight trafficLight = new TrafficLight(
-                dto.location()
-        );
+        TrafficLight trafficLight = new TrafficLight();
+        trafficLight.setLatitude(dto.latitude());
+        trafficLight.setLongitude(dto.longitude());
         trafficLight.setCurrentState(dto.currentState());
         trafficLight.setOperational(dto.operational());
         return convertToDTO(trafficLightRepository.save(trafficLight));
     }
 
     @Transactional
-    public TrafficLightDTO updateTrafficLight(String id, TrafficLightDTO dto) {
+    public TrafficLightDTO updateTrafficLight(Long id, TrafficLightDTO dto) {
         TrafficLight trafficLight = trafficLightRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Semáforo não encontrado"));
-        trafficLight.setLocation(dto.location());
+                .orElseThrow(() -> new EntityNotFoundException("Semaforo nao encontrado"));
+        trafficLight.setLatitude(dto.latitude());
+        trafficLight.setLongitude(dto.longitude());
         trafficLight.setCurrentState(dto.currentState());
         trafficLight.setOperational(dto.operational());
         return convertToDTO(trafficLightRepository.save(trafficLight));
     }
 
-
     @Transactional
-    public void deleteTrafficLight(String id) {
+    public void deleteTrafficLight(Long id) {
         if (!trafficLightRepository.existsById(id)) {
             throw new EntityNotFoundException("Semaforo nao encontrado");
         }
@@ -62,10 +61,10 @@ public class TrafficLightService {
     private TrafficLightDTO convertToDTO(TrafficLight trafficLight) {
         return new TrafficLightDTO(
                 trafficLight.getId(),
-                trafficLight.getLocation(),
+                trafficLight.getLatitude(),
+                trafficLight.getLongitude(),
                 trafficLight.getCurrentState(),
                 trafficLight.isOperational()
         );
     }
-
 }
