@@ -120,7 +120,7 @@ const TrafficLightDetails = () => {
     <div className="fullpage-container">
       <header className="header">
         <div className="logo-container">
-          <img src="/logo_TUB.jpg" alt="Logo TUB" className="tub-logo" />
+          <img src="/logo_TUB.jpg" alt="Logo TUB" className="smart-city-logo" />
         </div>
         <div className="header-actions">
           <button onClick={handleGoBack} className="btn btn-back">Voltar</button>
@@ -201,7 +201,14 @@ const TrafficLightDetails = () => {
                     <span className="status-value">{trafficLight.id}</span>
                   </div>
                 </div>
-                
+                <div className="status-item">
+                  <span className="status-label">Coordenadas</span>
+                  <div className="status-value-container">
+                    <span className="status-value small-text">
+                      {trafficLight.latitude.toFixed(6)}, {trafficLight.longitude.toFixed(6)}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
             

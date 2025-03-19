@@ -1,429 +1,429 @@
 /* TrafficLightDetails.css - Enhanced layout with white background and 3D model support */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body, html {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #ffffff;
-    color: #2c3e50;
-  }
-  
-  .fullpage-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    background-color: #ffffff;
-  }
-  
-  /* Header Styles */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #047cb4;
-    color: white;
-    height: 95px;
-    padding: 0 20px;
-    width: 100%;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-  }
-  
-  .logo-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .smart-city-logo {
-    height: 95px;
-  }
-  
-  .header-actions {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .btn-back {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #003f7f;
-  }
-  
-  .btn-back:hover {
-    background-color: #ffffff;
-    transform: translateY(-2px);
-  }
-  
-  .btn-logout {
-    background-color: rgba(220, 53, 69, 0.9);
-    color: white;
-  }
-  
-  .btn-logout:hover {
-    background-color: #dc3545;
-    transform: translateY(-2px);
-  }
-  
-  /* Loading Animation */
-  .loading-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-  }
-  
-  .loader {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #003f7f;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .loading {
-    font-size: 1.2rem;
-    color: #666;
-  }
-  
-  /* Main Content */
-  .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: calc(100vh - 95px);
-    overflow: auto;
-    padding: 0;
-    background: linear-gradient(to bottom, #f8f9fa, #ffffff);
-  }
-  
-  .page-header {
-    padding: 20px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #e9ecef;
-  }
-  
-  .page-title {
-    font-size: 2rem;
-    color: #003f7f;
-    font-weight: 600;
-  }
-  
-  /* Fullpage Content Layout */
-  .fullpage-content {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 20px;
-    gap: 20px;
-    flex: 1;
-  }
-  
-  /* Left and Right Sections */
-  .left-section, .right-section {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .info-card, .map-card, .stats-card, .traffic-light-visualization {
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .card-title {
-    padding: 15px 20px;
-    background-color: #f8f9fa;
-    color: #003f7f;
-    font-size: 1.3rem;
-    font-weight: 500;
-    border-bottom: 1px solid #e9ecef;
-  }
-  
-  /* Status Grid */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  color: #2c3e50;
+}
+
+.fullpage-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #047cb4;
+  color: white;
+  height: 95px;
+  padding: 0 20px;
+  width: 100%;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.smart-city-logo {
+  height: 95px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-back {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #003f7f;
+}
+
+.btn-back:hover {
+  background-color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.btn-logout {
+  background-color: rgba(220, 53, 69, 0.9);
+  color: white;
+}
+
+.btn-logout:hover {
+  background-color: #dc3545;
+  transform: translateY(-2px);
+}
+
+/* Loading Animation */
+.loading-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #003f7f;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100vh - 95px);
+  overflow: auto;
+  padding: 0;
+  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+}
+
+.page-header {
+  padding: 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.page-title {
+  font-size: 2rem;
+  color: #003f7f;
+  font-weight: 600;
+}
+
+/* Fullpage Content Layout */
+.fullpage-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
+  gap: 20px;
+  flex: 1;
+}
+
+/* Left and Right Sections */
+.left-section, .right-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-card, .map-card, .stats-card, .traffic-light-visualization {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  color: #003f7f;
+  font-size: 1.3rem;
+  font-weight: 500;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Status Grid */
+.status-grid, .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 20px;
+  gap: 25px;
+  flex: 1;
+}
+
+.status-item, .stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-label, .stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.status-value-container {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.status-value, .stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #003f7f;
+  line-height: 1;
+}
+
+.status-unit {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Status colors */
+.green-status, .yellow-status, .red-status, .operational-status, .non-operational-status {
+  font-size: 1.2rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.green-status {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+  border-left: 4px solid #28a745;
+}
+
+.yellow-status {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border-left: 4px solid #ffc107;
+}
+
+.red-status {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border-left: 4px solid #dc3545;
+}
+
+.operational-status {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+  border-left: 4px solid #28a745;
+}
+
+.non-operational-status {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border-left: 4px solid #dc3545;
+}
+
+.unknown-status {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #6c757d;
+  border-left: 4px solid #6c757d;
+}
+
+/* Map Container */
+.map-container {
+  flex: 1;
+  padding: 10px;
+  min-height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Traffic Light Visualization */
+.traffic-light-visualization {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.traffic-light-model {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+}
+
+.traffic-light-model canvas {
+  outline: none;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Indicator for operational status */
+.operational-status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.operational-indicator {
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  margin-left: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.operational-indicator.online {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+}
+
+.operational-indicator.offline {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+}
+
+/* Last update info */
+.last-update-info {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size: 12px;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 8px 15px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+/* Helper classes */
+.small-text {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+/* Media Queries for different screen sizes */
+@media (min-width: 768px) {
   .status-grid, .stats-grid {
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    padding: 20px;
-    gap: 25px;
+  }
+  
+  .info-card {
+    height: auto;
+  }
+  
+  .map-card {
     flex: 1;
-  }
-  
-  .status-item, .stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .status-label, .stat-label {
-    font-size: 0.9rem;
-    color: #6c757d;
-    font-weight: 500;
-  }
-  
-  .status-value-container {
-    display: flex;
-    align-items: baseline;
-    gap: 5px;
-  }
-  
-  .status-value, .stat-value {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #003f7f;
-    line-height: 1;
-  }
-  
-  .status-unit {
-    font-size: 0.9rem;
-    color: #6c757d;
-  }
-  
-  /* Status colors */
-  .green-status, .yellow-status, .red-status, .operational-status, .non-operational-status {
-    font-size: 1.2rem;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .green-status {
-    background-color: rgba(40, 167, 69, 0.2);
-    color: #28a745;
-    border-left: 4px solid #28a745;
-  }
-  
-  .yellow-status {
-    background-color: rgba(255, 193, 7, 0.2);
-    color: #ffc107;
-    border-left: 4px solid #ffc107;
-  }
-  
-  .red-status {
-    background-color: rgba(220, 53, 69, 0.2);
-    color: #dc3545;
-    border-left: 4px solid #dc3545;
-  }
-  
-  .operational-status {
-    background-color: rgba(40, 167, 69, 0.2);
-    color: #28a745;
-    border-left: 4px solid #28a745;
-  }
-  
-  .non-operational-status {
-    background-color: rgba(220, 53, 69, 0.2);
-    color: #dc3545;
-    border-left: 4px solid #dc3545;
-  }
-  
-  .unknown-status {
-    background-color: rgba(108, 117, 125, 0.2);
-    color: #6c757d;
-    border-left: 4px solid #6c757d;
-  }
-  
-  /* Map Container */
-  .map-container {
-    flex: 1;
-    padding: 10px;
     min-height: 300px;
-    border-radius: 8px;
-    overflow: hidden;
+  }
+}
+
+@media (min-width: 992px) {
+  .fullpage-content {
+    flex-direction: row;
   }
   
-  /* Traffic Light Visualization */
+  .left-section {
+    width: 55%;
+    height: 100%;
+  }
+  
+  .right-section {
+    width: 45%;
+    height: 100%;
+  }
+  
   .traffic-light-visualization {
-    display: flex;
-    flex-direction: column;
+    height: 100%;
     flex: 1;
   }
   
   .traffic-light-model {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    flex: 1;
+    height: 400px;
   }
   
-  .traffic-light-model canvas {
-    outline: none;
-    width: 100%;
-    height: 100%;
-    display: block;
+  .stats-card {
+    height: auto;
   }
-  
-  /* Indicator for operational status */
-  .operational-status-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-  }
-  
-  .operational-indicator {
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 12px;
-    margin-left: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .operational-indicator.online {
-    background-color: rgba(40, 167, 69, 0.2);
-    color: #28a745;
-  }
-  
-  .operational-indicator.offline {
-    background-color: rgba(220, 53, 69, 0.2);
-    color: #dc3545;
-  }
-  
-  /* Last update info */
-  .last-update-info {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    font-size: 12px;
-    color: #ffffff;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 8px 15px;
-    border-radius: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-  }
-  
-  /* Helper classes */
-  .small-text {
-    font-size: 14px;
-    font-weight: normal;
-  }
-  
-  /* Media Queries for different screen sizes */
-  @media (min-width: 768px) {
-    .status-grid, .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .info-card {
-      height: auto;
-    }
-    
-    .map-card {
-      flex: 1;
-      min-height: 300px;
-    }
-  }
-  
-  @media (min-width: 992px) {
-    .fullpage-content {
-      flex-direction: row;
-    }
-    
-    .left-section {
-      width: 55%;
-      height: 100%;
-    }
-    
-    .right-section {
-      width: 45%;
-      height: 100%;
-    }
-    
-    .traffic-light-visualization {
-      height: 100%;
-      flex: 1;
-    }
-    
-    .traffic-light-model {
-      height: 400px;
-    }
-    
-    .stats-card {
-      height: auto;
-    }
-  }
-  
-  /* 3D Model specific styles */
-  .canvas-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  
-  /* Orbit controls hint */
-  .orbit-controls-hint {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 4px;
-    opacity: 0.8;
-    pointer-events: none;
-    z-index: 2;
-  }
-  
-  /* Style for the 3D model lighting */
-  .light-indicator {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 4px;
-    z-index: 2;
-  }
-  
-  /* Animation for the lights */
-  @keyframes glow {
-    0% { filter: brightness(0.8); }
-    50% { filter: brightness(1.2); }
-    100% { filter: brightness(0.8); }
-  }
-  
-  .glow-effect {
-    animation: glow 2s infinite;
-  }
+}
+
+/* 3D Model specific styles */
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Orbit controls hint */
+.orbit-controls-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Style for the 3D model lighting */
+.light-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+/* Animation for the lights */
+@keyframes glow {
+  0% { filter: brightness(0.8); }
+  50% { filter: brightness(1.2); }
+  100% { filter: brightness(0.8); }
+}
+
+.glow-effect {
+  animation: glow 2s infinite;
+}
