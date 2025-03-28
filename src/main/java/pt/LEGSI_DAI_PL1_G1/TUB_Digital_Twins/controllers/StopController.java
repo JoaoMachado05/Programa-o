@@ -58,4 +58,11 @@ public class StopController {
         Optional<Double> percentage = stopService.getStopOccupancyPercentage(id);
         return percentage.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/{id}/tempo-proximo-autocarro")
+    public ResponseEntity<Integer> getStopTempoProximoAutocarro(@PathVariable Long id) {
+        Optional<Integer> tempo = stopService.getTempoAteProximoAutocarro(id);
+        return tempo.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

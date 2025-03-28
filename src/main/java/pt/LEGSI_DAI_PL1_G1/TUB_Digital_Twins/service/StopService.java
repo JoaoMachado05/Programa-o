@@ -84,6 +84,11 @@ public class StopService {
         });
     }
 
+    public Optional<Integer> getTempoAteProximoAutocarro(Long id) {
+        return stopRepository.findById(id)
+                .map(Stop::getTempoAteProximoAutocarro);
+    }
+
     public StopDTO convertToDTO(Stop stop) {
         return new StopDTO(
                 stop.getId(),
