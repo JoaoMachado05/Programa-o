@@ -4,14 +4,13 @@ import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 
 const BusStop3D = () => {
-  const [proximoAutocarro, setProximoAutocarro] = useState("00:00");
+  const [proximoAutocarro, setProximoAutocarro] = useState("0 min");
 
   // Simulação de atualização do horário (para testar antes da ligação ao backend)
   useEffect(() => {
     const atualizarHorario = () => {
-      const horas = Math.floor(Math.random() * 24).toString().padStart(2, "0");
-      const minutos = Math.floor(Math.random() * 60).toString().padStart(2, "0");
-      setProximoAutocarro(`${horas}:${minutos}`);
+      const minutos = Math.floor(Math.random() * 60).toString();
+      setProximoAutocarro(`${minutos} min`);
     };
 
     const intervalo = setInterval(atualizarHorario, 5000); // Atualiza a cada 5 segundos
@@ -27,7 +26,7 @@ const BusStop3D = () => {
       {/* Cena 3D - Ocupando mais espaço na tela */}
       <Canvas 
         style={{ width: "100%", height: "100%", background: "#87CEEB" }} 
-        camera={{ position: [0, 1.5, 3.5], fov: 45 }}
+        camera={{ position: [0, 3, 8], fov: 50 }}
       >
         <ambientLight intensity={0.8} />
         <directionalLight position={[3, 6, 4]} intensity={1.2} castShadow />

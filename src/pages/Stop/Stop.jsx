@@ -70,12 +70,21 @@ const Stop = () => {
             A carregar dados...
           </p>
         ) : (
-          stops.map(({ id, nome, lotacaoAtual, capacidadeMaxima, temperaturaAtual, percentagemOcupacao }) => (
+          stops.map(({ 
+            id, 
+            nome, 
+            lotacaoAtual, 
+            capacidadeMaxima, 
+            temperaturaAtual, 
+            percentagemOcupacao,
+            tempoAteProximoAutocarro
+          }) => (
             <div key={id} className="stop-row">
               <h2>{nome}</h2>
               <p>Lotação Atual: {lotacaoAtual}</p>
               <p>Capacidade Máxima: {capacidadeMaxima}</p>
               <p>Temperatura: {temperaturaAtual} °C</p>
+              <p>Próximo Autocarro: {tempoAteProximoAutocarro} min</p>
               <p className={getOcupacaoClass(percentagemOcupacao)}>
                 Ocupação: {percentagemOcupacao !== null && percentagemOcupacao !== undefined
                   ? percentagemOcupacao.toFixed(2)
