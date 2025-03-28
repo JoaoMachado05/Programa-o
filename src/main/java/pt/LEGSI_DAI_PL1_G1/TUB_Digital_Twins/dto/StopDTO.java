@@ -1,5 +1,6 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto;
 
+import java.time.LocalDateTime;
 
 public record StopDTO(
         Long id,
@@ -9,5 +10,9 @@ public record StopDTO(
         Double temperaturaAtual,
         Double longitude,
         Double latitude,
-        double percentagemOcupacao) {
+        Integer tempoAteProximoAutocarro,
+        LocalDateTime ultimaAtualizacao,
+        double percentagemOcupacao,
+        String estadoOcupacao
+) {
 }

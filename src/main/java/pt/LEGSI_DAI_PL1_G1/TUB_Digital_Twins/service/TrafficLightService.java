@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.TrafficLight;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.TrafficLightDTO;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.exception.TrafficLightNotFound;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.TrafficLightRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,17 +38,22 @@ public class TrafficLightService {
         trafficLight.setLongitude(dto.longitude());
         trafficLight.setCurrentState(dto.currentState());
         trafficLight.setOperational(dto.operational());
+        trafficLight.setLastMaintenance(LocalDateTime.now());
+        trafficLight.setTimeUntilStateChange(dto.timeUntilStateChange());
         return convertToDTO(trafficLightRepository.save(trafficLight));
     }
 
     @Transactional
     public TrafficLightDTO updateTrafficLight(Long id, TrafficLightDTO dto) {
         TrafficLight trafficLight = trafficLightRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Semaforo nao encontrado"));
+                .orElseThrow(() -> new TrafficLightNotFound("Semaforo nao encontrado"));
         trafficLight.setLatitude(dto.latitude());
         trafficLight.setLongitude(dto.longitude());
         trafficLight.setCurrentState(dto.currentState());
         trafficLight.setOperational(dto.operational());
+        trafficLight.setLastMaintenance(dto.lastMaintenance());
+        trafficLight.setTimeUntilStateChange(dto.timeUntilStateChange());
+
         return convertToDTO(trafficLightRepository.save(trafficLight));
     }
 
@@ -64,7 +71,9 @@ public class TrafficLightService {
                 trafficLight.getLatitude(),
                 trafficLight.getLongitude(),
                 trafficLight.getCurrentState(),
-                trafficLight.isOperational()
+                trafficLight.isOperational(),
+                trafficLight.getLastMaintenance(),
+                trafficLight.getTimeUntilStateChange()
         );
     }
 }

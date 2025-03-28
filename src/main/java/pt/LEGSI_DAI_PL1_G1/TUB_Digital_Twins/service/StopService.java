@@ -35,6 +35,10 @@ public class StopService {
         stop.setTemperaturaAtual(stopDTO.temperaturaAtual());
         stop.setLongitude(stopDTO.longitude());
         stop.setLatitude(stopDTO.latitude());
+
+        // Define o tempo até o próximo autocarro para 10 minutos por padrão
+        stop.setTempoAteProximoAutocarro(10);
+
         Stop savedStop = stopRepository.save(stop);
         return convertToDTO(savedStop);
     }
@@ -50,6 +54,12 @@ public class StopService {
             stop.setTemperaturaAtual(stopDTO.temperaturaAtual());
             stop.setLongitude(stopDTO.longitude());
             stop.setLatitude(stopDTO.latitude());
+
+            // caso nao seja definido default de 10 minutos definir mais tarde
+            if (stop.getTempoAteProximoAutocarro() == null) {
+                stop.setTempoAteProximoAutocarro(10);
+            }
+
             Stop updatedStop = stopRepository.save(stop);
             return convertToDTO(updatedStop);
         }
@@ -74,7 +84,7 @@ public class StopService {
         });
     }
 
-    private StopDTO convertToDTO(Stop stop) {
+    public StopDTO convertToDTO(Stop stop) {
         return new StopDTO(
                 stop.getId(),
                 stop.getNome(),
@@ -83,7 +93,10 @@ public class StopService {
                 stop.getTemperaturaAtual(),
                 stop.getLongitude(),
                 stop.getLatitude(),
-                stop.getPercentagemOcupacao()
+                stop.getTempoAteProximoAutocarro(),
+                stop.getUltimaAtualizacao(),
+                stop.getPercentagemOcupacao(),
+                stop.getEstadoOcupacao()
         );
     }
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,4 +44,9 @@ public class TrafficLight {
     @Column(nullable = false)
     private boolean operational;
 
+    @Column(name = "last_maintenance")
+    private LocalDateTime lastMaintenance;
+
+    @Column(name = "time_until_state_change")
+    private Integer timeUntilStateChange; // em segundos
 }
