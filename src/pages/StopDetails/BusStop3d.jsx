@@ -3,19 +3,42 @@ import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 
-const BusStop3D = () => {
+const BusStop3D = ({ stopId }) => { 
   const [proximoAutocarro, setProximoAutocarro] = useState("0 min");
 
-  // Simulação de atualização do horário (para testar antes da ligação ao backend)
-  useEffect(() => {
-    const atualizarHorario = () => {
-      const minutos = Math.floor(Math.random() * 60).toString();
-      setProximoAutocarro(`${minutos} min`);
-    };
+  const atualizarHorario = () => {
+    const apiUrl = `http://localhost:8080/stops/${stopId}/tempo-proximo-autocarro`;
+    
+    fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        setProximoAutocarro(`${data} min`);
+      })
+      .catch(error => {
+        console.error('Erro ao obter tempo do próximo autocarro:', error);
+        setProximoAutocarro('Erro');
+      });
+  };
 
-    const intervalo = setInterval(atualizarHorario, 5000); // Atualiza a cada 5 segundos
-    return () => clearInterval(intervalo);
-  }, []);
+  useEffect(() => {
+    // Verificar se o ID existe antes de fazer a chamada
+    if (stopId) {
+      atualizarHorario();
+      
+      // Configurar atualização periódica
+      const intervalo = setInterval(() => {
+        atualizarHorario();
+      }, 30000); // Atualiza a cada 30 segundos
+      
+      // Limpar intervalo quando o componente for desmontado
+      return () => clearInterval(intervalo);
+    }
+  }, [stopId]);
 
   // Carregar texturas para os detalhes
   const horarioTexture = useLoader(THREE.TextureLoader, "/horario.jpg");

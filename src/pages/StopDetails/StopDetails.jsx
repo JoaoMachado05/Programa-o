@@ -1,18 +1,65 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./StopDetails.css";
 import BusStop3D from "./BusStop3D.jsx"; 
 
-// Componente para atualizar a view do mapa quando as coordenadas mudarem
+// Correção para os ícones do Leaflet
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// Criando o ícone personalizado para paradas de ônibus
+const busStopIcon = new L.Icon({
+  iconUrl: '/BusStopMapIcon.jpg',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40],
+});
+
+// Criando o ícone personalizado para autocarros
+const busIcon = new L.Icon({
+  iconUrl: '/BusMapIcon.png',
+  iconSize: [35, 35],
+  iconAnchor: [17, 35],
+  popupAnchor: [0, -35],
+});
+
+// Solução de fallback para ícones padrão do Leaflet
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
+
+// Componente modificado para não recentrar quando o usuário interage com o mapa
 const MapUpdater = ({ center }) => {
   const map = useMap();
+  const [userInteracted, setUserInteracted] = useState(false);
+  
   useEffect(() => {
-    if (center) {
+    // Apenas fazemos o setView na primeira renderização ou se o usuário não interagiu
+    if (center && !userInteracted) {
       map.setView(center, map.getZoom());
     }
-  }, [center, map]);
+    
+    // Adicionamos listeners para detectar interação do usuário
+    const handleUserInteraction = () => {
+      setUserInteracted(true);
+    };
+    
+    map.on('drag', handleUserInteraction);
+    map.on('zoom', handleUserInteraction);
+    
+    return () => {
+      map.off('drag', handleUserInteraction);
+      map.off('zoom', handleUserInteraction);
+    };
+  }, [center, map, userInteracted]);
   
   return null;
 };
@@ -21,14 +68,12 @@ const StopDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [stop, setStop] = useState(null);
+  const [buses, setBuses] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('pt-PT'));
-  const [connectionStatus, setConnectionStatus] = useState("Conectando...");
   const [lastUpdate, setLastUpdate] = useState(null);
-  const socketRef = useRef(null);
-  const pollingIntervalRef = useRef(null);
-  const reconnectTimeoutRef = useRef(null);
+  const updateIntervalRef = useRef(null);
 
-  // Função para buscar dados via HTTP
+  // Função para buscar dados da paragem via HTTP
   const fetchStopData = async () => {
     try {
       const response = await fetch(`http://localhost:8080/stops/${id}`);
@@ -38,75 +83,48 @@ const StopDetails = () => {
       setStop(data);
       setLastUpdate(new Date());
     } catch (error) {
-      console.error("Erro ao buscar dados:", error.message);
+      console.error("Erro ao buscar dados da paragem:", error.message);
     }
   };
 
-  // Função para conectar ao WebSocket
-  const connectWebSocket = () => {
+  // Função para buscar dados dos autocarros
+  const fetchBusesData = async () => {
     try {
-      const ws = new WebSocket('ws://localhost:8080/ws');
-      
-      ws.onopen = () => {
-        console.log('WebSocket conectado');
-        setConnectionStatus("Conectado");
-        // Subscreve para receber atualizações para este ID de paragem
-        ws.send(JSON.stringify({ type: 'subscribe', stopId: id }));
-        
-        // Limpa qualquer tentativa pendente de reconexão
-        if (reconnectTimeoutRef.current) {
-          clearTimeout(reconnectTimeoutRef.current);
-          reconnectTimeoutRef.current = null;
-        }
-      };
-      
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          // Verifica se a mensagem é para esta paragem
-          if (data.id === id) {
-            setStop(data);
-            setLastUpdate(new Date());
-          }
-        } catch (error) {
-          console.error('Erro ao processar mensagem do WebSocket:', error);
-        }
-      };
-      
-      ws.onerror = (error) => {
-        console.error('Erro de WebSocket:', error);
-        setConnectionStatus("Erro de conexão");
-      };
-      
-      ws.onclose = (event) => {
-        console.log('WebSocket fechado. Código:', event.code, 'Razão:', event.reason);
-        setConnectionStatus("Usando HTTP (WebSocket desconectado)");
-        
-        // Tenta reconectar ao WebSocket após 5 segundos
-        reconnectTimeoutRef.current = setTimeout(() => {
-          console.log('Tentando reconectar WebSocket...');
-          connectWebSocket();
-        }, 5000);
-      };
-      
-      socketRef.current = ws;
+      // Usando o endpoint /brts conforme o controlador fornecido
+      const response = await fetch(`http://localhost:8080/brts`);
+      if (!response.ok) throw new Error("Erro ao buscar autocarros");
+
+      const data = await response.json();
+      setBuses(data);
     } catch (error) {
-      console.error('Falha ao criar conexão WebSocket:', error);
-      setConnectionStatus("Usando HTTP (WebSocket falhou)");
+      console.error("Erro ao buscar dados dos autocarros:", error.message);
     }
+  };
+
+  // Calcular distância entre dois pontos geográficos (usando fórmula de Haversine)
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Raio da Terra em km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2); 
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    const distance = R * c; // Distância em km
+    return distance;
   };
 
   // Busca dados iniciais e configura a atualização em tempo real
   useEffect(() => {
     // Busca inicial de dados
     fetchStopData();
+    fetchBusesData();
     
-    // Tenta estabelecer conexão WebSocket
-    connectWebSocket();
-    
-    // Configurar atualização a cada segundo, independente do tipo de conexão
-    const updateInterval = setInterval(() => {
-      fetchStopData(); // Atualiza os dados a cada segundo
+    // Configurar atualização a cada segundo via polling
+    updateIntervalRef.current = setInterval(() => {
+      fetchStopData();
+      fetchBusesData();
     }, 1000);
     
     // Atualizações de relógio
@@ -116,24 +134,10 @@ const StopDetails = () => {
     
     // Limpeza ao desmontar o componente
     return () => {
-      clearInterval(updateInterval);
+      if (updateIntervalRef.current) {
+        clearInterval(updateIntervalRef.current);
+      }
       clearInterval(timeInterval);
-      
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      
-      if (socketRef.current) {
-        // Envia mensagem de unsubscribe antes de fechar
-        try {
-          socketRef.current.send(JSON.stringify({ type: 'unsubscribe', stopId: id }));
-        } catch (e) {
-          console.log('Não foi possível enviar unsubscribe');
-        }
-        
-        socketRef.current.close();
-        socketRef.current = null;
-      }
     };
   }, [id]);
 
@@ -162,7 +166,6 @@ const StopDetails = () => {
         <div className="loading-container">
           <div className="loader"></div>
           <p className="loading">A carregar informações...</p>
-          <p className="connection-status">Status: {connectionStatus}</p>
         </div>
       </main>
     </div>
@@ -178,6 +181,41 @@ const StopDetails = () => {
   } else if (occupancyPercentage > 50) {
     occupancyClass = "medium-occupancy";
   }
+
+  // Filtrar autocarros que estão próximos à paragem (até 1km de distância)
+  const nearbyBuses = buses.filter(bus => {
+    if (!bus.latitude || !bus.longitude) return false;
+    const distance = calculateDistance(
+      stop.latitude, 
+      stop.longitude, 
+      bus.latitude, 
+      bus.longitude
+    );
+    return distance <= 1; // Distância máxima de 1km
+  });
+
+  // Estimar tempo de chegada baseado na distância (valor aproximado)
+  const busesWithArrivalTime = nearbyBuses.map(bus => {
+    const distance = calculateDistance(
+      stop.latitude, 
+      stop.longitude, 
+      bus.latitude, 
+      bus.longitude
+    );
+    // Velocidade média estimada: 20 km/h (0.33 km/min)
+    const estimatedTimeMin = Math.round(distance / 0.33);
+    return {
+      ...bus,
+      tempoChegada: estimatedTimeMin > 0 ? estimatedTimeMin : null
+    };
+  });
+
+  // Ordenar autocarros por tempo de chegada
+  const sortedBuses = busesWithArrivalTime.sort((a, b) => {
+    if (a.tempoChegada === null) return 1;
+    if (b.tempoChegada === null) return -1;
+    return a.tempoChegada - b.tempoChegada;
+  });
 
   return (
     <div className="fullpage-container">
@@ -235,9 +273,10 @@ const StopDetails = () => {
               </div>
             </div>
             
-            <div className="map-card">
-              <h2 className="card-title">Localização</h2>
-              <div className="map-container">
+            {/* Map card expandido até o modelo 3D */}
+            <div className="map-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <h2 className="card-title">Localização e Autocarros Próximos</h2>
+              <div className="map-container" style={{ flex: 1, height: '100%', width: '100%', minHeight: '400px', position: 'relative' }}>
                 {stop.latitude && stop.longitude && (
                   <MapContainer 
                     center={[stop.latitude, stop.longitude]} 
@@ -249,25 +288,62 @@ const StopDetails = () => {
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <Marker position={[stop.latitude, stop.longitude]}>
+                    
+                    {/* Marcador da paragem de autocarro */}
+                    <Marker 
+                      position={[stop.latitude, stop.longitude]} 
+                      icon={busStopIcon}
+                    >
                       <Popup>
                         <strong>{stop.nome}</strong><br />
-                        Lotação atual: {stop.lotacaoAtual}
+                        Lotação atual: {stop.lotacaoAtual} pessoas<br />
+                        Temperatura: {stop.temperaturaAtual}°C
                       </Popup>
                     </Marker>
+                    
+                    {/* Marcadores dos autocarros */}
+                    {sortedBuses.map(bus => (
+                      <Marker 
+                        key={bus.id}
+                        position={[bus.latitude, bus.longitude]} 
+                        icon={busIcon}
+                      >
+                        <Popup>
+                          <strong>Autocarro {bus.matricula || bus.id}</strong><br />
+                          {bus.linha && <div>Linha: {bus.linha}<br /></div>}
+                          {bus.destino && <div>Destino: {bus.destino}<br /></div>}
+                          Lotação: {bus.lotacaoAtual || 0} pessoas<br />
+                          {bus.tempoChegada && (
+                            <>Chegada prevista: {bus.tempoChegada} min</>
+                          )}
+                        </Popup>
+                      </Marker>
+                    ))}
+                    
                     <MapUpdater center={[stop.latitude, stop.longitude]} />
                   </MapContainer>
                 )}
+              </div>
+              {/* Legenda dos ícones do mapa */}
+              <div className="map-legend">
+                <div className="legend-item">
+                  <img src="/BusStopMapIcon.jpg" alt="Paragem" className="legend-icon" style={{ width: '20px', height: '20px' }} />
+                  <span>Paragem</span>
+                </div>
+                <div className="legend-item">
+                  <img src="/BusMapIcon.png" alt="Autocarro" className="legend-icon" style={{ width: '20px', height: '20px' }} />
+                  <span>Autocarro</span>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="right-section">
-            {/* Substitui a câmera pelo modelo 3D aqui */}
+            {/* Modelo 3D da paragem */}
             <div className="model-card">
               <h2 className="card-title">Modelo 3D da Paragem</h2>
               <div className="model-container" style={{ height: "400px", width: "100%" }}>
-                <BusStop3D />
+               <BusStop3D stopId={id} />
                 <div className="model-overlay">
                   <div className="model-info">
                     <div className="model-details">
@@ -278,6 +354,44 @@ const StopDetails = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+            
+            {/* Lista de autocarros próximos */}
+            <div className="buses-card">
+              <h2 className="card-title">Autocarros a Caminho</h2>
+              <div className="buses-list">
+                {sortedBuses.length > 0 ? (
+                  sortedBuses.map(bus => (
+                    <div key={bus.id} className="bus-item">
+                      <div className="bus-info">
+                        <div className="bus-number">#{bus.matricula || bus.id}</div>
+                        <div className="bus-details">
+                          <div className="bus-line">
+                            {bus.linha && bus.destino ? 
+                              `Linha ${bus.linha} → ${bus.destino}` : 
+                              `Autocarro ID: ${bus.id}`
+                            }
+                          </div>
+                          <div className="bus-status">
+                            {bus.tempoChegada ? (
+                              <span className="arrival-time">Chega em {bus.tempoChegada} min</span>
+                            ) : (
+                              <span className="arrival-time">Em aproximação</span>
+                            )}
+                            <span className="bus-occupancy">
+                              Lotação: {bus.lotacaoAtual || 0} pessoas
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-buses">
+                    <p>Não há autocarros nas proximidades.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
