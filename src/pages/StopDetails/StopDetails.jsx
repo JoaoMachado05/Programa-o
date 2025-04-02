@@ -12,19 +12,20 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 // Criando o ícone personalizado para paradas de ônibus
 const busStopIcon = new L.Icon({
-  iconUrl: '/BusStopMapIcon.jpg',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-  popupAnchor: [0, -40],
+  iconUrl: '/BusStopMapIcon.png?v=1',
+  iconSize: [60, 60], 
+  iconAnchor: [30, 60], 
+  popupAnchor: [0, -50], 
 });
 
 // Criando o ícone personalizado para autocarros
 const busIcon = new L.Icon({
   iconUrl: '/BusMapIcon.png',
-  iconSize: [35, 35],
-  iconAnchor: [17, 35],
-  popupAnchor: [0, -35],
+  iconSize: [50, 50], // Aumentei de 35x35 para 50x50
+  iconAnchor: [25, 50], // Ajustei para manter o ponto de ancoragem correto
+  popupAnchor: [0, -45], // Ajustei para o popup ficar bem posicionado
 });
+
 
 // Solução de fallback para ícones padrão do Leaflet
 let DefaultIcon = L.icon({
@@ -327,7 +328,7 @@ const StopDetails = () => {
               {/* Legenda dos ícones do mapa */}
               <div className="map-legend">
                 <div className="legend-item">
-                  <img src="/BusStopMapIcon.jpg" alt="Paragem" className="legend-icon" style={{ width: '20px', height: '20px' }} />
+                  <img src="/BusStopMapIcon.png?v=1" alt="Paragem" className="legend-icon" style={{ width: '20px', height: '20px' }} />
                   <span>Paragem</span>
                 </div>
                 <div className="legend-item">

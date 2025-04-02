@@ -1,4 +1,4 @@
-/* BRT.css - Enhanced styling based on TrafficLightDetails.css */
+/* BRT.css - Enhanced styling with updated header button positioning */
 
 * {
   margin: 0;
@@ -40,9 +40,11 @@ body, html {
   z-index: 1000;
 }
 
+/* Agrupando botões no canto superior direito */
 .nav-buttons {
   display: flex;
   gap: 10px;
+  margin-left: auto; /* Empurra o grupo de botões para a direita */
 }
 
 .back-button, .logout-button {
@@ -65,6 +67,7 @@ body, html {
 .back-button:hover {
   background-color: #ffffff;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .logout-button {
@@ -75,6 +78,7 @@ body, html {
 .logout-button:hover {
   background-color: #dc3545;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Loading State */
@@ -219,6 +223,7 @@ body, html {
   flex: 1;
   min-height: 350px;
   position: relative;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .model-container canvas {
@@ -257,6 +262,20 @@ body, html {
   z-index: 2;
 }
 
+/* Animação para o indicador de status ativo */
+.status-active::before {
+  content: "•";
+  margin-right: 5px;
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
 /* Media Queries for different screen sizes */
 @media (min-width: 768px) {
   .info-list {
@@ -279,27 +298,24 @@ body, html {
   }
 }
 
-/* Animation for moving bus */
-@keyframes move {
-  0% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  100% { transform: translateX(-5px); }
-}
-
-.status-active::before {
-  content: "•";
-  margin-right: 5px;
-  display: inline-block;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
-}
-
-/* Enhance the 3D model container */
-.model-container {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+/* Responssividade para o header */
+@media (max-width: 576px) {
+  .brt-header {
+    flex-direction: column;
+    height: auto;
+    padding: 15px;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .nav-buttons {
+    margin: 0 auto;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .back-button, .logout-button {
+    flex: 1;
+    max-width: 140px;
+  }
 }

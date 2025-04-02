@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./TrafficLightDetails.css";
 
@@ -18,6 +19,14 @@ const MapUpdater = ({ center }) => {
   
   return null;
 };
+
+// Custom icon for the traffic light marker
+const customIcon = new L.Icon({
+  iconUrl: "/TrafficLightMapIcon.jpg",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
 
 // New Semaforo component
 const Semaforo = ({ estado, position = [0, 0, 0] }) => {
@@ -116,6 +125,19 @@ const TrafficLightDetails = () => {
     navigate("/");
   };
 
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('pt-PT');
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString;
+    }
+  };
+
   if (!trafficLight) return (
     <div className="fullpage-container">
       <header className="header">
@@ -202,11 +224,17 @@ const TrafficLightDetails = () => {
                   </div>
                 </div>
                 <div className="status-item">
-                  <span className="status-label">Coordenadas</span>
+                  <span className="status-label">Última Manutenção</span>
                   <div className="status-value-container">
                     <span className="status-value small-text">
-                      {trafficLight.latitude.toFixed(6)}, {trafficLight.longitude.toFixed(6)}
+                      {formatDate(trafficLight.lastMaintenance)}
                     </span>
+                  </div>
+                </div>
+                <div className="status-item">
+                  <span className="status-label">Tempo até Mudar (segundos)</span>
+                  <div className="status-value-container">
+                    <span className="status-value">{trafficLight.timeUntilStateChange}</span>
                   </div>
                 </div>
               </div>
@@ -226,7 +254,10 @@ const TrafficLightDetails = () => {
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <Marker position={[trafficLight.latitude, trafficLight.longitude]}>
+                    <Marker 
+                      position={[trafficLight.latitude, trafficLight.longitude]}
+                      icon={customIcon}
+                    >
                       <Popup>
                         <strong>Semáforo ID: {trafficLight.id}</strong><br />
                         Estado: {statusText}<br />
@@ -250,6 +281,10 @@ const TrafficLightDetails = () => {
                   <Semaforo estado={trafficLight.currentState} />
                   <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
                 </Canvas>
+              </div>
+              <div className="state-timer">
+                <span className="state-timer-label">Próxima mudança em:</span>
+                <span className="state-timer-value">{trafficLight.timeUntilStateChange}s</span>
               </div>
               <div className="operational-status-indicator">
                 <span className="status-label">Status:</span>
