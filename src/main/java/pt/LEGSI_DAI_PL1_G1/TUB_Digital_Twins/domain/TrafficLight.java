@@ -8,21 +8,36 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
+/**
+ * Entidade que representa um semáforo no sistema.
+ */
 @Entity
 @Table(name = "traffic_lights")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "stops")
+@EqualsAndHashCode(exclude = "stops")
 public class TrafficLight {
 
+    /**
+     * Estados possíveis para um semáforo.
+     */
     public enum State {
         RED, YELLOW, GREEN
     }
@@ -49,4 +64,73 @@ public class TrafficLight {
 
     @Column(name = "time_until_state_change")
     private Integer timeUntilStateChange; // em segundos
+
+    @Column(name = "is_in_anomaly", nullable = false)
+    private boolean inAnomaly = false;
+
+    @OneToMany(mappedBy = "trafficLight", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Stop> stops = new ArrayList<>();
+
+    // NOVOS CAMPOS para gestão inteligente
+    @Column(name = "green_time", nullable = false)
+    private Integer greenTime = 15;
+
+    @Column(name = "red_time", nullable = false)
+    private Integer redTime = 10;
+
+    @Column(name = "yellow_time", nullable = false)
+    private Integer yellowTime = 3;
+
+    @Column(name = "brt_priority_active", nullable = false)
+    private boolean brtPriorityActive = false;
+
+    @Column(name = "priority_bus_id")
+    private Long priorityBusId;
+
+
+    public boolean addStop(Stop stop) {
+        if (stops == null) {
+            stops = new ArrayList<>();
+        }
+        return stops.add(stop);
+    }
+
+    public boolean removeStop(Stop stop) {
+        if (stops == null) {
+            return false;
+        }
+        return stops.remove(stop);
+    }
+
+    public List<Stop> getStops() {
+        if (stops == null) {
+            stops = new ArrayList<>();
+        }
+        return stops;
+    }
+
+    public void tick() {
+        if (timeUntilStateChange > 0) {
+            timeUntilStateChange--;
+        }
+
+        if (timeUntilStateChange == 0) {
+            if (currentState == State.GREEN) {
+                currentState = State.YELLOW;
+                timeUntilStateChange = 3;
+                /*timeUntilStateChange = yellowTime;*/
+            } else if (currentState == State.YELLOW) {
+                currentState = State.RED;
+                timeUntilStateChange = 10;
+                /*timeUntilStateChange = redTime;*/
+
+            } else if (currentState == State.RED) {
+                currentState = State.GREEN;
+                timeUntilStateChange = 15;
+                /*timeUntilStateChange = greenTime;*/
+            }
+        }
+    }
+
+
 }

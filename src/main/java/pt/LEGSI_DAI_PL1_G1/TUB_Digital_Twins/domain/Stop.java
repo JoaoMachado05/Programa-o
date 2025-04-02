@@ -43,6 +43,11 @@ public class Stop {
     @NotNull(message = "Tempo até próximo autocarro deve ser definido")
     private Integer tempoAteProximoAutocarro; // Tempo em minutos
 
+    // Na classe Stop adicione
+    @ManyToOne
+    @JoinColumn(name = "traffic_light_id")
+    private TrafficLight trafficLight;
+
     private LocalDateTime ultimaAtualizacao;
 
     public double getPercentagemOcupacao() {
