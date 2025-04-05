@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.TrafficLight;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.TrafficLightDTO;
@@ -90,16 +91,26 @@ public class TrafficLightService {
         trafficLight.setOperational(dto.operational());
         trafficLight.setTimeUntilStateChange(dto.timeUntilStateChange());
 
-        // Manter a data da última manutenção se não for fornecida
         if (dto.lastMaintenance() != null) {
             trafficLight.setLastMaintenance(dto.lastMaintenance());
         } else if (trafficLight.getLastMaintenance() == null) {
             trafficLight.setLastMaintenance(LocalDateTime.now());
         }
 
-        // Atualizar estado de anomalia se fornecido no DTO
         if (dto instanceof TrafficLightDTO) {
             trafficLight.setInAnomaly(dto.isInAnomaly());
+        }
+    }
+
+    @Scheduled(fixedRate = 1000) // Executa a cada 1 segundo (1000 ms)
+    public void updateTrafficLights() {
+        List<TrafficLight> trafficLights = trafficLightRepository.findAll();
+
+        for (TrafficLight trafficLight : trafficLights) {
+            if (trafficLight.isOperational() && !trafficLight.isInAnomaly()) {
+                trafficLight.tick();
+                trafficLightRepository.save(trafficLight);
+            }
         }
     }
 

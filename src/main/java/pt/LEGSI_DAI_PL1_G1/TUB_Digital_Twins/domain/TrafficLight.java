@@ -35,9 +35,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(exclude = "stops")
 public class TrafficLight {
 
-    /**
-     * Estados possíveis para um semáforo.
-     */
     public enum State {
         RED, YELLOW, GREEN
     }
