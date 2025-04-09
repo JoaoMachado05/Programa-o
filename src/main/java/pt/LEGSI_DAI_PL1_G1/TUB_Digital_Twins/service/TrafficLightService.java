@@ -1,10 +1,8 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.TrafficLight;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.TrafficLightDTO;
@@ -42,7 +40,7 @@ public class TrafficLightService {
         TrafficLight trafficLight = new TrafficLight();
         updateTrafficLightFromDTO(trafficLight, dto);
         trafficLight.setLastMaintenance(LocalDateTime.now());
-        trafficLight.setInAnomaly(false); // Inicialmente não está em anomalia
+        trafficLight.setInAnomaly(false);
 
         TrafficLight savedTrafficLight = trafficLightRepository.save(trafficLight);
         log.info("Semáforo criado com ID: {}", savedTrafficLight.getId());
@@ -97,11 +95,10 @@ public class TrafficLightService {
             trafficLight.setLastMaintenance(LocalDateTime.now());
         }
 
-        if (dto instanceof TrafficLightDTO) {
-            trafficLight.setInAnomaly(dto.isInAnomaly());
-        }
+        trafficLight.setInAnomaly(dto.isInAnomaly());
     }
 
+    /* esta pausado apenas por enquanto
     @Scheduled(fixedRate = 1000) // Executa a cada 1 segundo (1000 ms)
     public void updateTrafficLights() {
         List<TrafficLight> trafficLights = trafficLightRepository.findAll();
@@ -112,7 +109,7 @@ public class TrafficLightService {
                 trafficLightRepository.save(trafficLight);
             }
         }
-    }
+    }*/
 
     private TrafficLightDTO convertToDTO(TrafficLight trafficLight) {
         return TrafficLightDTO.builder()
