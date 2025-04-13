@@ -7,6 +7,8 @@ import ListaBRTs from "./pages/ListaBRTs/ListaBRTs.jsx";
 import BRT from "./pages/BRT/BRT.jsx";
 import ListaSemaforos from "./pages/TrafficLight/ListaSemaforos.jsx";
 import TrafficLightDetails from "./pages/TrafficLightDetails/TrafficLightDetails.jsx";
+import RegisterBus from './pages/RegisterBus/RegisterBus';
+import EditBus from './pages/EditBus/EditBus';
 import { useState, useEffect } from "react";
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
         <Route path="/brts/:id" element={<BRT />} /> 
         <Route path="/traffic-lights" element={<ListaSemaforos />} />
         <Route path="/traffic-light/:id" element={<TrafficLightDetails />} /> 
+        <Route path="/register-bus" element={<RegisterBus />} />
+        <Route path="/edit-bus/:id" element={<EditBus />} />
       </Routes>
     </Router>
   );

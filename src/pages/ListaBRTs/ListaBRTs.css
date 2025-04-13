@@ -57,6 +57,28 @@ body.no-top-border {
   background-color: #002244;
 }
 
+.add-bus-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 20px 20px 20px; /* Ajustar margens */
+}
+
+.add-bus-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-bus-button:hover {
+  background-color: #218838;
+}
+
+
 /* Lista de BRTs */
 .brts-list {
   width: 90%;

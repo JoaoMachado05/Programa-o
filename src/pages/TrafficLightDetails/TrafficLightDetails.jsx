@@ -22,7 +22,7 @@ const MapUpdater = ({ center }) => {
 
 // Custom icon for the traffic light marker
 const customIcon = new L.Icon({
-  iconUrl: "/TrafficLightMapIcon.jpg",
+  iconUrl: "/TrafficLightMapIcon.png",
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]

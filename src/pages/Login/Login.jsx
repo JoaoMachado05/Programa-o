@@ -9,26 +9,41 @@ function Login({ setIsAuthenticated }) {
   const [messageType, setMessageType] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (email === "admin@gmail.com" && password === "12345") {
-      setMessage("Login bem-sucedido!");
-      setMessageType("success");
-      setIsAuthenticated(true);
-      setTimeout(() => navigate("/home"), 1500);
-    } else {
-      setMessage("Email ou password incorretos!");
+
+    try {
+      const response = await fetch("http://localhost:8080/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include", // importante para manter a sessão (cookies)
+        body: JSON.stringify({ email, password })
+      });
+
+      if (response.ok) {
+        setMessage("Login bem-sucedido!");
+        setMessageType("success");
+        setIsAuthenticated(true);
+        setTimeout(() => navigate("/home"), 1500);
+      } else {
+        const errorText = await response.text();
+        setMessage(errorText || "Email ou password incorretos!");
+        setMessageType("error");
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      setMessage("Erro na comunicação com o servidor!");
       setMessageType("error");
     }
-  
+
     setTimeout(() => setMessage(""), 3000);
   };
 
   return (
     <div className="login-container">
       <div className="content-wrapper">
-        {/* Seção de branding (lado esquerdo) */}
         <div className="branding-section">
           <img src="/logo_TUB.jpg" alt="TUB Logo" className="logo" />
           <div className="branding-content">
@@ -36,14 +51,13 @@ function Login({ setIsAuthenticated }) {
             <p>Digital Twins</p>
           </div>
         </div>
-        
-        {/* Seção de login (lado direito) */}
+
         <div className="login-section">
           <div className="login-header">
             <h2>Login</h2>
             <p>Entre com suas credenciais para acessar o sistema</p>
           </div>
-          
+
           <form className="login-form" onSubmit={handleSubmit}>
             <div className="input-group">
               <label htmlFor="email">Email</label>
@@ -56,7 +70,7 @@ function Login({ setIsAuthenticated }) {
                 required
               />
             </div>
-            
+
             <div className="input-group">
               <label htmlFor="password">Password</label>
               <input
@@ -68,14 +82,14 @@ function Login({ setIsAuthenticated }) {
                 required
               />
             </div>
-            
+
             <button type="submit" className="login-button">Entrar</button>
           </form>
         </div>
       </div>
-      
+
       <div className="wave"></div>
-      
+
       {message && <div className={`notification ${messageType}`}>{message}</div>}
     </div>
   );

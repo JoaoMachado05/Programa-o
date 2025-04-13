@@ -8,34 +8,26 @@ const ListaBRTs = () => {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleString());
   const [error, setError] = useState(null);
-  
+
   const REST_API_URL = 'http://localhost:8080/brts';
 
-  // Fetch data on component mount
   useEffect(() => {
     fetchData();
-    
-    // Adicionar classe ao body para remover margens ou bordas indesejadas
     document.body.classList.add('no-top-border');
-    
-    // Cleanup function
     return () => {
       document.body.classList.remove('no-top-border');
     };
   }, []);
 
-  // Fetch data using REST API
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(REST_API_URL);
-      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
       const data = await response.json();
       setBrts(data);
       setLastUpdated(new Date().toLocaleString());
@@ -47,7 +39,6 @@ const ListaBRTs = () => {
     }
   };
 
-  // Manual refresh function
   const handleRefresh = () => {
     fetchData();
   };
@@ -56,28 +47,45 @@ const ListaBRTs = () => {
     navigate('/home');
   };
 
-  // Navigate to BRT details page
   const handleBRTClick = (brtId) => {
-    console.log("Navegando para o BRT com ID:", brtId);
     navigate(`/brts/${brtId}`);
   };
 
-  // Formatar velocidade para mostrar em km/h com uma casa decimal
+  const handleEditBRT = (brt) => {
+    navigate(`/edit-bus/${brt.id}`, { state: { brt } });
+  };
+
+  const handleRemoveBRT = async (id) => {
+    if (window.confirm('Tem a certeza que quer remover este autocarro?')) {
+      try {
+        const response = await fetch(`http://localhost:8080/brts/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          alert('Autocarro removido com sucesso!');
+          fetchData();
+        } else {
+          alert('Erro ao remover autocarro.');
+        }
+      } catch (error) {
+        alert('Erro de comunicação com o servidor.');
+      }
+    }
+  };
+
   const formatVelocidade = (velocidade) => {
     return `${velocidade.toFixed(1)} km/h`;
   };
 
-  // Formatar temperatura para mostrar em graus Celsius com uma casa decimal
   const formatTemperatura = (temperatura) => {
     return `${temperatura.toFixed(1)} °C`;
   };
 
-  // Determinar status baseado na velocidade
   const determinarStatus = (velocidade) => {
     return velocidade > 0 ? 'active' : 'inactive';
   };
 
-  // Exibir apenas texto de ocupação
   const formatarOcupacao = (lotacaoAtual, capacidadeMaxima) => {
     const percentual = (lotacaoAtual / capacidadeMaxima) * 100;
     return {
@@ -93,6 +101,12 @@ const ListaBRTs = () => {
         <h1>Lista de BRTs</h1>
       </div>
 
+      <div className="add-bus-container">
+        <button onClick={() => navigate("/register-bus")} className="add-bus-button">
+          Adicionar Novo Autocarro
+        </button>
+      </div>
+
       {loading ? (
         <div className="loading-message">Carregando autocarros...</div>
       ) : error ? (
@@ -106,10 +120,10 @@ const ListaBRTs = () => {
             {brts.length > 0 ? (
               brts.map(brt => {
                 const ocupacao = formatarOcupacao(brt.lotacaoAtual, brt.capacidadeMaxima);
-                
+
                 return (
-                  <div 
-                    key={brt.id} 
+                  <div
+                    key={brt.id}
                     className={`brt-row status-${determinarStatus(brt.velocidade)}`}
                     onClick={() => handleBRTClick(brt.id)}
                   >
@@ -122,15 +136,40 @@ const ListaBRTs = () => {
                         <p><span className="detalhe-label">Lotação:</span> <span className={`occupancy-${ocupacao.classe}`}>{ocupacao.texto}</span></p>
                       </div>
                     </div>
-                    <button 
-                      className="view-details-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBRTClick(brt.id);
-                      }}
-                    >
-                      Ver Detalhes
-                    </button>
+
+                    {/* BOTÕES AQUI */}
+                    <div className="action-buttons">
+                      <button
+                        className="view-details-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBRTClick(brt.id);
+                        }}
+                      >
+                        Ver Detalhes
+                      </button>
+
+                      <button
+                        className="edit-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditBRT(brt);
+                        }}
+                      >
+                        Editar
+                      </button>
+
+                      <button
+                        className="remove-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveBRT(brt.id);
+                        }}
+                      >
+                        Remover
+                      </button>
+                    </div>
+
                   </div>
                 );
               })

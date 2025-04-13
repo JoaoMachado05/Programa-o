@@ -4,6 +4,9 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './BRT.css';
+import ManutencaoAutocarro from './ManutencaoAutocarro';
+import UtilizacaoAutocarro from './UtilizacaoAutocarro';
+
 import Bus3DModel from './Bus3DModel';
 
 const busIcon = new L.Icon({
@@ -30,6 +33,10 @@ const BRT = () => {
   const [loading, setLoading] = useState(true);
   const [position, setPosition] = useState(DEFAULT_POSITION);
   const updateIntervalRef = useRef(null);
+  
+  // Estados para controlar os popups
+  const [showMaintenancePopup, setShowMaintenancePopup] = useState(false);
+  const [showUsagePopup, setShowUsagePopup] = useState(false);
 
   // Função para buscar dados do BRT
   const fetchBRTData = async () => {
@@ -85,6 +92,20 @@ const BRT = () => {
   const handleLogout = () => {
     console.log("Logout acionado");
     navigate('/login');
+  };
+  
+  const toggleMaintenancePopup = () => {
+    setShowMaintenancePopup(!showMaintenancePopup);
+    if (!showMaintenancePopup) {
+      setShowUsagePopup(false); // Fechar o outro popup se abrir este
+    }
+  };
+  
+  const toggleUsagePopup = () => {
+    setShowUsagePopup(!showUsagePopup);
+    if (!showUsagePopup) {
+      setShowMaintenancePopup(false); // Fechar o outro popup se abrir este
+    }
   };
 
   // Helper functions
@@ -171,6 +192,53 @@ const BRT = () => {
           />
         </div>
       </section>
+
+      {/* Botões para mostrar os popups */}
+      <section className="brt-navigation-buttons">
+        <div className="button-container">
+          <button 
+            className="navigation-button maintenance-button"
+            onClick={toggleMaintenancePopup}
+          >
+            Gestão de Manutenção
+          </button>
+          <button 
+            className="navigation-button usage-button"
+            onClick={toggleUsagePopup}
+          >
+            Histórico de Utilização
+          </button>
+        </div>
+      </section>
+
+      {/* Popups condicionais */}
+      {showMaintenancePopup && (
+        <div className="popup-overlay">
+          <div className="popup-container maintenance-popup">
+            <div className="popup-header">
+              <h2>Gestão de Manutenção</h2>
+              <button className="close-popup" onClick={toggleMaintenancePopup}>×</button>
+            </div>
+            <div className="popup-content">
+              <ManutencaoAutocarro idAutocarro={id} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showUsagePopup && (
+        <div className="popup-overlay">
+          <div className="popup-container usage-popup">
+            <div className="popup-header">
+              <h2>Histórico de Utilização</h2>
+              <button className="close-popup" onClick={toggleUsagePopup}>×</button>
+            </div>
+            <div className="popup-content">
+              <UtilizacaoAutocarro idAutocarro={id} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer com informação de atualização */}
       <footer className="last-update-info">
