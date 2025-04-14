@@ -35,9 +35,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(exclude = "stops")
 public class TrafficLight {
 
-    /**
-     * Estados possíveis para um semáforo.
-     */
     public enum State {
         RED, YELLOW, GREEN
     }
@@ -71,22 +68,6 @@ public class TrafficLight {
     @OneToMany(mappedBy = "trafficLight", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Stop> stops = new ArrayList<>();
 
-    // NOVOS CAMPOS para gestão inteligente
-    @Column(name = "green_time", nullable = false)
-    private Integer greenTime = 15;
-
-    @Column(name = "red_time", nullable = false)
-    private Integer redTime = 10;
-
-    @Column(name = "yellow_time", nullable = false)
-    private Integer yellowTime = 3;
-
-    @Column(name = "brt_priority_active", nullable = false)
-    private boolean brtPriorityActive = false;
-
-    @Column(name = "priority_bus_id")
-    private Long priorityBusId;
-
 
     public boolean addStop(Stop stop) {
         if (stops == null) {
@@ -118,16 +99,12 @@ public class TrafficLight {
             if (currentState == State.GREEN) {
                 currentState = State.YELLOW;
                 timeUntilStateChange = 3;
-                /*timeUntilStateChange = yellowTime;*/
             } else if (currentState == State.YELLOW) {
                 currentState = State.RED;
                 timeUntilStateChange = 10;
-                /*timeUntilStateChange = redTime;*/
-
             } else if (currentState == State.RED) {
                 currentState = State.GREEN;
                 timeUntilStateChange = 15;
-                /*timeUntilStateChange = greenTime;*/
             }
         }
     }

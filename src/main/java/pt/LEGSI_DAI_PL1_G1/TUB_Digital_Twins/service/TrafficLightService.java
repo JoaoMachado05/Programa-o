@@ -1,6 +1,5 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class TrafficLightService {
         TrafficLight trafficLight = new TrafficLight();
         updateTrafficLightFromDTO(trafficLight, dto);
         trafficLight.setLastMaintenance(LocalDateTime.now());
-        trafficLight.setInAnomaly(false); // Inicialmente não está em anomalia
+        trafficLight.setInAnomaly(false);
 
         TrafficLight savedTrafficLight = trafficLightRepository.save(trafficLight);
         log.info("Semáforo criado com ID: {}", savedTrafficLight.getId());
@@ -90,24 +89,27 @@ public class TrafficLightService {
         trafficLight.setOperational(dto.operational());
         trafficLight.setTimeUntilStateChange(dto.timeUntilStateChange());
 
-        // Manter a data da última manutenção se não for fornecida
         if (dto.lastMaintenance() != null) {
             trafficLight.setLastMaintenance(dto.lastMaintenance());
         } else if (trafficLight.getLastMaintenance() == null) {
             trafficLight.setLastMaintenance(LocalDateTime.now());
         }
 
-        // Atualizar estado de anomalia se fornecido no DTO
-        if (dto instanceof TrafficLightDTO) {
-            trafficLight.setInAnomaly(dto.isInAnomaly());
-        }
-        // ✅ Adicionar campos inteligentes
-        trafficLight.setGreenTime(dto.greenTime());
-        trafficLight.setRedTime(dto.redTime());
-        trafficLight.setYellowTime(dto.yellowTime());
-        trafficLight.setBrtPriorityActive(dto.brtPriorityActive());
-        trafficLight.setPriorityBusId(dto.priorityBusId());
+        trafficLight.setInAnomaly(dto.isInAnomaly());
     }
+
+    /* esta pausado apenas por enquanto
+    @Scheduled(fixedRate = 1000) // Executa a cada 1 segundo (1000 ms)
+    public void updateTrafficLights() {
+        List<TrafficLight> trafficLights = trafficLightRepository.findAll();
+
+        for (TrafficLight trafficLight : trafficLights) {
+            if (trafficLight.isOperational() && !trafficLight.isInAnomaly()) {
+                trafficLight.tick();
+                trafficLightRepository.save(trafficLight);
+            }
+        }
+    }*/
 
     private TrafficLightDTO convertToDTO(TrafficLight trafficLight) {
         return TrafficLightDTO.builder()

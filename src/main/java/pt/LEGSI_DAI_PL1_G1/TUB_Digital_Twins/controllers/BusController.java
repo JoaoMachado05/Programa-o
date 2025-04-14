@@ -11,7 +11,6 @@ import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.BusService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/brts")
@@ -21,7 +20,6 @@ public class BusController {
 
     private final BusService busService;
 
-    // ✅ LISTAR AUTOCARROS
     @GetMapping
     public ResponseEntity<List<BusDTO>> getAllBuses() {
         log.debug("REST request para obter todos os ônibus");
@@ -29,7 +27,6 @@ public class BusController {
         return ResponseEntity.ok(buses);
     }
 
-    // ✅ CONSULTAR AUTOCARRO POR ID
     @GetMapping("/{id}")
     public ResponseEntity<BusDTO> getBusById(@PathVariable Long id) {
         log.debug("REST request para obter o ônibus com ID: {}", id);
@@ -38,7 +35,6 @@ public class BusController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ CONSULTAR AUTOCARRO POR MATRÍCULA
     @GetMapping("/matricula/{matricula}")
     public ResponseEntity<BusDTO> getBusByMatricula(@PathVariable String matricula) {
         log.debug("REST request para obter o ônibus com matrícula: {}", matricula);
@@ -47,7 +43,12 @@ public class BusController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ OBTER PERCENTAGEM DE OCUPAÇÃO
+    /**
+     * Obtém a percentagem de ocupação atual de um ônibus.
+     *
+     * @param id o ID do ônibus
+     * @return a percentagem de ocupação ou 404 se o ônibus não existir
+     */
     @GetMapping("/{id}/percentagem-ocupacao")
     public ResponseEntity<Double> getPercentagemOcupacao(@PathVariable Long id) {
         log.debug("REST request para obter a percentagem de ocupação do ônibus ID: {}", id);
@@ -55,55 +56,55 @@ public class BusController {
         return percentagem != null ? ResponseEntity.ok(percentagem) : ResponseEntity.notFound().build();
     }
 
-    // ✅ ADICIONAR AUTOCARRO
+    /**
+     * Cria um novo ônibus.
+     *
+     * @param busDTO os dados do ônibus a ser criado
+     * @return o DTO do ônibus criado
+     */
     @PostMapping
     public ResponseEntity<BusDTO> createBus(@Valid @RequestBody BusDTO busDTO) {
         log.debug("REST request para criar um novo ônibus: {}", busDTO);
-        Optional<BusDTO> existingBus = busService.findByMatricula(busDTO.matricula());
-        if (existingBus.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Já existe
-        }
         BusDTO savedBus = busService.save(busDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBus);
     }
 
-    // ✅ EDITAR AUTOCARRO
+    /**
+     * Atualiza um ônibus existente.
+     *
+     * @param id o ID do ônibus a ser atualizado
+     * @param busDTO os novos dados do ônibus
+     * @return o DTO do ônibus atualizado ou 404 se não existir
+     */
     @PutMapping("/{id}")
     public ResponseEntity<BusDTO> updateBus(@PathVariable Long id, @Valid @RequestBody BusDTO busDTO) {
         log.debug("REST request para atualizar o ônibus ID: {}", id);
-        Optional<BusDTO> existingBus = busService.findById(id);
-        if (existingBus.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Não existe
-        }
-        Optional<BusDTO> updatedBus = busService.update(id, busDTO);
-        return updatedBus.map(ResponseEntity::ok).orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        return busService.update(id, busDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ REMOVER AUTOCARRO
+    /**
+     * Remove um ônibus existente.
+     *
+     * @param id o ID do ônibus a ser removido
+     * @return 204 No Content se removido com sucesso ou 404 se não existir
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBus(@PathVariable Long id) {
         log.debug("REST request para remover o ônibus ID: {}", id);
-        Optional<BusDTO> bus = busService.findById(id);
-        if (bus.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Não existe
-        }
-        boolean deleted = busService.delete(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return busService.delete(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
-    // REMOVER PELA MATRICULA
-    /*@DeleteMapping("/matricula/{matricula}")
-    public ResponseEntity<Void> deleteByMatricula(@PathVariable String matricula) {
-        Optional<BusDTO> busOpt = busService.findByMatricula(matricula);
-        if (busOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
 
-        boolean deleted = busService.delete(busOpt.get().id());
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.internalServerError().build();
-    }*/
-
-
-    // ✅ ATUALIZAR LOCALIZAÇÃO
+    /**
+     * Atualiza a localização de um ônibus.
+     *
+     * @param id o ID do ônibus
+     * @param coordenadas mapa contendo latitude e longitude
+     * @return o DTO do ônibus atualizado ou 404 se não existir
+     */
     @PatchMapping("/{id}/localizacao")
     public ResponseEntity<BusDTO> updateLocalizacao(
             @PathVariable Long id,
@@ -122,7 +123,13 @@ public class BusController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ ATUALIZAR LOTAÇÃO
+    /**
+     * Atualiza a lotação atual de um ônibus.
+     *
+     * @param id o ID do ônibus
+     * @param lotacao mapa contendo o valor da lotação
+     * @return o DTO do ônibus atualizado ou 404 se não existir
+     */
     @PatchMapping("/{id}/lotacao")
     public ResponseEntity<BusDTO> updateLotacao(
             @PathVariable Long id,
