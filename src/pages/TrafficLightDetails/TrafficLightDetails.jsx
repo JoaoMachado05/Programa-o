@@ -7,6 +7,8 @@ import { OrbitControls } from "@react-three/drei";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./TrafficLightDetails.css";
+import AgendarManutencao from "./AgendarManutencao"; // Import do componente de agendamento
+import VisualizarAvarias from "./VisualizarAvarias"; // Import do novo componente de avarias
 
 // Component to update map view when coordinates change
 const MapUpdater = ({ center }) => {
@@ -23,14 +25,13 @@ const MapUpdater = ({ center }) => {
 // Custom icon for the traffic light marker
 const customIcon = new L.Icon({
   iconUrl: "/TrafficLightMapIcon.png",
-  iconSize: [32, 32],
+  iconSize: [40, 40],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]
 });
 
 // New Semaforo component
 const Semaforo = ({ estado, position = [0, 0, 0] }) => {
-  // Map the API state values to the component's expected values
   const mapEstadoToComponentFormat = (apiEstado) => {
     switch(apiEstado) {
       case "RED": return "vermelho";
@@ -85,6 +86,8 @@ const TrafficLightDetails = () => {
   const navigate = useNavigate();
   const [trafficLight, setTrafficLight] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [showAgendarModal, setShowAgendarModal] = useState(false); // Estado para modal de agendamento
+  const [showAvariasModal, setShowAvariasModal] = useState(false); // Estado para modal de avarias
 
   // Function to fetch data via HTTP
   const fetchTrafficLightData = async () => {
@@ -123,6 +126,33 @@ const TrafficLightDetails = () => {
   const handleLogout = () => {
     // Implement logout logic here
     navigate("/");
+  };
+
+  // Abrir modal de agendamento
+  const handleOpenAgendarModal = () => {
+    setShowAgendarModal(true);
+  };
+
+  // Fechar modal de agendamento
+  const handleCloseAgendarModal = () => {
+    setShowAgendarModal(false);
+  };
+
+  // Abrir modal de avarias
+  const handleOpenAvariasModal = () => {
+    setShowAvariasModal(true);
+  };
+
+  // Fechar modal de avarias
+  const handleCloseAvariasModal = () => {
+    setShowAvariasModal(false);
+  };
+
+  // Processar submissão do formulário de agendamento
+  const handleAgendarSubmit = (dadosManutencao) => {
+    console.log("Manutenção agendada:", dadosManutencao);
+    // Aqui você pode adicionar lógica adicional como atualizar informações
+    setShowAgendarModal(false); // Fechar o modal após envio
   };
 
   // Format date for display
@@ -194,7 +224,7 @@ const TrafficLightDetails = () => {
       </header>
 
       <main className="main-content">
-        <div className="page-header">
+        <div className="page-title-container">
           <h1 className="page-title">Semáforo ID: {trafficLight.id}</h1>
         </div>
         
@@ -231,12 +261,7 @@ const TrafficLightDetails = () => {
                     </span>
                   </div>
                 </div>
-                <div className="status-item">
-                  <span className="status-label">Tempo até Mudar (segundos)</span>
-                  <div className="status-value-container">
-                    <span className="status-value">{trafficLight.timeUntilStateChange}</span>
-                  </div>
-                </div>
+                
               </div>
             </div>
             
@@ -286,11 +311,31 @@ const TrafficLightDetails = () => {
                 <span className="state-timer-label">Próxima mudança em:</span>
                 <span className="state-timer-value">{trafficLight.timeUntilStateChange}s</span>
               </div>
-              <div className="operational-status-indicator">
-                <span className="status-label">Status:</span>
-                <span className={`operational-indicator ${trafficLight.operational ? "online" : "offline"}`}>
-                  {trafficLight.operational ? "Online" : "Offline"}
-                </span>
+              <div className="operational-status-container">
+                <div className="operational-status-indicator">
+                  <span className="status-label">Status:</span>
+                  <span className={`operational-indicator ${trafficLight.operational ? "online" : "offline"}`}>
+                    {trafficLight.operational ? "Online" : "Offline"}
+                  </span>
+                </div>
+                
+                <div className="action-buttons">
+                  {/* Botão de Agendar Manutenção */}
+                  <button 
+                    onClick={handleOpenAgendarModal} 
+                    className="btn-action btn-agendar-manutencao"
+                  >
+                    🔧 Agendar Manutenção
+                  </button>
+                  
+                  {/* Botão para Ver Avarias */}
+                  <button 
+                    onClick={handleOpenAvariasModal} 
+                    className="btn-action btn-ver-avarias"
+                  >
+                    🚨 Ver Avarias
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -302,6 +347,25 @@ const TrafficLightDetails = () => {
         <div className="last-update-info">
           Atualizado às: {lastUpdate.toLocaleTimeString('pt-PT')}
         </div>
+      )}
+
+      {/* Modal de Agendamento de Manutenção */}
+      {showAgendarModal && (
+        <AgendarManutencao 
+          isOpen={showAgendarModal}
+          onClose={handleCloseAgendarModal}
+          trafficLightId={trafficLight.id}
+          onSubmit={handleAgendarSubmit}
+        />
+      )}
+
+      {/* Modal de Visualização de Avarias */}
+      {showAvariasModal && (
+        <VisualizarAvarias
+          isOpen={showAvariasModal}
+          onClose={handleCloseAvariasModal}
+          trafficLightId={trafficLight.id}
+        />
       )}
     </div>
   );
