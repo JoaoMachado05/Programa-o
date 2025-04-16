@@ -2,6 +2,8 @@ package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service;
 
 
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Stop;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemRequest;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemResponse;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.StopRepository;
 import lombok.RequiredArgsConstructor;
@@ -102,4 +104,31 @@ public class StopService {
                 stop.getEstadoOcupacao()
         );
     }
+
+    public Optional<AtualizarParagemResponse> processarAtualizacaoParagem(Long id, AtualizarParagemRequest dados) {
+        return stopRepository.findById(id).map(paragem -> {
+            paragem.setLatitude(dados.latitude());
+            paragem.setLongitude(dados.longitude());
+            paragem.setLotacaoAtual(dados.lotacaoAtual());
+
+            stopRepository.save(paragem);
+
+            List<String> novosHorarios = calcularHorariosBaseadosNaLotacao(dados.lotacaoAtual());
+
+            return new AtualizarParagemResponse(
+                    paragem.getId(),
+                    paragem.getLotacaoAtual(),
+                    novosHorarios
+            );
+        });
+    }
+
+    private List<String> calcularHorariosBaseadosNaLotacao(Integer lotacao) {
+        if (lotacao == null) return List.of("08:00", "08:30");
+
+        if (lotacao <= 20) return List.of("08:00", "08:30");
+        if (lotacao <= 50) return List.of("08:10", "08:40");
+        return List.of("08:15", "08:45");
+    }
+
 }

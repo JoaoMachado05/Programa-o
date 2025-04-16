@@ -124,4 +124,18 @@ public class TrafficLightService {
                 .stops(trafficLight.getStops())
                 .build();
     }
+
+    public boolean processarPedidoAlteracao(Long idSemaforo, String novoEstado) {
+        return trafficLightRepository.findById(idSemaforo).map(semaforo -> {
+            try {
+                TrafficLight.State estado = TrafficLight.State.valueOf(novoEstado.toUpperCase());
+                semaforo.setCurrentState(estado);
+                trafficLightRepository.save(semaforo);
+                return true;
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        }).orElse(false);
+    }
+
 }

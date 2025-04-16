@@ -1,5 +1,7 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.controllers;
 
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemRequest;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemResponse;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.StopService;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +65,17 @@ public class StopController {
     public ResponseEntity<Integer> getStopTempoProximoAutocarro(@PathVariable Long id) {
         Optional<Integer> tempo = stopService.getTempoAteProximoAutocarro(id);
         return tempo.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+               .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PatchMapping("/{id}/atualizar-informacoes")
+    public ResponseEntity<AtualizarParagemResponse> atualizarInformacoesParagem(
+            @PathVariable Long id,
+            @RequestBody AtualizarParagemRequest dados) {
+
+        Optional<AtualizarParagemResponse> resposta = stopService.processarAtualizacaoParagem(id, dados);
+        return resposta.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

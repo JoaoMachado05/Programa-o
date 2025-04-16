@@ -3,6 +3,7 @@ package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.PedidoAlteracaoSemaforoDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.TrafficLightDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.TrafficLightService;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.IntelligentTrafficLightService;
@@ -90,5 +91,18 @@ public class TrafficLightController {
     public ResponseEntity<List<TrafficLightDTO>> detectAnomalies() {
         return ResponseEntity.ok(intelligentService.detectAnomalies());
     }
+
+    @PatchMapping("/alterar-estado")
+    public ResponseEntity<String> alterarEstadoSemaforo(
+            @RequestBody PedidoAlteracaoSemaforoDTO pedido) {
+
+        boolean sucesso = trafficLightService.processarPedidoAlteracao(
+                pedido.idSemaforo(), pedido.pedidoAlteracao());
+
+        return sucesso
+                ? ResponseEntity.ok("Estado alterado")
+                : ResponseEntity.badRequest().body("Erro ao alterar estado");
+    }
+
 
 }
