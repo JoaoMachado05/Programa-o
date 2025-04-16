@@ -29,7 +29,17 @@ public record TrafficLightDTO(
 
         boolean inAnomaly,
 
-        List<Stop> stops
+        List<Stop> stops,
+
+        // CAMPOS ADICIONADOS:
+        Integer greenTime,
+        Integer redTime,
+        Integer yellowTime,
+        boolean brtPriorityActive,
+        Long priorityBusId
+
+
+
 ) {
         public boolean isInAnomaly() {
                 return inAnomaly;

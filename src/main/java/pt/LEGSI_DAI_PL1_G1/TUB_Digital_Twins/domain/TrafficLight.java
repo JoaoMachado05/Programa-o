@@ -68,6 +68,23 @@ public class TrafficLight {
     @OneToMany(mappedBy = "trafficLight", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Stop> stops = new ArrayList<>();
 
+    // 🟢 NOVOS CAMPOS USADOS PELO IntelligentTrafficLightService:
+
+    @Column(name = "green_time")
+    private Integer greenTime;
+
+    @Column(name = "red_time")
+    private Integer redTime;
+
+    @Column(name = "yellow_time")
+    private Integer yellowTime;
+
+    @Builder.Default
+    @Column(name = "brt_priority_active")
+    private boolean brtPriorityActive = false;
+
+    @Column(name = "priority_bus_id")
+    private Long priorityBusId;
 
     public boolean addStop(Stop stop) {
         if (stops == null) {
