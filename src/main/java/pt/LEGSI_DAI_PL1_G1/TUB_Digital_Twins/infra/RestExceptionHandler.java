@@ -1,6 +1,7 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.infra;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -45,15 +46,18 @@ public class RestExceptionHandler {
         });
         return ResponseEntity.badRequest().body(errors);
     }
-
+    /*
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
         ErrorResponse error = new ErrorResponse("Unexpected Error", "An unexpected error occurred");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
+    */
+
 
     // Classe interna para padronizar respostas de erro
     @Getter
+    @Setter
     public static class ErrorResponse {
         // Getters e setters
         private String title;
@@ -63,9 +67,5 @@ public class RestExceptionHandler {
             this.title = title;
             this.message = message;
         }
-
-        public void setTitle(String title) { this.title = title; }
-
-        public void setMessage(String message) { this.message = message; }
     }
 }

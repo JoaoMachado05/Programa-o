@@ -41,4 +41,6 @@ public class TrafficLightController {
         trafficLightService.deleteTrafficLight(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }
