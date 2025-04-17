@@ -1,6 +1,8 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Stop;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.StopRepository;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class StopService {
 
     private final StopRepository stopRepository;
+    private static final Logger logger = LoggerFactory.getLogger(StopService.class);
 
     public List<StopDTO> getAllStops() {
         return stopRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
@@ -86,6 +89,29 @@ public class StopService {
         return stopRepository.findById(id)
                 .map(Stop::getTempoAteProximoAutocarro);
     }
+    /* Ainda esta sem uso por isso esta comentado
+    public boolean verificarLotacao(StopDTO stopDTO) {
+        if (stopDTO == null || stopDTO.capacidadeMaxima() == null || stopDTO.lotacaoAtual() == null) {
+            return false;
+        }
+        return stopDTO.lotacaoAtual() < stopDTO.capacidadeMaxima();
+    }
+
+    public String executarFluxoSeguranca(Long stopId) {
+        Optional<StopDTO> stopOpt = getStopById(stopId);
+        if (stopOpt.isEmpty()) {
+            return "Paragem não encontrada.";
+        }
+        StopDTO paragem = stopOpt.get();
+
+        boolean lotacaoSegura = verificarLotacao(paragem);
+
+        String gravidade = lotacaoSegura ? "gravidade_boa" : "gravidade_alta";
+
+        logger.info("Fluxo de segurança: Risco com gravidade '{}' para a paragem com ID {}", gravidade, stopId);
+
+        return "Fluxo de segurança executado. Gravidade: " + gravidade;
+    }*/
 
     public StopDTO convertToDTO(Stop stop) {
         return new StopDTO(

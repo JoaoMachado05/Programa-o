@@ -65,4 +65,18 @@ public class StopController {
         return tempo.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    /* Comentado por causa da situacao de estar demasiado focado na bilhetica
+    @PostMapping("/{stopId}/solicitar-bilhete")
+    public ResponseEntity<?> solicitarBilhete(@PathVariable Long stopId,
+                                              @RequestParam Long userId) {
+        Optional<BilheteDTO> bilheteOpt = stopService.solicitarBilhete(stopId, userId);
+        if (bilheteOpt.isPresent()) {
+            return ResponseEntity.ok(bilheteOpt.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Não foi possível emitir o bilhete (stop não encontrado ou lotação cheia).");
+        }
+    }*/
+
 }
