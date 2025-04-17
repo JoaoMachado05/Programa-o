@@ -1,0 +1,296 @@
+/* RegrasPage.css - Estilo isolado para evitar sobreposições */
+
+/* Regras para permitir scroll na página */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+
+body {
+  overflow-y: scroll;
+}
+
+/* Aplicamos todas as regras dentro do escopo .regras-page */
+.regras-page {
+  /* Variáveis locais para este componente */
+  --rp-primary-blue: #3498db;
+  --rp-primary-dark-blue: #2980b9;
+  --rp-light-blue: #4dabf7;
+  --rp-white: #ffffff;
+  --rp-light-gray: #f8f9fa;
+  --rp-success-green: #2ecc71;
+  --rp-danger-red: #e74c3c;
+  --rp-text-dark: #333333;
+  --rp-text-light: #ffffff;
+  --rp-shadow: none;
+  --primary-color: #0477ad;
+  --border-color: rgba(255, 255, 255, 0.2);
+  
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--primary-color);
+  color: var(--rp-text-light);
+  padding: 2rem;
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 800px;
+  border: 1px solid var(--border-color);
+  max-height: none;
+  overflow: visible;
+}
+
+/* Redefine os estilos para elementos dentro do componente */
+.regras-page *,
+.regras-page *:before,
+.regras-page *:after {
+  box-sizing: border-box;
+}
+
+.regras-page h2, 
+.regras-page h3 {
+  color: var(--rp-white);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Formulário */
+.regras-page form {
+  background-color: var(--rp-white);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: none;
+  margin-bottom: 2rem;
+  border: 1px solid #e0e0e0;
+}
+
+.regras-page input {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: var(--rp-light-gray);
+  color: var(--rp-text-dark);
+}
+
+.regras-page input:focus {
+  outline: none;
+  border-color: var(--rp-primary-blue);
+  box-shadow: none;
+}
+
+.regras-page label {
+  display: flex;
+  align-items: center;
+  color: var(--rp-text-dark);
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.regras-page input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+  width: 18px;
+  height: 18px;
+}
+
+/* Botões */
+.regras-page button {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.1s;
+  margin-bottom: 0.5rem;
+}
+
+.regras-page button[type="submit"] {
+  background-color: var(--rp-primary-blue);
+  color: var(--rp-white);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.regras-page button[type="submit"]:hover {
+  background-color: var(--rp-primary-dark-blue);
+}
+
+.regras-page button[type="button"] {
+  background-color: #e0e0e0;
+  color: var(--rp-text-dark);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.regras-page button[type="button"]:hover {
+  background-color: #d0d0d0;
+}
+
+/* Botão voltar */
+.regras-page .btn-voltar {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--rp-white);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1.2rem;
+  width: auto;
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-weight: normal;
+  position: relative;
+  left: 0;
+}
+
+.regras-page .btn-voltar:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Mensagens */
+.regras-page .mensagem {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--rp-text-dark);
+  border: 1px solid #e0e0e0;
+}
+
+/* Container para a tabela com scroll próprio */
+.regras-page .tabela-container {
+  max-height: 400px; /* Altura máxima para a tabela */
+  overflow-y: auto; /* Scroll vertical apenas na tabela */
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  background-color: var(--rp-white);
+}
+
+/* Tabela */
+.regras-page table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1rem;
+  background-color: var(--rp-white);
+  box-shadow: none;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.regras-page thead {
+  background-color: var(--rp-light-blue);
+  color: var(--rp-white);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.regras-page th, 
+.regras-page td {
+  padding: 1rem;
+  text-align: left;
+  color: var(--rp-text-dark);
+}
+
+.regras-page th {
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.regras-page tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.regras-page tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Botões na tabela */
+.regras-page td button {
+  padding: 0.5rem;
+  width: auto;
+  margin: 0.2rem;
+  font-size: 14px;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.regras-page td button:first-child {
+  background-color: var(--rp-success-green);
+  color: var(--rp-white);
+}
+
+.regras-page td button:last-child {
+  background-color: var(--rp-danger-red);
+  color: var(--rp-white);
+}
+
+/* Estado "Crítica" com destaque */
+.regras-page .critica-sim {
+  color: var(--rp-danger-red);
+  font-weight: bold;
+}
+
+/* Layout para formulário de 2 colunas */
+.regras-page .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.regras-page .form-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+.regras-page .checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Seções específicas com bordas */
+.regras-page .section {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.regras-page .header-section {
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.regras-page .header-section h2 {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .regras-page {
+    padding: 1rem;
+  }
+  
+  .regras-page table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .regras-page .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .regras-page .tabela-container {
+    max-height: 300px;
+  }
+}

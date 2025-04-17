@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./Home.css";
 
 function Home({ setIsAuthenticated }) {
   const navigate = useNavigate();
+  const [tipo, setTipo] = useState("");
+
+  useEffect(() => {
+    const tipoGuardado = localStorage.getItem("tipo");
+    setTipo(tipoGuardado);
+  }, []);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    localStorage.removeItem("tipo");
     navigate("/");
   };
 
@@ -29,6 +36,16 @@ function Home({ setIsAuthenticated }) {
           <button className="option-button" onClick={() => navigateTo("/brts")}>BRTs</button>
           <button className="option-button" onClick={() => navigateTo("/stop")}>Paragens</button>
           <button className="option-button" onClick={() => navigateTo("/traffic-lights")}>Semáforos</button>
+          
+          {/* Botão Gerir Regras sempre visível */}
+          <button
+          className="floating-admin-button"
+          onClick={() => navigateTo("/regras")}
+          title="Gerir Regras"
+        >
+          ⚙️
+        </button>
+
         </div>
       </div>
     </div>
@@ -36,3 +53,4 @@ function Home({ setIsAuthenticated }) {
 }
 
 export default Home;
+

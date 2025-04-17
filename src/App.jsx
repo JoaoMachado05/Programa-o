@@ -9,6 +9,8 @@ import ListaSemaforos from "./pages/TrafficLight/ListaSemaforos.jsx";
 import TrafficLightDetails from "./pages/TrafficLightDetails/TrafficLightDetails.jsx";
 import RegisterBus from './pages/RegisterBus/RegisterBus';
 import EditBus from './pages/EditBus/EditBus';
+import RegrasPage from "./pages/RegrasPage/RegrasPage.jsx";
+
 import { useState, useEffect } from "react";
 
 function App() {
@@ -33,6 +35,7 @@ function App() {
         <Route path="/traffic-light/:id" element={<TrafficLightDetails />} /> 
         <Route path="/register-bus" element={<RegisterBus />} />
         <Route path="/edit-bus/:id" element={<EditBus />} />
+        <Route path="/regras" element={<RegrasPage />} />
       </Routes>
     </Router>
   );
