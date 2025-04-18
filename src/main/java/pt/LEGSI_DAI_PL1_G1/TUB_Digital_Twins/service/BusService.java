@@ -34,9 +34,15 @@ public class BusService {
     @Transactional
     public BusDTO save(BusDTO busDTO) {
         Bus bus = convertToEntity(busDTO);
+
+        if (bus.getLinhaAtual() == null || bus.getLinhaAtual().isBlank()) {
+            bus.setLinhaAtual("Desconhecida");
+        }
+
         Bus savedBus = busRepository.save(bus);
         return convertToDTO(savedBus);
     }
+
 
     @Transactional
     public Optional<BusDTO> update(Long id, BusDTO busDTO) {
@@ -99,16 +105,19 @@ public class BusService {
     }
 
     private Bus convertToEntity(BusDTO busDTO) {
+        String linha = busDTO.linhaAtual() != null ? busDTO.linhaAtual() : "Desconhecida";
+
         return new Bus(
                 busDTO.id(),
                 busDTO.matricula(),
                 busDTO.capacidadeMaxima(),
                 busDTO.lotacaoAtual(),
-                busDTO.linhaAtual(),
+                linha,
                 busDTO.velocidade(),
                 busDTO.temperaturaAtual(),
                 busDTO.latitude(),
                 busDTO.longitude()
         );
     }
+
 }

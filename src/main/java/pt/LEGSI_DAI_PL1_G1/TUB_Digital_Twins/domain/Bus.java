@@ -24,7 +24,10 @@ public class Bus {
 
     @Column(nullable = false)
     private Integer lotacaoAtual;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'Desconhecida'")
     private String linhaAtual;
+
     private Double velocidade;
     private Double temperaturaAtual;
     private Double latitude;
