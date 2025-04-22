@@ -1,6 +1,8 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.controllers;
 
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.EventoRiscoDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.AnomalyMonitorService;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.StopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class StopController {
 
     private final StopService stopService;
+    private final AnomalyMonitorService anomalyMonitorService;
 
     @GetMapping
     public List<StopDTO> getAllStops() {
@@ -78,5 +81,24 @@ public class StopController {
                     .body("Não foi possível emitir o bilhete (stop não encontrado ou lotação cheia).");
         }
     }*/
+    @PatchMapping("/monitorizar-risco")
+    public ResponseEntity<String> monitorizarRisco(@RequestBody EventoRiscoDTO evento) {
+        String resultado = anomalyMonitorService.processarEventoRisco(evento);
+        return ResponseEntity.ok(resultado);
+    }
 
+    /*
+    @PostMapping("/{id}/risco")
+    public ResponseEntity<String> monitorizarRiscoParagem(
+             @PathVariable Long id,
+            @RequestBody RiscoParagemDTO dto) {
+        dto = RiscoParagemDTO.builder()
+            .stopId(id)
+            .tipoRisco(dto.tipoRisco())
+            .imagemBase64(dto.imagemBase64())
+            .build();
+
+    anomalyMonitorService.processarRisco(dto);
+    return ResponseEntity.ok("Processamento de risco concluído para paragem " + id);
+    }*/
 }
