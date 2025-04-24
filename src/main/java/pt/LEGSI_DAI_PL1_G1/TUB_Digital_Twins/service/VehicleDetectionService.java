@@ -61,6 +61,7 @@ public class VehicleDetectionService {
     }
 
 
+
     public boolean registerInfraction(Long passageId) {
         Optional<VehiclePassage> passageOptional = vehiclePassageRepository.findById(passageId);
 
