@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Stop.css";
+import { Link } from "react-router-dom";
 
 const Stop = () => {
   const [stops, setStops] = useState([]);
@@ -32,7 +33,7 @@ const Stop = () => {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate("/home");
   };
 
   const handleRefresh = () => {
@@ -63,6 +64,15 @@ const Stop = () => {
         <button className="back-button" onClick={handleBack}>Voltar</button>
         Paragens
       </h1>
+
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+  <Link to="/stop/add">
+    <button>Adicionar Paragem</button>
+  </Link>
+  <Link to="/stop/remove">
+    <button>Remover Paragem</button>
+  </Link>
+</div>
 
       <div className="scroll-container">
         {loading ? (
@@ -112,7 +122,10 @@ const Stop = () => {
         </div>
       </div>
     </div>
+
+    
   );
+  
 };
 
 export default Stop;
