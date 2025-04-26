@@ -13,4 +13,11 @@ public class EventoRiscoDTO {
         // Opcional, para processamentos futuros
         this.tipoRisco = tipoRisco;
     }
+    
+    public void setIdParagem(long l) {
+    }
+
+    public void setTipoRisco(String vandalismo) {
+    }
+    
 }
