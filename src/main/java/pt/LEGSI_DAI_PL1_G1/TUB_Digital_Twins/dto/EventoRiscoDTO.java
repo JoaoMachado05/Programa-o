@@ -3,14 +3,21 @@ import lombok.Getter;
 
 @Getter
 public class EventoRiscoDTO {
-    private final Long idParagem;
-    private final String imagemBase64;
-    private final String tipoRisco; // Ex: "vandalismo", "aglomeração"
+    private  Long idParagem ;
+    private String imagemBase64;
+    private String tipoRisco; // Ex: "vandalismo", "aglomeração"
 
-    public EventoRiscoDTO(Long idParagem, String imagemBase64, String tipoRisco) {
+    public EventoRiscoDTO() {
         this.idParagem = idParagem;
         this.imagemBase64 = imagemBase64;
         // Opcional, para processamentos futuros
         this.tipoRisco = tipoRisco;
     }
+
+    public void setIdParagem(long l) {
+    }
+
+    public void setTipoRisco(String vandalismo) {
+    }
+
 }
