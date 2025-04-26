@@ -5,6 +5,7 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
   /* FORMULÁRIO DE ADIÇÃO DE PARAGEM */
 
   .form-container {
@@ -78,7 +79,6 @@
   .cancel-btn:hover {
     background-color: #999;
   }
-
 
 /* Container principal */
 .container {
