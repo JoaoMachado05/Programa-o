@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import './EditTrafficLight.css';
 
 const EditTrafficLightButton = ({ semaforo, onEditTrafficLight }) => {
@@ -12,38 +13,56 @@ const EditTrafficLightButton = ({ semaforo, onEditTrafficLight }) => {
     id: semaforo.id,
     latitude: semaforo.latitude || '',
     longitude: semaforo.longitude || '',
-    operational: semaforo.operational
+    operational: semaforo.operational !== undefined ? semaforo.operational : true,
+    lastMaintenance: semaforo.lastMaintenance || new Date().toISOString().split('T')[0] + 'T' + new Date().toTimeString().split(' ')[0],
+    inAnomaly: semaforo.inAnomaly !== undefined ? semaforo.inAnomaly : false
   });
 
-  // Abre o modal de edição
+  // Atualiza formData quando semaforo muda
+  useEffect(() => {
+    if (semaforo) {
+      let formattedLastMaintenance = semaforo.lastMaintenance;
+      if (formattedLastMaintenance && !formattedLastMaintenance.includes('T')) {
+        formattedLastMaintenance = formattedLastMaintenance.replace(' ', 'T');
+      }
+      
+      setFormData({
+        id: semaforo.id,
+        latitude: semaforo.latitude || '',
+        longitude: semaforo.longitude || '',
+        operational: semaforo.operational !== undefined ? semaforo.operational : true,
+        lastMaintenance: formattedLastMaintenance || new Date().toISOString().split('T')[0] + 'T' + new Date().toTimeString().split(' ')[0],
+        inAnomaly: semaforo.inAnomaly !== undefined ? semaforo.inAnomaly : false
+      });
+    }
+  }, [semaforo]);
+
+  // Controla o scroll do corpo da página quando o modal está aberto
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isModalOpen]);
+
   const openModal = () => {
-    // Reinicia os dados do formulário com os valores atuais do semáforo
-    setFormData({
-      id: semaforo.id,
-      latitude: semaforo.latitude || '',
-      longitude: semaforo.longitude || '',
-      operational: semaforo.operational
-    });
     setIsModalOpen(true);
     setErrorMessage('');
     setSuccessMessage('');
-    
-    // Add event listener to prevent body scrolling
-    document.body.style.overflow = 'hidden';
   };
 
-  // Fecha o modal
   const closeModal = () => {
     setIsModalOpen(false);
     setIsSubmitting(false);
     setErrorMessage('');
     setSuccessMessage('');
-    
-    // Restore body scrolling
-    document.body.style.overflow = '';
   };
 
-  // Atualiza o estado do formulário quando os inputs mudam
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -52,7 +71,6 @@ const EditTrafficLightButton = ({ semaforo, onEditTrafficLight }) => {
     }));
   };
 
-  // Implementa a lógica de edição
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -61,49 +79,46 @@ const EditTrafficLightButton = ({ semaforo, onEditTrafficLight }) => {
       setErrorMessage('');
       setSuccessMessage('');
 
-      // Para debug, verificar os dados enviados
       console.log("Dados enviados:", formData);
 
-      // Verifica se a função onEditTrafficLight existe
       if (typeof onEditTrafficLight !== 'function') {
         console.error('onEditTrafficLight is not a function');
         setErrorMessage('Erro interno de configuração');
+        setIsSubmitting(false);
         return;
       }
 
-      // Chama a função de editar do componente pai
-      const result = await onEditTrafficLight(semaforo.id, {
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        operational: formData.operational
-      });
+      const dataToSubmit = {
+        latitude: Number(formData.latitude),
+        longitude: Number(formData.longitude),
+        operational: formData.operational,
+        lastMaintenance: formData.lastMaintenance,
+        inAnomaly: formData.inAnomaly,
+        currentState: semaforo.currentState, 
+        timeUntilStateChange: semaforo.timeUntilStateChange,
+        brtPriorityActive: semaforo.brtPriorityActive,
+        priorityBusId: semaforo.priorityBusId,
+        stops: semaforo.stops || []
+      };
 
-      // Para debug, verificar o resultado
+      const result = await Promise.resolve(onEditTrafficLight(semaforo.id, dataToSubmit));
+
       console.log("Resultado:", result);
       
-      // Verifica o resultado 
       if (result && result.success) {
-        // Caso de sucesso: "semáforo alterado"
         setSuccessMessage('Semáforo alterado com sucesso!');
         setTimeout(() => {
           closeModal();
         }, 1500);
       } else {
-        // Caso de erro
         setErrorMessage((result && result.message) || 'Erro ao editar semáforo');
+        setIsSubmitting(false);
       }
     } catch (error) {
-      // Erro genérico no processo de edição
       console.error('Erro ao editar semáforo:', error);
       setErrorMessage('Falha na comunicação com o servidor');
-    } finally {
       setIsSubmitting(false);
     }
-  };
-
-  // Previne a propagação de eventos quando clica dentro do modal
-  const handleModalContentClick = (e) => {
-    e.stopPropagation();
   };
 
   return (
@@ -116,14 +131,36 @@ const EditTrafficLightButton = ({ semaforo, onEditTrafficLight }) => {
         Editar
       </button>
 
-      {isModalOpen && (
+      {isModalOpen && ReactDOM.createPortal(
         <div 
-          className="modal-overlay"
+          className="edit-modal-overlay"
           onClick={closeModal}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9999 // Valor muito alto para garantir que fique na frente
+          }}
         >
           <div 
             className="edit-modal"
-            onClick={handleModalContentClick}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '5px',
+              maxWidth: '500px',
+              width: '90%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              zIndex: 10000 // Ainda maior que o overlay
+            }}
           >
             <h3>Editar Semáforo</h3>
             
@@ -140,43 +177,77 @@ const EditTrafficLightButton = ({ semaforo, onEditTrafficLight }) => {
             )}
 
             <form onSubmit={handleSubmit} className="edit-form">
-              <div className="form-group">
-                <label htmlFor="latitude">Latitude:</label>
-                <input 
-                  type="text" 
-                  id="latitude" 
-                  name="latitude" 
-                  value={formData.latitude} 
-                  onChange={handleInputChange} 
-                  className="form-control"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="longitude">Longitude:</label>
-                <input 
-                  type="text" 
-                  id="longitude" 
-                  name="longitude" 
-                  value={formData.longitude} 
-                  onChange={handleInputChange} 
-                  className="form-control"
-                  required
-                />
-              </div>
-
-              <div className="form-group checkbox-group">
-                <label htmlFor="operational" className="checkbox-label">
+              <div className="form-row">
+                <div className="form-group form-group-half">
+                  <label htmlFor="latitude">Latitude*</label>
                   <input 
-                    type="checkbox" 
-                    id="operational" 
-                    name="operational" 
-                    checked={formData.operational} 
+                    type="number" 
+                    step="0.000001"
+                    id="latitude" 
+                    name="latitude" 
+                    value={formData.latitude} 
                     onChange={handleInputChange} 
+                    className="form-control"
+                    required
+                    disabled={isSubmitting}
                   />
-                  <span>Operacional</span>
-                </label>
+                </div>
+                <div className="form-group form-group-half">
+                  <label htmlFor="longitude">Longitude*</label>
+                  <input 
+                    type="number" 
+                    step="0.000001"
+                    id="longitude" 
+                    name="longitude" 
+                    value={formData.longitude} 
+                    onChange={handleInputChange} 
+                    className="form-control"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="lastMaintenance">Última Manutenção</label>
+                <input 
+                  type="datetime-local" 
+                  id="lastMaintenance" 
+                  name="lastMaintenance" 
+                  value={formData.lastMaintenance} 
+                  onChange={handleInputChange} 
+                  className="form-control"
+                  disabled={isSubmitting}
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group checkbox-group">
+                  <label htmlFor="operational" className="checkbox-label">
+                    <input 
+                      type="checkbox" 
+                      id="operational" 
+                      name="operational" 
+                      checked={formData.operational} 
+                      onChange={handleInputChange} 
+                      disabled={isSubmitting}
+                    />
+                    <span>Operacional</span>
+                  </label>
+                </div>
+                <div className="form-group checkbox-group">
+                  <label htmlFor="inAnomaly" className="checkbox-label">
+                    <input 
+                      type="checkbox" 
+                      id="inAnomaly" 
+                      name="inAnomaly" 
+                      checked={formData.inAnomaly} 
+                      onChange={handleInputChange} 
+                      disabled={isSubmitting}
+                    />
+                    <span>Em Anomalia</span>
+                  </label>
+                </div>
               </div>
 
               <div className="modal-buttons">
@@ -198,7 +269,8 @@ const EditTrafficLightButton = ({ semaforo, onEditTrafficLight }) => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
