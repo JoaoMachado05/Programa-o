@@ -119,53 +119,53 @@ const VisualizarAvarias = ({ isOpen, onClose, trafficLightId }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="avarias-overlay" onClick={(e) => {
+    <div className="visualizar-avarias-overlay" onClick={(e) => {
       // Fechar o modal apenas se clicar no fundo (não em seu conteúdo)
       if (e.target === e.currentTarget) onClose();
     }}>
-      <div className="avarias-modal">
-        <div className="avarias-header">
+      <div className="visualizar-avarias-modal">
+        <div className="visualizar-avarias-header">
           <h2>Histórico de Avarias - Semáforo #{trafficLightId}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="visualizar-avarias-close-button" onClick={onClose}>×</button>
         </div>
         
-        <div className="tabs-container">
-          <div className="tabs-header">
+        <div className="visualizar-avarias-tabs-container">
+          <div className="visualizar-avarias-tabs-header">
             <button 
-              className={`tab-button ${activeTab === "ativas" ? "active" : ""}`}
+              className={`visualizar-avarias-tab-button ${activeTab === "ativas" ? "active" : ""}`}
               onClick={() => setActiveTab("ativas")}
             >
               Avarias Ativas
-              <span className="avarias-count">{avariasAtivas.length}</span>
+              <span className="visualizar-avarias-count">{avariasAtivas.length}</span>
             </button>
             <button 
-              className={`tab-button ${activeTab === "resolvidas" ? "active" : ""}`}
+              className={`visualizar-avarias-tab-button ${activeTab === "resolvidas" ? "active" : ""}`}
               onClick={() => setActiveTab("resolvidas")}
             >
               Avarias Resolvidas
-              <span className="avarias-count">{avariasResolvidas.length}</span>
+              <span className="visualizar-avarias-count">{avariasResolvidas.length}</span>
             </button>
           </div>
           
-          <div className="tab-content">
+          <div className="visualizar-avarias-tab-content">
             {loading ? (
-              <div className="loading-container">
-                <div className="loader-small"></div>
+              <div className="visualizar-avarias-loading-container">
+                <div className="visualizar-avarias-loader-small"></div>
                 <p>A carregar avarias...</p>
               </div>
             ) : error ? (
-              <div className="error-message">
+              <div className="visualizar-avarias-error-message">
                 <p>{error}</p>
-                <button onClick={fetchAvarias} className="retry-button">Tentar novamente</button>
+                <button onClick={fetchAvarias} className="visualizar-avarias-retry-button">Tentar novamente</button>
               </div>
             ) : (
               <>
                 {activeTab === "ativas" && (
                   <>
                     {avariasAtivas.length === 0 ? (
-                      <p className="no-data-message">Não existem avarias ativas neste momento.</p>
+                      <p className="visualizar-avarias-no-data-message">Não existem avarias ativas neste momento.</p>
                     ) : (
-                      <table className="avarias-table">
+                      <table className="visualizar-avarias-table">
                         <thead>
                           <tr>
                             <th>ID</th>
@@ -179,18 +179,18 @@ const VisualizarAvarias = ({ isOpen, onClose, trafficLightId }) => {
                           {avariasAtivas.map(avaria => {
                             const gravidadeInfo = getGravidadeInfo(avaria.gravidade);
                             return (
-                              <tr key={avaria.id} className={`prioridade-${gravidadeInfo.classe}`}>
+                              <tr key={avaria.id} className={`visualizar-avarias-prioridade-${gravidadeInfo.classe}`}>
                                 <td>{avaria.id}</td>
                                 <td>{avaria.tipo}</td>
                                 <td>{formatDate(avaria.dataReporte)}</td>
                                 <td>
-                                  <span className={`tag-prioridade ${gravidadeInfo.classe}`}>
+                                  <span className={`visualizar-avarias-tag-prioridade ${gravidadeInfo.classe}`}>
                                     {gravidadeInfo.texto}
                                   </span>
                                 </td>
                                 <td>
                                   <button 
-                                    className="resolver-button"
+                                    className="visualizar-avarias-resolver-button"
                                     onClick={() => resolverAvaria(avaria.id)}
                                   >
                                     Resolver
@@ -208,9 +208,9 @@ const VisualizarAvarias = ({ isOpen, onClose, trafficLightId }) => {
                 {activeTab === "resolvidas" && (
                   <>
                     {avariasResolvidas.length === 0 ? (
-                      <p className="no-data-message">Não existem avarias resolvidas registadas.</p>
+                      <p className="visualizar-avarias-no-data-message">Não existem avarias resolvidas registadas.</p>
                     ) : (
-                      <table className="avarias-table">
+                      <table className="visualizar-avarias-table">
                         <thead>
                           <tr>
                             <th>ID</th>
@@ -230,7 +230,7 @@ const VisualizarAvarias = ({ isOpen, onClose, trafficLightId }) => {
                                 <td>{formatDate(avaria.dataReporte)}</td>
                                 <td>{formatDate(avaria.dataResolucao)}</td>
                                 <td>
-                                  <span className={`tag-prioridade ${gravidadeInfo.classe}`}>
+                                  <span className={`visualizar-avarias-tag-prioridade ${gravidadeInfo.classe}`}>
                                     {gravidadeInfo.texto}
                                   </span>
                                 </td>

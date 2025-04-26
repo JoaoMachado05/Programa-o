@@ -1,27 +1,22 @@
 import { useState } from "react";
 import "./AgendarManutencao.css";
 
-// API base URL
 const API_BASE_URL = "http://localhost:8080";
 
 const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
-  // Estado para os dados do formulário
   const [formData, setFormData] = useState({
     data: "",
     hora: "",
     descricao: ""
   });
 
-  // Estado para mensagens de erro/sucesso
   const [statusMensagem, setStatusMensagem] = useState({
-    tipo: null, // "sucesso" ou "erro"
+    tipo: null,
     mensagem: ""
   });
 
-  // Estado para controlar o carregamento
   const [isLoading, setIsLoading] = useState(false);
 
-  // Manipulador de alterações nos campos do formulário
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -30,7 +25,6 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
     }));
   };
 
-  // Função para validar o formulário
   const validarFormulario = () => {
     if (!formData.data || !formData.hora) {
       setStatusMensagem({
@@ -40,7 +34,6 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
       return false;
     }
 
-    // Validação da data (não pode ser anterior a hoje)
     const dataAgendada = new Date(`${formData.data}T${formData.hora}`);
     const hoje = new Date();
     
@@ -55,7 +48,6 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
     return true;
   };
 
-  // Manipulador de envio do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -65,17 +57,13 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
 
     try {
       setIsLoading(true);
-      
-      // Preparar dados para envio
+
       const dadosManutencao = {
         semaforoId: trafficLightId,
         dataAgendada: `${formData.data}T${formData.hora}:00`,
         descricao: formData.descricao
       };
 
-      console.log("Enviando dados para a API:", dadosManutencao);
-
-      // Enviar dados para a API com o URL completo
       const response = await fetch(`${API_BASE_URL}/semaforos/manutencao-semaforo`, {
         method: 'POST',
         headers: {
@@ -89,19 +77,16 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
       }
 
       const manutencaoCriada = await response.json();
-      console.log("Resposta da API:", manutencaoCriada);
       
       setStatusMensagem({
         tipo: "sucesso",
         mensagem: "Manutenção agendada com sucesso!"
       });
 
-      // Chamar callback onSubmit se fornecido
       if (onSubmit) {
         onSubmit(manutencaoCriada);
       }
 
-      // Limpar o formulário após alguns segundos e fechar o modal
       setTimeout(() => {
         setFormData({
           data: "",
@@ -123,19 +108,18 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
     }
   };
 
-  // Se o modal não estiver aberto, não renderiza nada
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-manutencao">
-        <div className="modal-cabecalho">
+    <div className="agendar-manutencao-modal-overlay">
+      <div className="agendar-manutencao-modal">
+        <div className="agendar-manutencao-cabecalho">
           <h2>Agendar Manutenção - Semáforo #{trafficLightId}</h2>
-          <button className="btn-fechar" onClick={onClose}>×</button>
+          <button className="agendar-manutencao-btn-fechar" onClick={onClose}>×</button>
         </div>
         
-        <form onSubmit={handleSubmit} className="form-manutencao">
-          <div className="form-grupo">
+        <form onSubmit={handleSubmit} className="agendar-manutencao-form">
+          <div className="agendar-manutencao-form-grupo">
             <label htmlFor="data">Data da Manutenção*:</label>
             <input
               type="date"
@@ -147,7 +131,7 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
             />
           </div>
           
-          <div className="form-grupo">
+          <div className="agendar-manutencao-form-grupo">
             <label htmlFor="hora">Hora da Manutenção*:</label>
             <input
               type="time"
@@ -159,7 +143,7 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
             />
           </div>
           
-          <div className="form-grupo">
+          <div className="agendar-manutencao-form-grupo">
             <label htmlFor="descricao">Descrição/Observações:</label>
             <textarea
               id="descricao"
@@ -172,15 +156,15 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
           </div>
           
           {statusMensagem.mensagem && (
-            <div className={`mensagem-status ${statusMensagem.tipo}`}>
+            <div className={`agendar-manutencao-mensagem-status ${statusMensagem.tipo}`}>
               {statusMensagem.mensagem}
             </div>
           )}
           
-          <div className="acoes-form">
+          <div className="agendar-manutencao-acoes-form">
             <button 
               type="button" 
-              className="btn btn-cancelar" 
+              className="agendar-manutencao-btn agendar-manutencao-btn-cancelar" 
               onClick={onClose}
               disabled={isLoading}
             >
@@ -188,7 +172,7 @@ const AgendarManutencao = ({ isOpen, onClose, trafficLightId, onSubmit }) => {
             </button>
             <button 
               type="submit" 
-              className="btn btn-agendar"
+              className="agendar-manutencao-btn agendar-manutencao-btn-agendar"
               disabled={isLoading}
             >
               {isLoading ? "Agendando..." : "Agendar Manutenção"}

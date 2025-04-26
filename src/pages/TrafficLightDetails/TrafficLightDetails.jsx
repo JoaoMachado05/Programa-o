@@ -169,21 +169,21 @@ const TrafficLightDetails = () => {
   };
 
   if (!trafficLight) return (
-    <div className="fullpage-container">
-      <header className="header">
-        <div className="logo-container">
-          <img src="/logo_TUB.jpg" alt="Logo TUB" className="smart-city-logo" />
+    <div className="traffic-light-details-container">
+      <header className="traffic-light-details-header">
+        <div className="traffic-light-details-logo-container">
+          <img src="/logo_TUB.jpg" alt="Logo TUB" className="traffic-light-details-logo" />
         </div>
-        <div className="header-actions">
-          <button onClick={handleGoBack} className="btn btn-back">Voltar</button>
-          <button onClick={handleLogout} className="btn btn-logout">Logout</button>
+        <div className="traffic-light-details-header-actions">
+          <button onClick={handleGoBack} className="traffic-light-details-btn traffic-light-details-btn-back">Voltar</button>
+          <button onClick={handleLogout} className="traffic-light-details-btn traffic-light-details-btn-logout">Logout</button>
         </div>
       </header>
       
-      <main className="main-content">
-        <div className="loading-container">
-          <div className="loader"></div>
-          <p className="loading">A carregar informações...</p>
+      <main className="traffic-light-details-main-content">
+        <div className="traffic-light-details-loading-container">
+          <div className="traffic-light-details-loader"></div>
+          <p className="traffic-light-details-loading">A carregar informações...</p>
         </div>
       </main>
     </div>
@@ -195,68 +195,68 @@ const TrafficLightDetails = () => {
   
   switch (trafficLight.currentState) {
     case "GREEN":
-      statusClass = "green-status";
+      statusClass = "traffic-light-details-green-status";
       statusText = "VERDE";
       break;
     case "YELLOW":
-      statusClass = "yellow-status";
+      statusClass = "traffic-light-details-yellow-status";
       statusText = "AMARELO";
       break;
     case "RED":
-      statusClass = "red-status";
+      statusClass = "traffic-light-details-red-status";
       statusText = "VERMELHO";
       break;
     default:
-      statusClass = "unknown-status";
+      statusClass = "traffic-light-details-red-status";
       statusText = "DESCONHECIDO";
   }
 
   return (
-    <div className="fullpage-container">
-      <header className="header">
-        <div className="logo-container">
-          <img src="/logo_smart_city.jpg" alt="Logo Smart City" className="smart-city-logo" />
+    <div className="traffic-light-details-container">
+      <header className="traffic-light-details-header">
+        <div className="traffic-light-details-logo-container">
+          <img src="/logo_smart_city.jpg" alt="Logo Smart City" className="traffic-light-details-logo" />
         </div>
-        <div className="header-actions">
-          <button onClick={handleGoBack} className="btn btn-back">Voltar</button>
-          <button onClick={handleLogout} className="btn btn-logout">Logout</button>
+        <div className="traffic-light-details-header-actions">
+          <button onClick={handleGoBack} className="traffic-light-details-btn traffic-light-details-btn-back">Voltar</button>
+          <button onClick={handleLogout} className="traffic-light-details-btn traffic-light-details-btn-logout">Logout</button>
         </div>
       </header>
 
-      <main className="main-content">
-        <div className="page-title-container">
-          <h1 className="page-title">Semáforo ID: {trafficLight.id}</h1>
+      <main className="traffic-light-details-main-content">
+        <div className="traffic-light-details-page-title-container">
+          <h1 className="traffic-light-details-page-title">Semáforo ID: {trafficLight.id}</h1>
         </div>
         
-        <div className="fullpage-content">
-          <div className="left-section">
-            <div className="info-card">
-              <h2 className="card-title">Informações do Semáforo</h2>
-              <div className="status-grid">
-                <div className="status-item">
-                  <span className="status-label">Estado Atual</span>
-                  <div className="status-value-container">
-                    <span className={`status-value ${statusClass}`}>{statusText}</span>
+        <div className="traffic-light-details-fullpage-content">
+          <div className="traffic-light-details-left-section">
+            <div className="traffic-light-details-info-card">
+              <h2 className="traffic-light-details-card-title">Informações do Semáforo</h2>
+              <div className="traffic-light-details-status-grid">
+                <div className="traffic-light-details-status-item">
+                  <span className="traffic-light-details-status-label">Estado Atual</span>
+                  <div className="traffic-light-details-status-value-container">
+                    <span className={`traffic-light-details-status-value ${statusClass}`}>{statusText}</span>
                   </div>
                 </div>
-                <div className="status-item">
-                  <span className="status-label">Status Operacional</span>
-                  <div className="status-value-container">
-                    <span className={`status-value ${trafficLight.operational ? "operational-status" : "non-operational-status"}`}>
+                <div className="traffic-light-details-status-item">
+                  <span className="traffic-light-details-status-label">Status Operacional</span>
+                  <div className="traffic-light-details-status-value-container">
+                    <span className={`traffic-light-details-status-value ${trafficLight.operational ? "traffic-light-details-operational-status" : "traffic-light-details-non-operational-status"}`}>
                       {trafficLight.operational ? "OPERACIONAL" : "NÃO OPERACIONAL"}
                     </span>
                   </div>
                 </div>
-                <div className="status-item">
-                  <span className="status-label">ID</span>
-                  <div className="status-value-container">
-                    <span className="status-value">{trafficLight.id}</span>
+                <div className="traffic-light-details-status-item">
+                  <span className="traffic-light-details-status-label">ID</span>
+                  <div className="traffic-light-details-status-value-container">
+                    <span className="traffic-light-details-status-value">{trafficLight.id}</span>
                   </div>
                 </div>
-                <div className="status-item">
-                  <span className="status-label">Última Manutenção</span>
-                  <div className="status-value-container">
-                    <span className="status-value small-text">
+                <div className="traffic-light-details-status-item">
+                  <span className="traffic-light-details-status-label">Última Manutenção</span>
+                  <div className="traffic-light-details-status-value-container">
+                    <span className="traffic-light-details-status-value traffic-light-details-small-text">
                       {formatDate(trafficLight.lastMaintenance)}
                     </span>
                   </div>
@@ -265,9 +265,9 @@ const TrafficLightDetails = () => {
               </div>
             </div>
             
-            <div className="map-card">
-              <h2 className="card-title">Localização</h2>
-              <div className="map-container">
+            <div className="traffic-light-details-map-card">
+              <h2 className="traffic-light-details-card-title">Localização</h2>
+              <div className="traffic-light-details-map-container">
                 {trafficLight.latitude && trafficLight.longitude && (
                   <MapContainer 
                     center={[trafficLight.latitude, trafficLight.longitude]} 
@@ -296,10 +296,10 @@ const TrafficLightDetails = () => {
             </div>
           </div>
 
-          <div className="right-section">
-            <div className="traffic-light-visualization">
-              <h2 className="card-title">Visualização do Semáforo</h2>
-              <div className="traffic-light-model" style={{ height: "400px", width: "100%" }}>
+          <div className="traffic-light-details-right-section">
+            <div className="traffic-light-details-traffic-light-visualization">
+              <h2 className="traffic-light-details-card-title">Visualização do Semáforo</h2>
+              <div className="traffic-light-details-traffic-light-model" style={{ height: "400px", width: "100%" }}>
                 <Canvas camera={{ position: [0, 0, 5] }}>
                   <ambientLight intensity={0.5} />
                   <directionalLight position={[10, 10, 10]} intensity={1} />
@@ -307,23 +307,23 @@ const TrafficLightDetails = () => {
                   <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
                 </Canvas>
               </div>
-              <div className="state-timer">
-                <span className="state-timer-label">Próxima mudança em:</span>
-                <span className="state-timer-value">{trafficLight.timeUntilStateChange}s</span>
+              <div className="traffic-light-details-state-timer">
+                <span className="traffic-light-details-state-timer-label">Próxima mudança em:</span>
+                <span className="traffic-light-details-state-timer-value">{trafficLight.timeUntilStateChange}s</span>
               </div>
-              <div className="operational-status-container">
-                <div className="operational-status-indicator">
-                  <span className="status-label">Status:</span>
-                  <span className={`operational-indicator ${trafficLight.operational ? "online" : "offline"}`}>
+              <div className="traffic-light-details-operational-status-container">
+                <div className="traffic-light-details-operational-status-indicator">
+                  <span className="traffic-light-details-status-label">Status:</span>
+                  <span className={`traffic-light-details-operational-indicator ${trafficLight.operational ? "traffic-light-details-online" : "traffic-light-details-offline"}`}>
                     {trafficLight.operational ? "Online" : "Offline"}
                   </span>
                 </div>
                 
-                <div className="action-buttons">
+                <div className="traffic-light-details-action-buttons">
                   {/* Botão de Agendar Manutenção */}
                   <button 
                     onClick={handleOpenAgendarModal} 
-                    className="btn-action btn-agendar-manutencao"
+                    className="traffic-light-details-btn-action traffic-light-details-btn-agendar-manutencao"
                   >
                     🔧 Agendar Manutenção
                   </button>
@@ -331,7 +331,7 @@ const TrafficLightDetails = () => {
                   {/* Botão para Ver Avarias */}
                   <button 
                     onClick={handleOpenAvariasModal} 
-                    className="btn-action btn-ver-avarias"
+                    className="traffic-light-details-btn-action traffic-light-details-btn-ver-avarias"
                   >
                     🚨 Ver Avarias
                   </button>
@@ -344,7 +344,7 @@ const TrafficLightDetails = () => {
       
       {/* Only the time of the last update is maintained */}
       {lastUpdate && (
-        <div className="last-update-info">
+        <div className="traffic-light-details-last-update-info">
           Atualizado às: {lastUpdate.toLocaleTimeString('pt-PT')}
         </div>
       )}

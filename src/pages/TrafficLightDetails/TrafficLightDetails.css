@@ -1,38 +1,6 @@
-/* TrafficLightDetails.css - Layout aprimorado com suporte a modelo 3D e melhor responsividade */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* TrafficLightDetails.css - CSS com prefixos para evitar sobreposições */
 
-:root {
-  --primary-color: #047cb4;
-  --primary-dark: #036799;
-  --secondary-color: #003f7f;
-  --success-color: #28a745;
-  --warning-color: #ffc107;
-  --danger-color: #dc3545;
-  --light-color: #f8f9fa;
-  --dark-color: #2c3e50;
-  --gray-color: #6c757d;
-  --border-color: #e9ecef;
-  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --transition: all 0.3s ease;
-}
-
-body, html {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #ffffff;
-  color: var(--dark-color);
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
-.fullpage-container {
+.traffic-light-details-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -42,12 +10,11 @@ body, html {
   background-color: #ffffff;
 }
 
-/* Header Styles */
-.header {
+.traffic-light-details-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--primary-color);
+  background-color: #047cb4;
   color: white;
   min-height: 95px;
   height: auto;
@@ -59,34 +26,30 @@ body, html {
   z-index: 1000;
 }
 
-.logo-container {
+.traffic-light-details-logo-container {
   display: flex;
   align-items: center;
 }
 
-.smart-city-logo {
+.traffic-light-details-logo {
   max-height: 95px;
   width: auto;
   object-fit: contain;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
-.smart-city-logo:hover {
-  transform: scale(1.05);
-}
-
-.header-actions {
+.traffic-light-details-header-actions {
   display: flex;
   gap: 12px;
 }
 
-.btn {
+.traffic-light-details-btn {
   padding: 10px 18px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,30 +57,29 @@ body, html {
   letter-spacing: 0.5px;
 }
 
-.btn-back {
+.traffic-light-details-btn-back {
   background-color: rgba(255, 255, 255, 0.9);
-  color: var(--secondary-color);
+  color: #003f7f;
 }
 
-.btn-back:hover {
+.traffic-light-details-btn-back:hover {
   background-color: #ffffff;
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.btn-logout {
+.traffic-light-details-btn-logout {
   background-color: rgba(220, 53, 69, 0.9);
   color: white;
 }
 
-.btn-logout:hover {
-  background-color: var(--danger-color);
+.traffic-light-details-btn-logout:hover {
+  background-color: #dc3545;
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Loading Animation */
-.loading-container {
+.traffic-light-details-loading-container {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -127,28 +89,27 @@ body, html {
   padding: 40px;
 }
 
-.loader {
+.traffic-light-details-loader {
   border: 5px solid #f3f3f3;
-  border-top: 5px solid var(--secondary-color);
+  border-top: 5px solid #003f7f;
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  animation: spin 1.2s linear infinite;
+  animation: traffic-light-details-spin 1.2s linear infinite;
 }
 
-@keyframes spin {
+@keyframes traffic-light-details-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-.loading {
+.traffic-light-details-loading {
   font-size: 1.3rem;
-  color: var(--gray-color);
+  color: #6c757d;
   font-weight: 500;
 }
 
-/* Main Content */
-.main-content {
+.traffic-light-details-main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -159,22 +120,21 @@ body, html {
   background: linear-gradient(to bottom, #f8f9fa, #ffffff);
 }
 
-.page-title-container {
+.traffic-light-details-page-title-container {
   padding: 20px 25px;
   background-color: #ffffff;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #e9ecef;
 }
 
-.page-title {
+.traffic-light-details-page-title {
   font-size: 2.2rem;
-  color: var(--secondary-color);
+  color: #003f7f;
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.5px;
 }
 
-/* Fullpage Content Layout */
-.fullpage-content {
+.traffic-light-details-fullpage-content {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -183,40 +143,37 @@ body, html {
   flex: 1;
 }
 
-/* Left and Right Sections */
-.left-section, .right-section {
+.traffic-light-details-left-section, 
+.traffic-light-details-right-section {
   display: flex;
   flex-direction: column;
   gap: 25px;
 }
 
-.info-card, .map-card, .stats-card, .traffic-light-visualization {
+.traffic-light-details-info-card, 
+.traffic-light-details-map-card, 
+.traffic-light-details-stats-card, 
+.traffic-light-details-traffic-light-visualization {
   background-color: white;
   border-radius: 16px;
-  box-shadow: var(--box-shadow);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
-.info-card:hover, .map-card:hover, .stats-card:hover, .traffic-light-visualization:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
-}
-
-.card-title {
+.traffic-light-details-card-title {
   padding: 18px 25px;
-  background-color: var(--light-color);
-  color: var(--secondary-color);
+  background-color: #f8f9fa;
+  color: #003f7f;
   font-size: 1.4rem;
   font-weight: 600;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #e9ecef;
   letter-spacing: -0.3px;
 }
 
-/* Status Grid */
-.status-grid, .stats-grid {
+.traffic-light-details-status-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   padding: 25px;
@@ -224,91 +181,97 @@ body, html {
   flex: 1;
 }
 
-.status-item, .stat-item {
+.traffic-light-details-status-item {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.status-label, .stat-label {
+.traffic-light-details-status-label {
   font-size: 1rem;
-  color: var(--gray-color);
+  color: #6c757d;
   font-weight: 500;
 }
 
-.status-value-container {
+.traffic-light-details-status-value-container {
   display: flex;
   align-items: baseline;
   gap: 5px;
 }
 
-.status-value, .stat-value {
+.traffic-light-details-status-value {
   font-size: 1.6rem;
   font-weight: 600;
-  color: var(--secondary-color);
+  color: #003f7f;
   line-height: 1.2;
 }
 
-.status-unit {
-  font-size: 0.9rem;
-  color: var(--gray-color);
-}
-
-/* Status colors */
-.green-status, .yellow-status, .red-status, .operational-status, .non-operational-status {
+.traffic-light-details-green-status {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+  border-left: 4px solid #28a745;
   font-size: 1.2rem;
   padding: 8px 15px;
   border-radius: 10px;
   font-weight: 700;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
-.green-status {
-  background-color: rgba(40, 167, 69, 0.15);
-  color: var(--success-color);
-  border-left: 4px solid var(--success-color);
-}
-
-.yellow-status {
+.traffic-light-details-yellow-status {
   background-color: rgba(255, 193, 7, 0.15);
-  color: var(--warning-color);
-  border-left: 4px solid var(--warning-color);
+  color: #ffc107;
+  border-left: 4px solid #ffc107;
+  font-size: 1.2rem;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.red-status {
+.traffic-light-details-red-status {
   background-color: rgba(220, 53, 69, 0.15);
-  color: var(--danger-color);
-  border-left: 4px solid var(--danger-color);
+  color: #dc3545;
+  border-left: 4px solid #dc3545;
+  font-size: 1.2rem;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.operational-status {
+.traffic-light-details-operational-status {
   background-color: rgba(40, 167, 69, 0.15);
-  color: var(--success-color);
-  border-left: 4px solid var(--success-color);
+  color: #28a745;
+  border-left: 4px solid #28a745;
+  font-size: 1.2rem;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.non-operational-status {
+.traffic-light-details-non-operational-status {
   background-color: rgba(220, 53, 69, 0.15);
-  color: var(--danger-color);
-  border-left: 4px solid var(--danger-color);
+  color: #dc3545;
+  border-left: 4px solid #dc3545;
+  font-size: 1.2rem;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.unknown-status {
-  background-color: rgba(108, 117, 125, 0.15);
-  color: var(--gray-color);
-  border-left: 4px solid var(--gray-color);
-}
-
-.green-status:hover, .yellow-status:hover, .red-status:hover, 
-.operational-status:hover, .non-operational-status:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Map Container */
-.map-container {
+.traffic-light-details-map-container {
   flex: 1;
   padding: 12px;
   min-height: 320px;
@@ -317,20 +280,8 @@ body, html {
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.map-container .leaflet-container {
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Traffic Light Visualization */
-.traffic-light-visualization {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.traffic-light-model {
-  background-color: var(--light-color);
+.traffic-light-details-traffic-light-model {
+  background-color: #f8f9fa;
   border-radius: 10px;
   overflow: hidden;
   position: relative;
@@ -339,16 +290,7 @@ body, html {
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-.traffic-light-model canvas {
-  outline: none;
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: 8px;
-}
-
-/* State Timer */
-.state-timer {
+.traffic-light-details-state-timer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -359,41 +301,40 @@ body, html {
   font-size: 1.1rem;
 }
 
-.state-timer-label {
-  color: var(--gray-color);
+.traffic-light-details-state-timer-label {
+  color: #6c757d;
   font-weight: 500;
 }
 
-.state-timer-value {
+.traffic-light-details-state-timer-value {
   font-weight: 700;
-  color: var(--secondary-color);
+  color: #003f7f;
   background-color: rgba(0, 63, 127, 0.1);
   padding: 5px 12px;
   border-radius: 20px;
   min-width: 60px;
   text-align: center;
-  animation: pulse 1s infinite;
+  animation: traffic-light-details-pulse 1s infinite;
 }
 
-@keyframes pulse {
+@keyframes traffic-light-details-pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
 
-/* Indicator for operational status */
-.operational-status-container {
+.traffic-light-details-operational-status-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background-color: var(--light-color);
+  background-color: #f8f9fa;
   border-top: 1px solid #eaeaea;
   flex-wrap: wrap;
   gap: 15px;
 }
 
-.operational-status-indicator {
+.traffic-light-details-operational-status-indicator {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -403,58 +344,67 @@ body, html {
   flex: 1;
 }
 
-.operational-indicator {
+.traffic-light-details-operational-indicator {
   font-weight: 600;
   padding: 6px 15px;
   border-radius: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: var(--transition);
+  transition: all 0.3s ease;
   font-size: 1rem;
 }
 
-.operational-indicator.online {
+.traffic-light-details-online {
   background-color: #c6f6d5;
   color: #22543d;
 }
 
-.operational-indicator.offline {
+.traffic-light-details-offline {
   background-color: #fed7d7;
   color: #822727;
 }
 
-.operational-indicator:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.traffic-light-details-action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-/* Botão de agendar manutenção */
-.btn-agendar-manutencao {
-  background-color: #2c5282;
-  color: white;
+.traffic-light-details-btn-action {
   padding: 10px 18px;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.btn-agendar-manutencao:hover {
+.traffic-light-details-btn-agendar-manutencao {
+  background-color: #2c5282;
+  color: white;
+}
+
+.traffic-light-details-btn-agendar-manutencao:hover {
   background-color: #1a365d;
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.btn-agendar-manutencao:active {
-  transform: translateY(1px);
+.traffic-light-details-btn-ver-avarias {
+  background-color: #e53e3e;
+  color: white;
 }
 
-/* Last update info */
-.last-update-info {
+.traffic-light-details-btn-ver-avarias:hover {
+  background-color: #c53030;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.traffic-light-details-last-update-info {
   position: fixed;
   bottom: 15px;
   right: 15px;
@@ -465,243 +415,32 @@ body, html {
   border-radius: 30px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   backdrop-filter: blur(5px);
 }
 
-.last-update-info:hover {
-  background-color: rgba(0, 0, 0, 0.85);
-  transform: translateY(-2px);
-}
-
-/* Helper classes */
-.small-text {
+.traffic-light-details-small-text {
   font-size: 1rem;
 }
 
-/* Modal Popup Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1100;
-  padding: 20px;
-  animation: fadeIn 0.3s ease;
-  backdrop-filter: blur(5px);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.modal-container {
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 0;
-  position: relative;
-  animation: slideIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-@keyframes slideIn {
-  from { transform: translateY(50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 25px;
-  background-color: var(--primary-color);
-  color: white;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-}
-
-.modal-title {
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin: 0;
-  letter-spacing: -0.3px;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.8rem;
-  cursor: pointer;
-  width: 35px;
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: var(--transition);
-  margin-right: -8px;
-}
-
-.close-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: rotate(90deg);
-}
-
-.modal-body {
-  padding: 30px;
-}
-
-.form-group {
-  margin-bottom: 25px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 10px;
-  font-weight: 600;
-  color: var(--dark-color);
-  font-size: 1.05rem;
-}
-
-.form-control {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: var(--transition);
-  background-color: #fbfbfb;
-}
-
-.form-control:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(4, 124, 180, 0.2);
-  outline: none;
-  background-color: #ffffff;
-}
-
-.form-textarea {
-  min-height: 140px;
-  resize: vertical;
-  font-family: inherit;
-  line-height: 1.6;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  padding: 20px 25px;
-  border-top: 1px solid #eaeaea;
-  background-color: var(--light-color);
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-}
-
-.btn-cancelar {
-  background-color: #e2e8f0;
-  color: #4a5568;
-  padding: 12px 22px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  min-width: 120px;
-}
-
-.btn-cancelar:hover {
-  background-color: #cbd5e0;
-  transform: translateY(-2px);
-}
-
-.btn-agendar {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 12px 22px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  min-width: 120px;
-}
-
-.btn-agendar:hover {
-  background-color: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Estilo para campos de formulário opcionais */
-.hint-text {
-  font-size: 0.85rem;
-  color: var(--gray-color);
-  margin-top: 8px;
-}
-
-/* Indicador de campos obrigatórios */
-.required-field::after {
-  content: "*";
-  color: var(--danger-color);
-  margin-left: 4px;
-}
-
-/* Estilo para os alertas de validação */
-.form-error {
-  color: var(--danger-color);
-  font-size: 0.9rem;
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.form-error::before {
-  content: "⚠️";
-  font-size: 0.8rem;
-}
-
-/* Estilização para inputs de data e hora */
-input[type="date"], input[type="time"] {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding-right: 10px;
-  cursor: pointer;
-}
-
-/* Media Queries aprimoradas */
+/* Media Queries */
 @media (min-width: 768px) {
-  .status-grid, .stats-grid {
+  .traffic-light-details-status-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .info-card {
-    height: auto;
-  }
-  
-  .map-card {
+  .traffic-light-details-map-card {
     flex: 1;
     min-height: 350px;
   }
 }
 
 @media (min-width: 992px) {
-  .fullpage-content {
+  .traffic-light-details-fullpage-content {
     flex-direction: row;
   }
   
-  .left-section {
+  .traffic-light-details-left-section {
     width: 55%;
     height: 100%;
     max-height: calc(100vh - 200px);
@@ -709,7 +448,7 @@ input[type="date"], input[type="time"] {
     padding-right: 12px;
   }
   
-  .right-section {
+  .traffic-light-details-right-section {
     width: 45%;
     height: 100%;
     max-height: calc(100vh - 200px);
@@ -717,172 +456,46 @@ input[type="date"], input[type="time"] {
     padding-left: 12px;
   }
   
-  .traffic-light-visualization {
-    height: 100%;
-    flex: 1;
-  }
-  
-  .traffic-light-model {
+  .traffic-light-details-traffic-light-model {
     height: 450px;
-  }
-  
-  .stats-card {
-    height: auto;
   }
 }
 
 @media (max-width: 768px) {
-  .header {
+  .traffic-light-details-header {
     padding: 10px 15px;
   }
   
-  .smart-city-logo {
+  .traffic-light-details-logo {
     max-height: 70px;
   }
   
-  .btn {
+  .traffic-light-details-btn {
     padding: 8px 12px;
     font-size: 0.9rem;
   }
   
-  .page-title {
+  .traffic-light-details-page-title {
     font-size: 1.8rem;
   }
   
-  .fullpage-content {
+  .traffic-light-details-fullpage-content {
     padding: 15px;
     gap: 15px;
   }
   
-  .card-title {
-    font-size: 1.2rem;
-    padding: 15px 20px;
-  }
-  
-  .status-grid, .stats-grid {
-    padding: 15px;
-    gap: 15px;
-  }
-  
-  .status-value, .stat-value {
-    font-size: 1.4rem;
-  }
-  
-  .operational-status-container {
+  .traffic-light-details-operational-status-container {
     flex-direction: column;
     align-items: stretch;
   }
   
-  .operational-status-indicator {
+  .traffic-light-details-operational-status-indicator {
     justify-content: center;
     margin-bottom: 10px;
   }
   
-  .btn-agendar-manutencao {
+  .traffic-light-details-btn-action {
     width: 100%;
     justify-content: center;
   }
-  
-  .modal-container {
-    max-width: 95%;
-  }
-  
-  .modal-title {
-    font-size: 1.2rem;
-  }
-  
-  .modal-body {
-    padding: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .form-label {
-    font-size: 1rem;
-  }
-  
-  .form-control {
-    padding: 12px 14px;
-  }
-  
-  .modal-footer {
-    flex-direction: column;
-  }
-  
-  .btn-cancelar, .btn-agendar {
-    width: 100%;
-    text-align: center;
-  }
-}
-
-/* Print Styles */
-@media print {
-  .header, .btn-agendar-manutencao, .last-update-info {
-    display: none;
-  }
-  
-  .fullpage-container {
-    height: auto;
-  }
-  
-  .main-content {
-    height: auto;
-  }
-  
-  .fullpage-content {
-    flex-direction: column;
-  }
-  
-  .left-section, .right-section {
-    width: 100%;
-  }
-  
-  .traffic-light-model {
-    height: 200px;
-  }
-  
-  .map-container {
-    height: 200px;
-  }
-  
-  .page-title {
-    font-size: 1.5rem;
-  }
-  
-  .card-title {
-    font-size: 1.2rem;
-  }
-}
-
-/* Accessibility Improvements */
-:focus {
-  outline: 3px solid rgba(4, 124, 180, 0.5);
-  outline-offset: 2px;
-}
-
-.btn:focus, .form-control:focus {
-  outline: 3px solid rgba(4, 124, 180, 0.5);
-  outline-offset: 2px;
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
 }
