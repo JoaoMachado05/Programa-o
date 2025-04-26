@@ -198,7 +198,7 @@ public class IntelligentTrafficLightService {
                 .greenTime(t.getGreenTime())
                 .redTime(t.getRedTime())
                 .yellowTime(t.getYellowTime())
-                .brtPriorityActive(t.isBrtPriorityActive())
+                .brtPriorityActive(t.getBrtPriorityActive())
                 .priorityBusId(t.getPriorityBusId())
                 .build();
     }

@@ -81,7 +81,7 @@ public class TrafficLight {
 
     @Builder.Default
     @Column(name = "brt_priority_active")
-    private boolean brtPriorityActive = false;
+    private Boolean brtPriorityActive = false;
 
     @Column(name = "priority_bus_id")
     private Long priorityBusId;
@@ -113,15 +113,19 @@ public class TrafficLight {
         }
 
         if (timeUntilStateChange == 0) {
-            if (currentState == State.GREEN) {
-                currentState = State.YELLOW;
-                timeUntilStateChange = 3;
-            } else if (currentState == State.YELLOW) {
-                currentState = State.RED;
-                timeUntilStateChange = 10;
-            } else if (currentState == State.RED) {
-                currentState = State.GREEN;
-                timeUntilStateChange = 15;
+            switch (currentState) {
+                case GREEN -> {
+                    currentState = State.YELLOW;
+                    timeUntilStateChange = (yellowTime != null) ? yellowTime : 3;
+                }
+                case YELLOW -> {
+                    currentState = State.RED;
+                    timeUntilStateChange = (redTime != null) ? redTime : 10;
+                }
+                case RED -> {
+                    currentState = State.GREEN;
+                    timeUntilStateChange = (greenTime != null) ? greenTime : 15;
+                }
             }
         }
     }
