@@ -22,6 +22,7 @@ public class BusDTO {
     private LocalDateTime proximaParagemHorario;
     private Integer atrasoMinutos;
 
+
     // Novos campos
     private Float lastTemperature;
     private String temperatureAction;
