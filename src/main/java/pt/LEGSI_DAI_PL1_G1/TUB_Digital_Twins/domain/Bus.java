@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 @Table(name = "buses", uniqueConstraints = {@UniqueConstraint(columnNames = "matricula")})
 @Data
@@ -38,6 +37,7 @@ public class Bus {
     private Double latitude;
     private Double longitude;
 
+    
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusBus status = StatusBus.OPERACIONAL;
