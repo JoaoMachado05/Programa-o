@@ -23,21 +23,33 @@ export default function EditBus() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const autocarroAtualizado = {
-      matricula,
-      modelo,
-      capacidadeMaxima: parseInt(capacidade, 10),
-      acessibilidade
-    };
+  matricula,
+  modelo,
+  capacidade_maxima: parseInt(capacidade, 10),
+  acessibilidade,
+  lotacao_atual: Math.floor(parseInt(capacidade, 10) / 2),
+  linha_atual: "Linha 12",
+  velocidade: 45.7,
+  temperatura_atual: 22.5,
+  latitude: 41.545,
+  longitude: -8.426,
+  atraso_minutos: 0,
+  proxima_paragem_horario: null,
+  last_temperature: 22.5,
+  temperature_action: null,
+  status: "IN_SERVICE"
+};
 
+  
     try {
       const response = await fetch(`http://localhost:8080/brts/${brt.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(autocarroAtualizado),
       });
-
+  
       if (response.ok) {
         alert('Autocarro atualizado com sucesso!');
         navigate('/brts');
@@ -48,6 +60,7 @@ export default function EditBus() {
       alert('Erro de comunicação com o servidor.');
     }
   };
+  
 
   if (!brt) {
     return <div className="error-message">Erro: Dados do autocarro não encontrados.</div>;
