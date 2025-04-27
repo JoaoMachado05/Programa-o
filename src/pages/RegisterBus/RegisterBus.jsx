@@ -12,15 +12,31 @@ export default function RegisterBus() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const capacidadeFinal = capacidade ? parseInt(capacidade, 10) : 0;
+
     const novoAutocarro = {
       matricula,
       modelo,
-      capacidade: parseInt(capacidade, 10),
+      capacidade_maxima: parseInt(capacidade, 10),
       acessibilidade,
+      lotacao_atual: Math.floor(parseInt(capacidade, 10) / 2),  // 50% de ocupação
+      linha_atual: "Linha 12",
+      velocidade: 45.7,
+      temperatura_atual: 22.5,
+      latitude: 41.545,    // valores fake mas válidos
+      longitude: -8.426,
+      atraso_minutos: 0,
+      proxima_paragem_horario: null,
+      last_temperature: 22.5,
+      temperature_action: null,
+      status: "IN_SERVICE"
     };
+    
+
+    console.log('Novo autocarro enviado:', JSON.stringify(novoAutocarro));
 
     try {
-      const response = await fetch('http://localhost:8080/brts', { // já a apontar para localhost!
+      const response = await fetch('http://localhost:8080/brts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novoAutocarro),
@@ -28,7 +44,6 @@ export default function RegisterBus() {
 
       if (response.ok) {
         alert('Autocarro adicionado com sucesso!');
-        // Limpar formulário
         setMatricula('');
         setModelo('');
         setCapacidade('');
@@ -69,7 +84,7 @@ export default function RegisterBus() {
           Capacidade:
           <input 
             type="number" 
-            min="1" // não permite negativos nem zero!
+            min="1"
             value={capacidade} 
             onChange={(e) => setCapacidade(e.target.value)} 
             required 
