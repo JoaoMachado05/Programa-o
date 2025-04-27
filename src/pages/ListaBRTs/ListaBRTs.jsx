@@ -75,11 +75,14 @@ const ListaBRTs = () => {
   };
 
   const formatVelocidade = (velocidade) => {
+    if (velocidade == null || velocidade === 0.0) {
+      return 'N/A';
+    }
     return `${velocidade.toFixed(1)} km/h`;
   };
 
   const formatTemperatura = (temperatura) => {
-    return `${temperatura.toFixed(1)} °C`;
+    return temperatura != null ? `${temperatura.toFixed(1)} °C` : 'N/A';
   };
 
   const determinarStatus = (velocidade) => {
@@ -87,6 +90,13 @@ const ListaBRTs = () => {
   };
 
   const formatarOcupacao = (lotacaoAtual, capacidadeMaxima) => {
+    if (lotacaoAtual == null || capacidadeMaxima == null || capacidadeMaxima === 0) {
+      return {
+        texto: '0% (0/0)',
+        classe: 'low'
+      };
+    }
+
     const percentual = (lotacaoAtual / capacidadeMaxima) * 100;
     return {
       texto: `${percentual.toFixed(0)}% (${lotacaoAtual}/${capacidadeMaxima})`,
@@ -129,7 +139,7 @@ const ListaBRTs = () => {
                   >
                     <div className="brt-info">
                       <h3>Matrícula: {brt.matricula}</h3>
-                      <p className="brt-linha">Linha: {brt.linhaAtual}</p>
+                      <p className="brt-linha">Linha: {brt.linhaAtual || 'Linha 12'}</p> {/* <--- ALTERADO AQUI */}
                       <div className="brt-detalhes">
                         <p><span className="detalhe-label">Velocidade:</span> {formatVelocidade(brt.velocidade)}</p>
                         <p><span className="detalhe-label">Temperatura:</span> {formatTemperatura(brt.temperaturaAtual)}</p>
@@ -137,7 +147,6 @@ const ListaBRTs = () => {
                       </div>
                     </div>
 
-                    {/* BOTÕES AQUI */}
                     <div className="action-buttons">
                       <button
                         className="view-details-button"
