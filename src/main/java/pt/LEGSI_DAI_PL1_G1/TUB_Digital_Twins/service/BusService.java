@@ -35,8 +35,8 @@ public class BusService {
     public BusDTO save(BusDTO busDTO) {
         Bus bus = convertToEntity(busDTO);
 
-        if (bus.getLinhaAtual() == null || bus.getLinhaAtual().isBlank()) {
-            bus.setLinhaAtual("Desconhecida");
+        if (bus.getLinhaAtual() == null || bus.getLinhaAtual().isEmpty()) {
+            bus.setLinhaAtual("Linha 12");
         }
 
         Bus savedBus = busRepository.save(bus);
@@ -88,36 +88,41 @@ public class BusService {
                 .map(bus -> (double) bus.getLotacaoAtual() / bus.getCapacidadeMaxima() * 100)
                 .orElse(null);
     }
-
     private BusDTO convertToDTO(Bus bus) {
         return new BusDTO(
                 bus.getId(),
                 bus.getMatricula(),
-                bus.getCapacidadeMaxima(),
-                bus.getLotacaoAtual(),
-                getPercentagemOcupacaoAtual(bus.getId()),
-                bus.getLinhaAtual(),
-                bus.getVelocidade(),
-                bus.getTemperaturaAtual(),
-                bus.getLatitude(),
-                bus.getLongitude()
+                bus.getCapacidadeMaxima() != null ? bus.getCapacidadeMaxima() : 50,
+                bus.getLotacaoAtual() != null ? bus.getLotacaoAtual() : 25,
+                bus.getLinhaAtual() != null ? bus.getLinhaAtual() : "Linha 12",
+                bus.getVelocidade() != null ? bus.getVelocidade() : 45.7,
+                bus.getTemperaturaAtual() != null ? bus.getTemperaturaAtual() : 22.5,
+                bus.getLatitude() != null ? bus.getLatitude() : 41.545,
+                bus.getLongitude() != null ? bus.getLongitude() : -8.426
         );
     }
 
     private Bus convertToEntity(BusDTO busDTO) {
-        String linha = busDTO.linhaAtual() != null ? busDTO.linhaAtual() : "Desconhecida";
+        String linha = busDTO.getLinhaAtual() != null ? busDTO.getLinhaAtual() : "Desconhecida";
 
-        return new Bus(
-                busDTO.id(),
-                busDTO.matricula(),
-                busDTO.capacidadeMaxima(),
-                busDTO.lotacaoAtual(),
+        Integer capacidadeMaxima = busDTO.getCapacidadeMaxima() != null ? busDTO.getCapacidadeMaxima() : 50; // valor por defeito
+        Integer lotacaoAtual = busDTO.getLotacaoAtual() != null ? busDTO.getLotacaoAtual() : capacidadeMaxima / 2; // 50% por defeito
+        Double velocidade = busDTO.getVelocidade() != null ? busDTO.getVelocidade() : 45.7;
+        Double temperaturaAtual = busDTO.getTemperaturaAtual() != null ? busDTO.getTemperaturaAtual() : 22.5;
+        Double latitude = busDTO.getLatitude() != null ? busDTO.getLatitude() : 41.545;
+        Double longitude = busDTO.getLongitude() != null ? busDTO.getLongitude() : -8.426;
+
+        Bus bus = new Bus(
+                busDTO.getId(),
+                busDTO.getMatricula(),
+                busDTO.getCapacidadeMaxima(),
+                busDTO.getLotacaoAtual(),
                 linha,
-                busDTO.velocidade(),
-                busDTO.temperaturaAtual(),
-                busDTO.latitude(),
-                busDTO.longitude()
+                busDTO.getVelocidade(),
+                busDTO.getTemperaturaAtual(),
+                busDTO.getLatitude(),
+                busDTO.getLongitude()
         );
+        return bus;
     }
-
 }
