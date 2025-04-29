@@ -12,6 +12,7 @@ import EditBus from './pages/EditBus/EditBus';
 import RegrasPage from "./pages/RegrasPage/RegrasPage.jsx";
 import AddStop from "./pages/Stop/AddStop";
 import RemoveStop from "./pages/Stop/RemoveStop";
+import MonitorizarRisco from './pages/Stop/MonitorizarRisco.jsx';
 
 import { useState, useEffect } from "react";
 
@@ -40,6 +41,7 @@ function App() {
         <Route path="/regras" element={<RegrasPage />} />
         <Route path="/stop/add" element={<AddStop />} />
         <Route path="/stop/remove" element={<RemoveStop />} />
+        <Route path="/monitorizar-risco" element={<MonitorizarRisco />} />
       </Routes>
     </Router>
   );

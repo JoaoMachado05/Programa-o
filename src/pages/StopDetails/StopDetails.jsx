@@ -5,6 +5,9 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./StopDetails.css";
 import BusStop3D from "./BusStop3D.jsx"; 
+import { Link } from "react-router-dom";
+
+
 
 // Correção para os ícones do Leaflet
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -226,6 +229,9 @@ const StopDetails = () => {
         </div>
         <div className="header-actions">
           <button onClick={handleGoBack} className="btn btn-back">Voltar</button>
+          <Link to={`/monitorizar-risco?idParagem=${stop.id}`}>
+             <button className="btn btn-monitor">Monitorizar Risco ⚠️</button>
+          </Link> 
           <button onClick={handleLogout} className="btn btn-logout">Logout</button>
         </div>
       </header>
@@ -240,6 +246,8 @@ const StopDetails = () => {
             <div className="info-card">
               <h2 className="card-title">Informações da Paragem</h2>
               <div className="status-grid">
+              
+
                 <div className="status-item">
                   <span className="status-label">Lotação Atual</span>
                   <div className="status-value-container">
@@ -271,6 +279,7 @@ const StopDetails = () => {
                     <span className="occupancy-text">{occupancyPercentage}%</span>
                   </div>
                 </div>
+          
               </div>
             </div>
             
