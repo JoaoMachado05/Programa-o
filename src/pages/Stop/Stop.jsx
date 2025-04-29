@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Stop.css";
-import { Link } from "react-router-dom";
 
 const Stop = () => {
   const [stops, setStops] = useState([]);
@@ -65,30 +64,27 @@ const Stop = () => {
         Paragens
       </h1>
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-  <Link to="/stop/add">
-    <button>Adicionar Paragem</button>
-  </Link>
-  <Link to="/stop/remove">
-    <button>Remover Paragem</button>
-  </Link>
-</div>
+      {/* Botões de Ação */}
+      <div className="button-group">
+        <Link to="/stop/add">
+          <button>Adicionar Paragem</button>
+        </Link>
+        <Link to="/stop/remove">
+          <button>Remover Paragem</button>
+        </Link>
+        <Link to="/monitorizar-risco">
+        <button className="monitor-button">Monitorizar Risco ⚠️</button>
+        </Link>
+      </div>
 
+      {/* Listagem das Paragens */}
       <div className="scroll-container">
         {loading ? (
           <p style={{ color: "white", textAlign: "center", padding: "20px" }}>
             A carregar dados...
           </p>
         ) : (
-          stops.map(({ 
-            id, 
-            nome, 
-            lotacaoAtual, 
-            capacidadeMaxima, 
-            temperaturaAtual, 
-            percentagemOcupacao,
-            tempoAteProximoAutocarro
-          }) => (
+          stops.map(({ id, nome, lotacaoAtual, capacidadeMaxima, temperaturaAtual, percentagemOcupacao, tempoAteProximoAutocarro }) => (
             <div key={id} className="stop-row">
               <h2>{nome}</h2>
               <p>Lotação Atual: {lotacaoAtual}</p>
@@ -113,6 +109,7 @@ const Stop = () => {
         )}
       </div>
 
+      {/* Controlos no Fundo */}
       <div className="bottom-controls">
         <button className="refresh-button" onClick={handleRefresh} disabled={loading}>
           {loading ? "A atualizar..." : "Atualizar Dados"}
@@ -122,10 +119,7 @@ const Stop = () => {
         </div>
       </div>
     </div>
-
-    
   );
-  
 };
 
 export default Stop;
