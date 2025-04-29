@@ -41,9 +41,9 @@ const Stop = () => {
   };
 
   const getOcupacaoClass = (percentagem) => {
-    if (percentagem < 50) return "ocupacao-baixa";
-    if (percentagem < 80) return "ocupacao-media";
-    return "ocupacao-alta";
+    if (percentagem < 50) return "stop-ocupacao-baixa";
+    if (percentagem < 80) return "stop-ocupacao-media";
+    return "stop-ocupacao-alta";
   };
 
   const formatDateTime = (date) => {
@@ -59,22 +59,24 @@ const Stop = () => {
   };
 
   return (
-    <div className="container">
-      <h1>
-        <button className="back-button" onClick={handleBack}>Voltar</button>
-        Paragens
-      </h1>
+    <div className="stop-container">
+      <h1>Paragens</h1>
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-  <Link to="/stop/add">
-    <button>Adicionar Paragem</button>
-  </Link>
-  <Link to="/stop/remove">
-    <button>Remover Paragem</button>
-  </Link>
-</div>
+      <div className="stop-action-buttons">
+        <Link to="/stop/add">
+          <button className="stop-action-button">Adicionar Paragem</button>
+        </Link>
+        <Link to="/stop/remove">
+          <button className="stop-action-button">Remover Paragem</button>
+        </Link>
+      </div>
+      
+      {/* Botão voltar posicionado acima da lista */}
+      <div className="stop-back-button-container">
+        <button className="stop-back-button" onClick={handleBack}>Voltar</button>
+      </div>
 
-      <div className="scroll-container">
+      <div className="stop-scroll-container">
         {loading ? (
           <p style={{ color: "white", textAlign: "center", padding: "20px" }}>
             A carregar dados...
@@ -100,7 +102,7 @@ const Stop = () => {
                   ? percentagemOcupacao.toFixed(2)
                   : "N/A"}%
               </p>
-              <button className="details-button" onClick={() => goToStopDetails(id)}>
+              <button className="stop-details-button" onClick={() => goToStopDetails(id)}>
                 Ver Detalhes
               </button>
             </div>
@@ -113,19 +115,16 @@ const Stop = () => {
         )}
       </div>
 
-      <div className="bottom-controls">
-        <button className="refresh-button" onClick={handleRefresh} disabled={loading}>
+      <div className="stop-bottom-controls">
+        <button className="stop-refresh-button" onClick={handleRefresh} disabled={loading}>
           {loading ? "A atualizar..." : "Atualizar Dados"}
         </button>
-        <div className="last-update">
+        <div className="stop-last-update">
           Última Atualização: {formatDateTime(lastUpdate)}
         </div>
       </div>
     </div>
-
-    
   );
-  
 };
 
 export default Stop;
