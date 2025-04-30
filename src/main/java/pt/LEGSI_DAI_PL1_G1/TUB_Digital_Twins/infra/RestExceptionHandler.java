@@ -46,13 +46,13 @@ public class RestExceptionHandler {
         });
         return ResponseEntity.badRequest().body(errors);
     }
-    /*
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
         ErrorResponse error = new ErrorResponse("Unexpected Error", "An unexpected error occurred");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
-    */
+
 
 
     // Classe interna para padronizar respostas de erro
