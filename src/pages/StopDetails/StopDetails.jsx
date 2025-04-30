@@ -7,8 +7,6 @@ import "./StopDetails.css";
 import BusStop3D from "./BusStop3D.jsx"; 
 import { Link } from "react-router-dom";
 
-
-
 // Correção para os ícones do Leaflet
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -24,11 +22,10 @@ const busStopIcon = new L.Icon({
 // Criando o ícone personalizado para autocarros
 const busIcon = new L.Icon({
   iconUrl: '/BusMapIcon.png',
-  iconSize: [50, 50], // Aumentei de 35x35 para 50x50
-  iconAnchor: [25, 50], // Ajustei para manter o ponto de ancoragem correto
-  popupAnchor: [0, -45], // Ajustei para o popup ficar bem posicionado
+  iconSize: [50, 50],
+  iconAnchor: [25, 50],
+  popupAnchor: [0, -45],
 });
-
 
 // Solução de fallback para ícones padrão do Leaflet
 let DefaultIcon = L.icon({
@@ -155,21 +152,21 @@ const StopDetails = () => {
   };
 
   if (!stop) return (
-    <div className="fullpage-container">
-      <header className="header">
-        <div className="logo-container">
-          <img src="/logo_TUB.jpg" alt="Logo TUB" className="tub-logo" />
+    <div className="sd-fullpage-container">
+      <header className="sd-header">
+        <div className="sd-logo-container">
+          <img src="/logo_TUB.jpg" alt="Logo TUB" className="sd-tub-logo" />
         </div>
-        <div className="header-actions">
-          <button onClick={handleGoBack} className="btn btn-back">Voltar</button>
-          <button onClick={handleLogout} className="btn btn-logout">Logout</button>
+        <div className="sd-header-actions">
+          <button onClick={handleGoBack} className="sd-btn sd-btn-back">Voltar</button>
+          <button onClick={handleLogout} className="sd-btn sd-btn-logout">Logout</button>
         </div>
       </header>
       
-      <main className="main-content">
-        <div className="loading-container">
-          <div className="loader"></div>
-          <p className="loading">A carregar informações...</p>
+      <main className="sd-main-content">
+        <div className="sd-loading-container">
+          <div className="sd-loader"></div>
+          <p className="sd-loading">A carregar informações...</p>
         </div>
       </main>
     </div>
@@ -179,11 +176,11 @@ const StopDetails = () => {
   const occupancyPercentage = ((stop.lotacaoAtual / stop.capacidadeMaxima) * 100).toFixed(1);
   
   // Determinar a classe de cor baseada na ocupação
-  let occupancyClass = "low-occupancy";
+  let occupancyClass = "sd-low-occupancy";
   if (occupancyPercentage > 75) {
-    occupancyClass = "high-occupancy";
+    occupancyClass = "sd-high-occupancy";
   } else if (occupancyPercentage > 50) {
-    occupancyClass = "medium-occupancy";
+    occupancyClass = "sd-medium-occupancy";
   }
 
   // Filtrar autocarros que estão próximos à paragem (até 1km de distância)
@@ -222,71 +219,68 @@ const StopDetails = () => {
   });
 
   return (
-    <div className="fullpage-container">
-      <header className="header">
-        <div className="logo-container">
-          <img src="/logo_TUB.jpg" alt="Logo TUB" className="tub-logo" />
+    <div className="sd-fullpage-container">
+      <header className="sd-header">
+        <div className="sd-logo-container">
+          <img src="/logo_TUB.jpg" alt="Logo TUB" className="sd-tub-logo" />
         </div>
-        <div className="header-actions">
-          <button onClick={handleGoBack} className="btn btn-back">Voltar</button>
+        <div className="sd-header-actions">
+          <button onClick={handleGoBack} className="sd-btn sd-btn-back">Voltar</button>
           <Link to={`/monitorizar-risco?idParagem=${stop.id}`}>
-             <button className="btn btn-monitor">Monitorizar Risco ⚠️</button>
+             <button className="sd-btn sd-btn-monitor">Monitorizar Risco ⚠️</button>
           </Link> 
-          <button onClick={handleLogout} className="btn btn-logout">Logout</button>
+          <button onClick={handleLogout} className="sd-btn sd-btn-logout">Logout</button>
         </div>
       </header>
 
-      <main className="main-content">
-        <div className="page-header">
-          <h1 className="page-title">{stop.nome}</h1>
+      <main className="sd-main-content">
+        <div className="sd-page-header">
+          <h1 className="sd-page-title">{stop.nome}</h1>
         </div>
         
-        <div className="fullpage-content">
-          <div className="left-section">
-            <div className="info-card">
-              <h2 className="card-title">Informações da Paragem</h2>
-              <div className="status-grid">
-              
-
-                <div className="status-item">
-                  <span className="status-label">Lotação Atual</span>
-                  <div className="status-value-container">
-                    <span className="status-value">{stop.lotacaoAtual}</span>
-                    <span className="status-unit">pessoas</span>
+        <div className="sd-fullpage-content">
+          <div className="sd-left-section">
+            <div className="sd-info-card">
+              <h2 className="sd-card-title">Informações da Paragem</h2>
+              <div className="sd-status-grid">
+                <div className="sd-status-item">
+                  <span className="sd-status-label">Lotação Atual</span>
+                  <div className="sd-status-value-container">
+                    <span className="sd-status-value">{stop.lotacaoAtual}</span>
+                    <span className="sd-status-unit">pessoas</span>
                   </div>
                 </div>
-                <div className="status-item">
-                  <span className="status-label">Capacidade Máxima</span>
-                  <div className="status-value-container">
-                    <span className="status-value">{stop.capacidadeMaxima}</span>
-                    <span className="status-unit">pessoas</span>
+                <div className="sd-status-item">
+                  <span className="sd-status-label">Capacidade Máxima</span>
+                  <div className="sd-status-value-container">
+                    <span className="sd-status-value">{stop.capacidadeMaxima}</span>
+                    <span className="sd-status-unit">pessoas</span>
                   </div>
                 </div>
-                <div className="status-item">
-                  <span className="status-label">Temperatura</span>
-                  <div className="status-value-container">
-                    <span className="status-value">{stop.temperaturaAtual}</span>
-                    <span className="status-unit">°C</span>
+                <div className="sd-status-item">
+                  <span className="sd-status-label">Temperatura</span>
+                  <div className="sd-status-value-container">
+                    <span className="sd-status-value">{stop.temperaturaAtual}</span>
+                    <span className="sd-status-unit">°C</span>
                   </div>
                 </div>
-                <div className="status-item">
-                  <span className="status-label">Ocupação</span>
-                  <div className={`occupancy-indicator ${occupancyClass}`}>
+                <div className="sd-status-item">
+                  <span className="sd-status-label">Ocupação</span>
+                  <div className={`sd-occupancy-indicator ${occupancyClass}`}>
                     <div 
-                      className="occupancy-bar" 
+                      className="sd-occupancy-bar" 
                       style={{width: `${occupancyPercentage}%`}}
                     ></div>
-                    <span className="occupancy-text">{occupancyPercentage}%</span>
+                    <span className="sd-occupancy-text">{occupancyPercentage}%</span>
                   </div>
                 </div>
-          
               </div>
             </div>
             
-            {/* Map card expandido até o modelo 3D */}
-            <div className="map-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
-              <h2 className="card-title">Localização e Autocarros Próximos</h2>
-              <div className="map-container" style={{ flex: 1, height: '100%', width: '100%', minHeight: '400px', position: 'relative' }}>
+            {/* Map card */}
+            <div className="sd-map-card">
+              <h2 className="sd-card-title">Localização e Autocarros Próximos</h2>
+              <div className="sd-map-container">
                 {stop.latitude && stop.longitude && (
                   <MapContainer 
                     center={[stop.latitude, stop.longitude]} 
@@ -335,31 +329,31 @@ const StopDetails = () => {
                 )}
               </div>
               {/* Legenda dos ícones do mapa */}
-              <div className="map-legend">
-                <div className="legend-item">
-                  <img src="/BusStopMapIcon.png?v=1" alt="Paragem" className="legend-icon" style={{ width: '20px', height: '20px' }} />
+              <div className="sd-map-legend">
+                <div className="sd-legend-item">
+                  <img src="/BusStopMapIcon.png?v=1" alt="Paragem" className="sd-legend-icon" />
                   <span>Paragem</span>
                 </div>
-                <div className="legend-item">
-                  <img src="/BusMapIcon.png" alt="Autocarro" className="legend-icon" style={{ width: '20px', height: '20px' }} />
+                <div className="sd-legend-item">
+                  <img src="/BusMapIcon.png" alt="Autocarro" className="sd-legend-icon" />
                   <span>Autocarro</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="right-section">
+          <div className="sd-right-section">
             {/* Modelo 3D da paragem */}
-            <div className="model-card">
-              <h2 className="card-title">Modelo 3D da Paragem</h2>
-              <div className="model-container" style={{ height: "400px", width: "100%" }}>
-               <BusStop3D stopId={id} />
-                <div className="model-overlay">
-                  <div className="model-info">
-                    <div className="model-details">
-                      <span className="model-label">Modelo Interativo</span>
+            <div className="sd-model-card">
+              <h2 className="sd-card-title">Modelo 3D da Paragem</h2>
+              <div className="sd-model-container">
+                <BusStop3D stopId={id} />
+                <div className="sd-model-overlay">
+                  <div className="sd-model-info">
+                    <div className="sd-model-details">
+                      <span className="sd-model-label">Modelo Interativo</span>
                     </div>
-                    <div className="timestamp">
+                    <div className="sd-timestamp">
                       {currentTime}
                     </div>
                   </div>
@@ -368,28 +362,28 @@ const StopDetails = () => {
             </div>
             
             {/* Lista de autocarros próximos */}
-            <div className="buses-card">
-              <h2 className="card-title">Autocarros a Caminho</h2>
-              <div className="buses-list">
+            <div className="sd-buses-card">
+              <h2 className="sd-card-title">Autocarros a Caminho</h2>
+              <div className="sd-buses-list">
                 {sortedBuses.length > 0 ? (
                   sortedBuses.map(bus => (
-                    <div key={bus.id} className="bus-item">
-                      <div className="bus-info">
-                        <div className="bus-number">#{bus.matricula || bus.id}</div>
-                        <div className="bus-details">
-                          <div className="bus-line">
+                    <div key={bus.id} className="sd-bus-item">
+                      <div className="sd-bus-info">
+                        <div className="sd-bus-number">#{bus.matricula || bus.id}</div>
+                        <div className="sd-bus-details">
+                          <div className="sd-bus-line">
                             {bus.linha && bus.destino ? 
                               `Linha ${bus.linha} → ${bus.destino}` : 
                               `Autocarro ID: ${bus.id}`
                             }
                           </div>
-                          <div className="bus-status">
+                          <div className="sd-bus-status">
                             {bus.tempoChegada ? (
-                              <span className="arrival-time">Chega em {bus.tempoChegada} min</span>
+                              <span className="sd-arrival-time">Chega em {bus.tempoChegada} min</span>
                             ) : (
-                              <span className="arrival-time">Em aproximação</span>
+                              <span className="sd-arrival-time">Em aproximação</span>
                             )}
-                            <span className="bus-occupancy">
+                            <span className="sd-bus-occupancy">
                               Lotação: {bus.lotacaoAtual || 0} pessoas
                             </span>
                           </div>
@@ -398,7 +392,7 @@ const StopDetails = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="no-buses">
+                  <div className="sd-no-buses">
                     <p>Não há autocarros nas proximidades.</p>
                   </div>
                 )}
@@ -410,7 +404,7 @@ const StopDetails = () => {
       
       {/* Informação de última atualização no canto inferior direito */}
       {lastUpdate && (
-        <div className="last-update-info">
+        <div className="sd-last-update-info">
           Atualizado às: {lastUpdate.toLocaleTimeString('pt-PT')}
         </div>
       )}

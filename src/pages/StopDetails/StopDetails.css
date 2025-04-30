@@ -15,7 +15,8 @@ body, html {
   color: #2c3e50;
 }
 
-.fullpage-container {
+/* Contenedor principal */
+.sd-fullpage-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -25,11 +26,11 @@ body, html {
 }
 
 /* Header Styles */
-.header {
+.sd-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #003f7f; /* Azul escuro da TUB */
+  background-color: #047cb4; /* Azul escuro da TUB */
   color: white;
   height: 80px;
   padding: 0 24px;
@@ -38,21 +39,21 @@ body, html {
   z-index: 1000;
 }
 
-.logo-container {
+.sd-logo-container {
   display: flex;
   align-items: center;
 }
 
-.tub-logo {
+.sd-tub-logo {
   height: 70px;
 }
 
-.header-actions {
+.sd-header-actions {
   display: flex;
   gap: 12px;
 }
 
-.btn {
+.sd-btn {
   padding: 9px 18px;
   border: none;
   border-radius: 8px;
@@ -64,30 +65,41 @@ body, html {
   justify-content: center;
 }
 
-.btn-back {
+.sd-btn-back {
   background-color: rgba(255, 255, 255, 0.15);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.btn-back:hover {
+.sd-btn-back:hover {
   background-color: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
 }
 
-.btn-logout {
+.sd-btn-logout {
   background-color: rgba(220, 53, 69, 0.9);
   color: white;
 }
 
-.btn-logout:hover {
+.sd-btn-logout:hover {
   background-color: #dc3545;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
 }
 
+.sd-btn-monitor {
+  background-color: #f39c12;
+  color: white;
+}
+
+.sd-btn-monitor:hover {
+  background-color: #e67e22;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+}
+
 /* Loading Animation */
-.loading-container {
+.sd-loading-container {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -96,27 +108,27 @@ body, html {
   gap: 15px;
 }
 
-.loader {
+.sd-loader {
   border: 5px solid #e0e7ff;
   border-top: 5px solid #047cb4;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  animation: spin 1s linear infinite;
+  animation: sd-spin 1s linear infinite;
 }
 
-@keyframes spin {
+@keyframes sd-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-.loading {
+.sd-loading {
   font-size: 1.2rem;
   color: #047cb4;
 }
 
 /* Main Content */
-.main-content {
+.sd-main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -127,20 +139,20 @@ body, html {
   background: #f5f7fa;
 }
 
-.page-header {
+.sd-page-header {
   padding: 20px 24px;
   background-color: rgba(4, 124, 180, 0.05);
   border-bottom: 1px solid rgba(4, 124, 180, 0.1);
 }
 
-.page-title {
+.sd-page-title {
   font-size: 2rem;
-  color: #003f7f;
+  color: #047cb4;
   font-weight: 600;
 }
 
 /* Fullpage Content Layout */
-.fullpage-content {
+.sd-fullpage-content {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -150,13 +162,13 @@ body, html {
 }
 
 /* Left and Right Sections */
-.left-section, .right-section {
+.sd-left-section, .sd-right-section {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.info-card, .map-card, .camera-card, .buses-card, .model-card {
+.sd-info-card, .sd-map-card, .sd-camera-card, .sd-buses-card, .sd-model-card {
   background-color: white;
   border-radius: 16px;
   box-shadow: 0 6px 18px rgba(0, 63, 127, 0.08);
@@ -166,15 +178,15 @@ body, html {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.info-card:hover, .map-card:hover, .camera-card:hover, .buses-card:hover, .model-card:hover {
+.sd-info-card:hover, .sd-map-card:hover, .sd-camera-card:hover, .sd-buses-card:hover, .sd-model-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 24px rgba(0, 63, 127, 0.12);
 }
 
 /* Modificado: Fundo branco sólido para os títulos em vez do gradiente */
-.card-title {
+.sd-card-title {
   padding: 18px 24px;
-  background-color: #003f7f; /* Fundo sólido em vez do gradiente */
+  background-color: #047cb4; /* Fundo sólido em vez do gradiente */
   color: white;
   font-size: 1.3rem;
   font-weight: 500;
@@ -182,7 +194,7 @@ body, html {
 }
 
 /* Status Grid */
-.status-grid {
+.sd-status-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   padding: 24px;
@@ -190,38 +202,38 @@ body, html {
   flex: 1;
 }
 
-.status-item {
+.sd-status-item {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.status-label {
+.sd-status-label {
   font-size: 0.95rem;
   color: #6c757d;
   font-weight: 500;
 }
 
-.status-value-container {
+.sd-status-value-container {
   display: flex;
   align-items: baseline;
   gap: 5px;
 }
 
-.status-value {
+.sd-status-value {
   font-size: 2.2rem;
   font-weight: 700;
   color: #047cb4;
   line-height: 1;
 }
 
-.status-unit {
+.sd-status-unit {
   font-size: 0.95rem;
   color: #6c757d;
 }
 
 /* Occupancy Indicator */
-.occupancy-indicator {
+.sd-occupancy-indicator {
   height: 30px;
   border-radius: 15px;
   background-color: #f0f0f0;
@@ -231,7 +243,7 @@ body, html {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.occupancy-bar {
+.sd-occupancy-bar {
   height: 100%;
   position: absolute;
   left: 0;
@@ -240,7 +252,7 @@ body, html {
   transition: width 0.5s ease;
 }
 
-.occupancy-text {
+.sd-occupancy-text {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -254,20 +266,20 @@ body, html {
 }
 
 /* Modificado: Barras de ocupação com cores sólidas */
-.low-occupancy .occupancy-bar {
+.sd-low-occupancy .sd-occupancy-bar {
   background-color: #28a745; /* Verde sólido */
 }
 
-.medium-occupancy .occupancy-bar {
+.sd-medium-occupancy .sd-occupancy-bar {
   background-color: #ffc107; /* Amarelo sólido */
 }
 
-.high-occupancy .occupancy-bar {
+.sd-high-occupancy .sd-occupancy-bar {
   background-color: #dc3545; /* Vermelho sólido */
 }
 
 /* Map Container */
-.map-container {
+.sd-map-container {
   flex: 1;
   padding: 16px;
   min-height: 280px;
@@ -277,7 +289,7 @@ body, html {
 }
 
 /* Map Legend */
-.map-legend {
+.sd-map-legend {
   display: flex;
   gap: 16px;
   padding: 12px 16px;
@@ -286,7 +298,7 @@ body, html {
   border-radius: 8px;
 }
 
-.legend-item {
+.sd-legend-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -294,7 +306,7 @@ body, html {
   color: #2c3e50;
 }
 
-.legend-icon {
+.sd-legend-icon {
   width: 20px;
   height: 20px;
   border-radius: 4px;
@@ -302,7 +314,7 @@ body, html {
 }
 
 /* Model Container */
-.model-container {
+.sd-model-container {
   position: relative;
   flex: 1;
   overflow: hidden;
@@ -314,7 +326,7 @@ body, html {
 }
 
 /* Modificado: Overlay com fundo sólido */
-.model-overlay {
+.sd-model-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -324,36 +336,36 @@ body, html {
   color: white;
 }
 
-.model-info {
+.sd-model-info {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
 }
 
-.model-details {
+.sd-model-details {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.model-label {
+.sd-model-label {
   font-size: 0.9rem;
   font-weight: 600;
 }
 
-.timestamp {
+.sd-timestamp {
   font-size: 0.9rem;
   font-weight: 500;
 }
 
 /* Buses List */
-.buses-card {
+.sd-buses-card {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-.buses-list {
+.sd-buses-list {
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -362,7 +374,7 @@ body, html {
   max-height: 400px;
 }
 
-.bus-item {
+.sd-bus-item {
   padding: 16px;
   border-radius: 12px;
   background-color: rgba(4, 124, 180, 0.05);
@@ -370,18 +382,18 @@ body, html {
   transition: all 0.3s ease;
 }
 
-.bus-item:hover {
+.sd-bus-item:hover {
   background-color: rgba(4, 124, 180, 0.1);
   transform: translateX(3px);
 }
 
-.bus-info {
+.sd-bus-info {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.bus-number {
+.sd-bus-number {
   background-color: #047cb4;
   color: white;
   font-weight: 700;
@@ -395,38 +407,38 @@ body, html {
   box-shadow: 0 4px 8px rgba(4, 124, 180, 0.2);
 }
 
-.bus-details {
+.sd-bus-details {
   display: flex;
   flex-direction: column;
   gap: 5px;
   flex: 1;
 }
 
-.bus-line {
+.sd-bus-line {
   font-weight: 500;
   color: #2c3e50;
   font-size: 1.05rem;
 }
 
-.bus-status {
+.sd-bus-status {
   display: flex;
   justify-content: space-between;
   color: #6c757d;
   font-size: 0.9rem;
 }
 
-.arrival-time {
+.sd-arrival-time {
   color: #047cb4;
   font-weight: 600;
 }
 
-.no-buses {
+.sd-no-buses {
   padding: 24px;
   text-align: center;
   color: #6c757d;
 }
 
-.last-update-info {
+.sd-last-update-info {
   position: fixed;
   bottom: 12px;
   right: 12px;
@@ -442,54 +454,68 @@ body, html {
 
 /* Media Queries para diferentes tamanhos de tela */
 @media (min-width: 768px) {
-  .status-grid {
+  .sd-status-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .info-card {
+  .sd-info-card {
     height: auto;
   }
   
-  .map-card {
+  .sd-map-card {
     flex: 1;
     min-height: 320px;
   }
 }
 
 @media (min-width: 992px) {
-  .fullpage-content {
+  .sd-fullpage-content {
     flex-direction: row;
   }
   
-  .left-section {
+  .sd-left-section {
     width: 55%;
     height: 100%;
   }
   
-  .right-section {
+  .sd-right-section {
     width: 45%;
     height: 100%;
   }
   
-  .model-card, .buses-card {
+  .sd-model-card, .sd-buses-card {
     flex: 1;
   }
 }
 
 /* Estilo para foco em acessibilidade */
-:focus {
+.sd-fullpage-container *:focus {
   outline: 3px solid rgba(4, 124, 180, 0.5);
   outline-offset: 2px;
 }
 
 /* Botão de atualização manual */
-.btn-refresh {
+.sd-btn-refresh {
   background-color: #047cb4;
   color: white;
   margin-left: 12px;
 }
 
-.btn-refresh:hover {
+.sd-btn-refresh:hover {
   background-color: #0367a3;
   transform: translateY(-2px);
+}
+
+/* Estilos específicos para o container do Leaflet map */
+.sd-map-card .leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Estilo específico para ícones de legenda */
+.sd-legend-item img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }

@@ -181,10 +181,14 @@ body.no-top-border {
   border-radius: 12px;
 }
 
+/* Botões de ação */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
 /* Botão ver detalhes */
-.view-details-button {
-  background-color: #003366;
-  color: white;
+.view-details-button, .edit-button, .remove-button {
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
@@ -194,8 +198,31 @@ body.no-top-border {
   white-space: nowrap;
 }
 
+.view-details-button {
+  background-color: #003366;
+  color: white;
+}
+
 .view-details-button:hover {
   background-color: #002244;
+}
+
+.edit-button {
+  background-color: #FF9800;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #FB8C00;
+}
+
+.remove-button {
+  background-color: #F44336;
+  color: white;
+}
+
+.remove-button:hover {
+  background-color: #D32F2F;
 }
 
 /* Seção de atualização */
@@ -301,10 +328,17 @@ body.no-top-border {
     align-items: flex-start;
   }
   
-  .view-details-button {
+  .action-buttons {
     margin-top: 15px;
-    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    gap: 8px;
+  }
+  
+  .view-details-button, .edit-button, .remove-button {
+    width: 100%;
+    text-align: center;
   }
   
   .brt-detalhes {

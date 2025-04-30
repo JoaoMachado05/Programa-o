@@ -29,7 +29,15 @@ const ListaBRTs = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setBrts(data);
+      
+      // Processando dados para ter formato consistente
+      const processedData = data.map(brt => ({
+        ...brt,
+        lotacaoAtual: brt.lotacao_atual !== undefined ? brt.lotacao_atual : brt.lotacaoAtual,
+        capacidadeMaxima: brt.capacidade_maxima !== undefined ? brt.capacidade_maxima : brt.capacidadeMaxima
+      }));
+      
+      setBrts(processedData);
       setLastUpdated(new Date().toLocaleString());
     } catch (err) {
       console.error('Error fetching BRT data:', err);
@@ -138,8 +146,8 @@ const ListaBRTs = () => {
                     onClick={() => handleBRTClick(brt.id)}
                   >
                     <div className="brt-info">
-                      <h3>Matrícula: {brt.matricula}</h3>
-                      <p className="brt-linha">Linha: {brt.linhaAtual || 'Linha 12'}</p> {/* <--- ALTERADO AQUI */}
+                      <h3>Matrícula: {brt.matricula || 'N/A'}</h3>
+                      <p className="brt-linha">Linha: {brt.linhaAtual || 'N/A'}</p>
                       <div className="brt-detalhes">
                         <p><span className="detalhe-label">Velocidade:</span> {formatVelocidade(brt.velocidade)}</p>
                         <p><span className="detalhe-label">Temperatura:</span> {formatTemperatura(brt.temperaturaAtual)}</p>

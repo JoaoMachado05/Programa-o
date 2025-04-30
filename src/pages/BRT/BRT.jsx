@@ -1,13 +1,41 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './BRT.css';
-import ManutencaoAutocarro from './ManutencaoAutocarro';
-import UtilizacaoAutocarro from './UtilizacaoAutocarro';
+import AgendarManutencaoBRT from './AgendarManutencaoBRT';
+import VisualizarAvariasBRT from './VisualizarAvariasBRT';
 
 import Bus3DModel from './Bus3DModel';
+
+// Component to update map view when coordinates change
+const MapUpdater = ({ center }) => {
+  const map = useMap();
+  const [userInteracted, setUserInteracted] = useState(false);
+  
+  useEffect(() => {
+    // Apenas fazemos o setView na primeira renderização ou se o usuário não interagiu
+    if (center && !userInteracted) {
+      map.setView(center, map.getZoom());
+    }
+    
+    // Adicionamos listeners para detectar interação do usuário
+    const handleUserInteraction = () => {
+      setUserInteracted(true);
+    };
+    
+    map.on('drag', handleUserInteraction);
+    map.on('zoom', handleUserInteraction);
+    
+    return () => {
+      map.off('drag', handleUserInteraction);
+      map.off('zoom', handleUserInteraction);
+    };
+  }, [center, map, userInteracted]);
+  
+  return null;
+};
 
 const busIcon = new L.Icon({
   iconUrl: '/BusMapIcon.png',
@@ -32,11 +60,12 @@ const BRT = () => {
   const [brtData, setBrtData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [position, setPosition] = useState(DEFAULT_POSITION);
+  const [lastUpdate, setLastUpdate] = useState(null);
   const updateIntervalRef = useRef(null);
   
-  // Estados para controlar os popups
-  const [showMaintenancePopup, setShowMaintenancePopup] = useState(false);
-  const [showUsagePopup, setShowUsagePopup] = useState(false);
+  // Estados para controlar os modais
+  const [showMaintenanceModal, setShowMaintenanceModal] = useState(false);
+  const [showIssuesModal, setShowIssuesModal] = useState(false);
 
   // Função para buscar dados do BRT
   const fetchBRTData = async () => {
@@ -49,11 +78,20 @@ const BRT = () => {
       
       const data = await response.json();
       
-      // Atualizar os dados do BRT com a hora atual
-      setBrtData({
+      // Verificar e definir valores padrão para campos potencialmente indefinidos
+      // Corrigindo a naming convention dos campos para corresponder à API
+      const processedData = {
         ...data,
-        ultimaAtualizacao: new Date().toLocaleString()
-      });
+        lotacaoAtual: data.lotacao_atual !== undefined ? data.lotacao_atual : 0,
+        capacidadeMaxima: data.capacidade_maxima !== undefined ? data.capacidade_maxima : 0,
+        velocidade: data.velocidade !== undefined ? data.velocidade : 0,
+        temperaturaAtual: data.temperaturaAtual !== undefined ? data.temperaturaAtual : 0,
+        ultimaManutencao: data.ultimaManutencao || "N/A",
+      };
+      
+      // Atualizar os dados do BRT com a hora atual
+      setBrtData(processedData);
+      setLastUpdate(new Date());
       
       // Atualizar a posição no mapa se houver coordenadas
       if (data.latitude && data.longitude) {
@@ -94,18 +132,26 @@ const BRT = () => {
     navigate('/login');
   };
   
-  const toggleMaintenancePopup = () => {
-    setShowMaintenancePopup(!showMaintenancePopup);
-    if (!showMaintenancePopup) {
-      setShowUsagePopup(false); // Fechar o outro popup se abrir este
-    }
+  // Handlers para modais
+  const handleOpenMaintenanceModal = () => {
+    setShowMaintenanceModal(true);
   };
   
-  const toggleUsagePopup = () => {
-    setShowUsagePopup(!showUsagePopup);
-    if (!showUsagePopup) {
-      setShowMaintenancePopup(false); // Fechar o outro popup se abrir este
-    }
+  const handleCloseMaintenanceModal = () => {
+    setShowMaintenanceModal(false);
+  };
+  
+  const handleOpenIssuesModal = () => {
+    setShowIssuesModal(true);
+  };
+  
+  const handleCloseIssuesModal = () => {
+    setShowIssuesModal(false);
+  };
+  
+  const handleMaintenanceSubmit = (dadosManutencao) => {
+    console.log("Manutenção agendada:", dadosManutencao);
+    setShowMaintenanceModal(false);
   };
 
   // Helper functions
@@ -117,13 +163,63 @@ const BRT = () => {
     return brtData?.velocidade > 0 ? "active" : "inactive";
   };
 
+  // Formatar data
+  const formatDate = (dateString) => {
+    if (!dateString || dateString === "N/A") return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('pt-PT');
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString;
+    }
+  };
+
   // Componentes de UI condicionais
   if (loading) {
-    return <div className="brt-container loading">Carregando dados...</div>;
+    return (
+      <div className="brt-container">
+        <header className="brt-header">
+          <div className="brt-logo-container">
+            <img src="/logo_smart_city.jpg" alt="Logo Smart City" className="brt-logo" />
+          </div>
+          <div className="brt-header-actions">
+            <button onClick={handleVoltar} className="brt-btn brt-btn-back">Voltar</button>
+            <button onClick={handleLogout} className="brt-btn brt-btn-logout">Logout</button>
+          </div>
+        </header>
+
+        <main className="brt-main-content">
+          <div className="brt-loading-container">
+            <div className="brt-loader"></div>
+            <p className="brt-loading">A carregar dados...</p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   if (!brtData) {
-    return <div className="brt-container error">BRT não encontrado</div>;
+    return (
+      <div className="brt-container">
+        <header className="brt-header">
+          <div className="brt-logo-container">
+            <img src="/logo_smart_city.jpg" alt="Logo Smart City" className="brt-logo" />
+          </div>
+          <div className="brt-header-actions">
+            <button onClick={handleVoltar} className="brt-btn brt-btn-back">Voltar</button>
+            <button onClick={handleLogout} className="brt-btn brt-btn-logout">Logout</button>
+          </div>
+        </header>
+
+        <main className="brt-main-content">
+          <div className="brt-error-container">
+            <p className="brt-error">BRT não encontrado</p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   const status = getStatus();
@@ -131,129 +227,177 @@ const BRT = () => {
   // Renderização do componente principal
   return (
     <div className="brt-container">
-      {/* Header com botões agrupados à direita */}
+      {/* Header com logo e botões */}
       <header className="brt-header">
-        <h1>BRT {brtData.matricula}</h1>
-        <div className="nav-buttons">
-          <button className="back-button" onClick={handleVoltar}>Voltar</button>
-          <button className="logout-button" onClick={handleLogout}>Logout</button>
+        <div className="brt-logo-container">
+          <img src="/logo_smart_city.jpg" alt="Logo Smart City" className="brt-logo" />
+        </div>
+        <div className="brt-header-actions">
+          <button onClick={handleVoltar} className="brt-btn brt-btn-back">Voltar</button>
+          <button onClick={handleLogout} className="brt-btn brt-btn-logout">Logout</button>
         </div>
       </header>
 
-      {/* Informações do BRT */}
-      <section className="brt-info-section">
-        <div className="info-panel">
-          <h2>Informações:</h2>
-          <div className="info-list">
-            <InfoItem label="Matrícula" value={brtData.matricula} />
-            <InfoItem label="Linha" value={brtData.linhaAtual} />
-            <InfoItem label="Velocidade" value={`${brtData.velocidade} km/h`} />
-            <InfoItem 
-              label="Lotação" 
-              value={`${brtData.lotacaoAtual}/${brtData.capacidadeMaxima} passageiros`} 
-            />
-            <InfoItem label="Temperatura" value={`${brtData.temperaturaAtual}°C`} />
-            <InfoItem 
-              label="Status" 
-              value={status === 'active' ? 'Em movimento' : 'Parado'} 
-              className={`info-value status-${status}`} 
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Visualizações (Mapa e Modelo 3D) */}
-      <section className="brt-visuals">
-        <div className="map-container">
-          <MapContainer 
-            center={position} 
-            zoom={13} 
-            style={{ height: '100%', width: '100%' }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Marker position={position} icon={busIcon}>
-              <Popup>
-                BRT {brtData.matricula}<br />
-                Linha: {brtData.linhaAtual}<br />
-                Velocidade: {brtData.velocidade} km/h<br />
-                Lotação: {brtData.lotacaoAtual}/{brtData.capacidadeMaxima}
-              </Popup>
-            </Marker>
-          </MapContainer>
+      <main className="brt-main-content">
+        <div className="brt-page-title-container">
+          <h1 className="brt-page-title">BRT {brtData.matricula || id}</h1>
         </div>
         
-        <div className="model-container">
-          <Bus3DModel 
-            color={getBusColor()} 
-            speed={brtData.velocidade} 
-          />
-        </div>
-      </section>
-
-      {/* Botões para mostrar os popups */}
-      <section className="brt-navigation-buttons">
-        <div className="button-container">
-          <button 
-            className="navigation-button maintenance-button"
-            onClick={toggleMaintenancePopup}
-          >
-            Gestão de Manutenção
-          </button>
-          <button 
-            className="navigation-button usage-button"
-            onClick={toggleUsagePopup}
-          >
-            Histórico de Utilização
-          </button>
-        </div>
-      </section>
-
-      {/* Popups condicionais */}
-      {showMaintenancePopup && (
-        <div className="popup-overlay">
-          <div className="popup-container maintenance-popup">
-            <div className="popup-header">
-              <h2>Gestão de Manutenção</h2>
-              <button className="close-popup" onClick={toggleMaintenancePopup}>×</button>
+        <div className="brt-fullpage-content">
+          <div className="brt-left-section">
+            <div className="brt-info-card">
+              <h2 className="brt-card-title">Informações do Autocarro</h2>
+              <div className="brt-status-grid">
+                <div className="brt-status-item">
+                  <span className="brt-status-label">Matrícula</span>
+                  <div className="brt-status-value-container">
+                    <span className="brt-status-value">{brtData.matricula || "N/A"}</span>
+                  </div>
+                </div>
+                <div className="brt-status-item">
+                  <span className="brt-status-label">Linha</span>
+                  <div className="brt-status-value-container">
+                    <span className="brt-status-value">{brtData.linhaAtual || "N/A"}</span>
+                  </div>
+                </div>
+                <div className="brt-status-item">
+                  <span className="brt-status-label">Velocidade</span>
+                  <div className="brt-status-value-container">
+                    <span className="brt-status-value">{brtData.velocidade || 0} km/h</span>
+                  </div>
+                </div>
+                <div className="brt-status-item">
+                  <span className="brt-status-label">Lotação</span>
+                  <div className="brt-status-value-container">
+                    <span className="brt-status-value">{brtData.lotacaoAtual || 0}/{brtData.capacidadeMaxima || 0} passageiros</span>
+                  </div>
+                </div>
+                <div className="brt-status-item">
+                  <span className="brt-status-label">Temperatura</span>
+                  <div className="brt-status-value-container">
+                    <span className="brt-status-value">{brtData.temperaturaAtual || 0}°C</span>
+                  </div>
+                </div>
+                <div className="brt-status-item">
+                  <span className="brt-status-label">Status</span>
+                  <div className="brt-status-value-container">
+                    <span className={`brt-status-value brt-status-${status}`}>
+                      {status === 'active' ? 'Em movimento' : 'Parado'}
+                    </span>
+                  </div>
+                </div>
+                <div className="brt-status-item">
+                  <span className="brt-status-label">Última Manutenção</span>
+                  <div className="brt-status-value-container">
+                    <span className="brt-status-value brt-small-text">
+                      {formatDate(brtData.ultimaManutencao)}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="popup-content">
-              <ManutencaoAutocarro idAutocarro={id} />
+            
+            <div className="brt-map-card">
+              <h2 className="brt-card-title">Localização</h2>
+              <div className="brt-map-container">
+                <MapContainer 
+                  center={position} 
+                  zoom={13} 
+                  scrollWheelZoom={true}
+                  style={{ height: "100%", width: "100%" }}
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  />
+                  <Marker position={position} icon={busIcon}>
+                    <Popup>
+                      BRT {brtData.matricula || "N/A"}<br />
+                      Linha: {brtData.linhaAtual || "N/A"}<br />
+                      Velocidade: {brtData.velocidade || 0} km/h<br />
+                      Lotação: {brtData.lotacaoAtual || 0}/{brtData.capacidadeMaxima || 0}
+                    </Popup>
+                  </Marker>
+                  <MapUpdater center={position} />
+                </MapContainer>
+              </div>
+              
+              <div className="brt-map-legend">
+                <div className="brt-legend-item">
+                  <img src="/BusMapIcon.png" alt="Autocarro" className="brt-legend-icon" style={{ width: '20px', height: '20px' }} />
+                  <span>Autocarro</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="brt-right-section">
+            <div className="brt-bus-visualization">
+              <h2 className="brt-card-title">Visualização do Autocarro</h2>
+              <div className="brt-bus-model" style={{ height: "400px", width: "100%" }}>
+                <Bus3DModel 
+                  color={getBusColor()} 
+                  speed={brtData.velocidade || 0} 
+                />
+              </div>
+              <div className="brt-operational-status-container">
+                <div className="brt-operational-status-indicator">
+                  <span className="brt-status-label">Status:</span>
+                  <span className={`brt-operational-indicator ${status === 'active' ? "brt-online" : "brt-offline"}`}>
+                    {status === 'active' ? "Em operação" : "Parado"}
+                  </span>
+                </div>
+          
+                <div className="brt-action-buttons">
+                  {/* Botão de Agendar Manutenção */}
+                  <button 
+                    onClick={handleOpenMaintenanceModal} 
+                    className="brt-btn-action brt-btn-agendar-manutencao"
+                  >
+                    🔧 Agendar Manutenção
+                  </button>
+                  
+                  {/* Botão para Ver Avarias */}
+                  <button 
+                    onClick={handleOpenIssuesModal} 
+                    className="brt-btn-action brt-btn-ver-avarias"
+                  >
+                    🚨 Ver Avarias
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </main>
 
-      {showUsagePopup && (
-        <div className="popup-overlay">
-          <div className="popup-container usage-popup">
-            <div className="popup-header">
-              <h2>Histórico de Utilização</h2>
-              <button className="close-popup" onClick={toggleUsagePopup}>×</button>
-            </div>
-            <div className="popup-content">
-              <UtilizacaoAutocarro idAutocarro={id} />
-            </div>
-          </div>
+      {/* Informação da última atualização */}
+      {lastUpdate && (
+        <div className="brt-last-update-info">
+          Atualizado às: {lastUpdate.toLocaleTimeString('pt-PT')}
         </div>
       )}
 
-      {/* Footer com informação de atualização */}
-      <footer className="last-update-info">
-        <p>Última atualização: {brtData.ultimaAtualizacao}</p>
-      </footer>
+      {/* Modal de Agendamento de Manutenção */}
+      {showMaintenanceModal && (
+        <AgendarManutencaoBRT 
+          isOpen={showMaintenanceModal}
+          onClose={handleCloseMaintenanceModal}
+          brtId={id}
+          onSubmit={handleMaintenanceSubmit}
+        />
+      )}
+
+      {/* Modal para Visualizar Avarias */}
+      {showIssuesModal && (
+        <VisualizarAvariasBRT
+          isOpen={showIssuesModal}
+          onClose={handleCloseIssuesModal}
+          brtId={id}
+        />
+      )}
     </div>
   );
 };
-
-// Componente auxiliar para itens de informação
-const InfoItem = ({ label, value, className = "info-value" }) => (
-  <div className="info-item">
-    <span className="info-label">{label}:</span>
-    <span className={className}>{value}</span>
-  </div>
-);
 
 export default BRT;
