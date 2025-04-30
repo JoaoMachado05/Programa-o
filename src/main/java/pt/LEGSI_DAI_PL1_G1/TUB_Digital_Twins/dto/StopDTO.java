@@ -13,6 +13,7 @@ public record StopDTO(
         Integer tempoAteProximoAutocarro,
         LocalDateTime ultimaAtualizacao,
         double percentagemOcupacao,
-        String estadoOcupacao
+        String estadoOcupacao,
+        Integer bilhetesValidados
 ) {
 }

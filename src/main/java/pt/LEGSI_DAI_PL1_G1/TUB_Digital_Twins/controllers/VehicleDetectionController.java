@@ -9,12 +9,11 @@ import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.VehiclePassage;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.VehiclePassageRepository;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.VehicleDetectionService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/vehicle-detection")
+@RequestMapping("/vehicle-detection")
 @RequiredArgsConstructor
 public class VehicleDetectionController {
 

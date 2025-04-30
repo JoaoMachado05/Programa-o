@@ -88,17 +88,19 @@ public class BusService {
                 .map(bus -> (double) bus.getLotacaoAtual() / bus.getCapacidadeMaxima() * 100)
                 .orElse(null);
     }
-    private BusDTO convertToDTO(Bus bus) {
+
+
+    public BusDTO convertToDTO(Bus bus) {
         return new BusDTO(
                 bus.getId(),
                 bus.getMatricula(),
-                bus.getCapacidadeMaxima() != null ? bus.getCapacidadeMaxima() : 50,
-                bus.getLotacaoAtual() != null ? bus.getLotacaoAtual() : 25,
-                bus.getLinhaAtual() != null ? bus.getLinhaAtual() : "Linha 12",
-                bus.getVelocidade() != null ? bus.getVelocidade() : 45.7,
-                bus.getTemperaturaAtual() != null ? bus.getTemperaturaAtual() : 22.5,
-                bus.getLatitude() != null ? bus.getLatitude() : 41.545,
-                bus.getLongitude() != null ? bus.getLongitude() : -8.426
+                bus.getCapacidadeMaxima(),
+                bus.getLotacaoAtual(),
+                bus.getLinhaAtual(),
+                bus.getVelocidade(),
+                bus.getTemperaturaAtual(),
+                bus.getLatitude(),
+                bus.getLongitude()
         );
     }
 

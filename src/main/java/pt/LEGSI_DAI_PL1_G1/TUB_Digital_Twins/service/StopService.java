@@ -3,16 +3,21 @@ package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Bus;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Stop;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemRequest;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemResponse;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.ChegadaAutocarroDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.BusRepository;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.StopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +26,8 @@ import java.util.stream.Collectors;
 public class StopService {
 
     private final StopRepository stopRepository;
+    private final BusRepository busRepository;
+    private final BusService busService;
     private static final Logger logger = LoggerFactory.getLogger(StopService.class);
 
     public List<StopDTO> getAllStops() {
@@ -41,6 +48,7 @@ public class StopService {
         stop.setLongitude(stopDTO.longitude());
         stop.setLatitude(stopDTO.latitude());
         stop.setTempoAteProximoAutocarro(stopDTO.tempoAteProximoAutocarro());
+        stop.setBilhetesValidados(0);
 
         Stop savedStop = stopRepository.save(stop);
         return convertToDTO(savedStop);
@@ -87,9 +95,99 @@ public class StopService {
         });
     }
 
+    @Transactional
+    public Optional<StopDTO> validarBilhete(Long id) {
+        logger.info("Recebido pedido de validação de bilhete para a paragem ID: {}", id);
+
+        return stopRepository.findById(id).map(stop -> {
+            // Incrementa o contador de bilhetes validados
+            Integer bilhetesAtuais = stop.getBilhetesValidados() != null ? stop.getBilhetesValidados() : 0;
+            stop.setBilhetesValidados(bilhetesAtuais + 1);
+
+            // Salva a paragem atualizada
+            Stop updatedStop = stopRepository.save(stop);
+            logger.info("Validação de bilhete processada para paragem ID: {}. Total atual: {}",
+                    id, updatedStop.getBilhetesValidados());
+
+            return convertToDTO(updatedStop);
+        });
+    }
+
     public Optional<Integer> getTempoAteProximoAutocarro(Long id) {
         return stopRepository.findById(id)
                 .map(Stop::getTempoAteProximoAutocarro);
+    }
+
+    @Transactional
+    public Optional<Map<String, Object>> processarChegadaAutocarro(ChegadaAutocarroDTO chegadaDTO) {
+        logger.info("Processando chegada de autocarro {} na paragem {}",
+                chegadaDTO.autocarroId(), chegadaDTO.paragemId());
+
+        // Buscar o autocarro e a paragem
+        Optional<Stop> stopOpt = stopRepository.findById(chegadaDTO.paragemId());
+        Optional<Bus> busOpt = busRepository.findById(chegadaDTO.autocarroId());
+
+        if (stopOpt.isEmpty() || busOpt.isEmpty()) {
+            logger.error("Autocarro ID {} ou paragem ID {} não encontrados",
+                    chegadaDTO.autocarroId(), chegadaDTO.paragemId());
+            return Optional.empty();
+        }
+
+        Stop stop = stopOpt.get();
+        Bus bus = busOpt.get();
+
+        // 1. Processar saída de passageiros do autocarro
+        if (chegadaDTO.pessoasSaindo() != null && chegadaDTO.pessoasSaindo() > 0) {
+            // Não permitir que saiam mais pessoas do que as que estão no autocarro
+            int pessoasSaindo = Math.min(bus.getLotacaoAtual(), chegadaDTO.pessoasSaindo());
+            bus.setLotacaoAtual(bus.getLotacaoAtual() - pessoasSaindo);
+            logger.info("Saída de {} passageiros do autocarro {}", pessoasSaindo, bus.getMatricula());
+        }
+
+        // 2. Processar entrada de passageiros no autocarro (bilhetes validados)
+        int bilhetesValidados = stop.getBilhetesValidados() != null ? stop.getBilhetesValidados() : 0;
+
+        if (bilhetesValidados > 0) {
+            // Verificar se o autocarro tem capacidade para todos os passageiros
+            int capacidadeDisponivel = bus.getCapacidadeMaxima() - bus.getLotacaoAtual();
+            int passageirosEntrando = Math.min(bilhetesValidados, capacidadeDisponivel);
+
+            // Atualizar a lotação do autocarro
+            bus.setLotacaoAtual(bus.getLotacaoAtual() + passageirosEntrando);
+
+            // Reduzir a lotação da paragem apenas pelo número real de passageiros que entraram
+            if (stop.getLotacaoAtual() >= passageirosEntrando) {
+                stop.setLotacaoAtual(stop.getLotacaoAtual() - passageirosEntrando);
+            } else {
+                // Caso a lotação da paragem seja menor que o número de passageiros entrando
+                // (situação anômala, mas que deve ser tratada)
+                logger.warn("Lotação da paragem ({}) menor que passageiros entrando ({})",
+                        stop.getLotacaoAtual(), passageirosEntrando);
+                passageirosEntrando = stop.getLotacaoAtual();
+                stop.setLotacaoAtual(0);
+                bus.setLotacaoAtual(bus.getLotacaoAtual() - (bilhetesValidados - passageirosEntrando));
+            }
+
+            // Zerar os bilhetes validados da paragem, mas apenas os que foram usados
+            int bilhetesRestantes = bilhetesValidados - passageirosEntrando;
+            stop.setBilhetesValidados(bilhetesRestantes);
+
+            logger.info("Entrada de {} passageiros no autocarro {} da paragem {}. {} bilhetes restantes.",
+                    passageirosEntrando, bus.getMatricula(), stop.getNome(), bilhetesRestantes);
+        } else {
+            logger.info("Nenhum bilhete validado na paragem {}", stop.getNome());
+        }
+
+        // Salvar as entidades atualizadas
+        Bus updatedBus = busRepository.save(bus);
+        Stop updatedStop = stopRepository.save(stop);
+
+        // Preparar resposta
+        Map<String, Object> resultado = new HashMap<>();
+        resultado.put("autocarro", busService.convertToDTO(updatedBus));
+        resultado.put("paragem", convertToDTO(updatedStop));
+
+        return Optional.of(resultado);
     }
     /* Ainda esta sem uso por isso esta comentado
     public boolean verificarLotacao(StopDTO stopDTO) {
@@ -127,7 +225,8 @@ public class StopService {
                 stop.getTempoAteProximoAutocarro(),
                 stop.getUltimaAtualizacao(),
                 stop.getPercentagemOcupacao(),
-                stop.getEstadoOcupacao()
+                stop.getEstadoOcupacao(),
+                stop.getBilhetesValidados()
         );
     }
 

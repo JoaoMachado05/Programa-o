@@ -1,5 +1,6 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.controllers;
 
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.ChegadaAutocarroDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.EventoRiscoDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.AnomalyMonitorService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -69,22 +71,30 @@ public class StopController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /* Comentado por causa da situacao de estar demasiado focado na bilhetica
-    @PostMapping("/{stopId}/solicitar-bilhete")
-    public ResponseEntity<?> solicitarBilhete(@PathVariable Long stopId,
-                                              @RequestParam Long userId) {
-        Optional<BilheteDTO> bilheteOpt = stopService.solicitarBilhete(stopId, userId);
-        if (bilheteOpt.isPresent()) {
-            return ResponseEntity.ok(bilheteOpt.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Não foi possível emitir o bilhete (stop não encontrado ou lotação cheia).");
-        }
-    }*/
     @PatchMapping("/monitorizar-risco")
     public ResponseEntity<String> monitorizarRisco(@RequestBody EventoRiscoDTO evento) {
         String resultado = anomalyMonitorService.processarEventoRisco(evento);
         return ResponseEntity.ok(resultado);
+    }
+
+    @PostMapping("/{id}/validar-bilhete")
+    public ResponseEntity<StopDTO> validarBilhete(@PathVariable Long id) {
+        Optional<StopDTO> updatedStop = stopService.validarBilhete(id);
+
+        return updatedStop
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/chegada-autocarro")
+    public ResponseEntity<Map<String, Object>> processarChegadaAutocarro(
+            @RequestBody ChegadaAutocarroDTO chegadaDTO) {
+
+        Optional<Map<String, Object>> resultado = stopService.processarChegadaAutocarro(chegadaDTO);
+
+        return resultado
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /*
