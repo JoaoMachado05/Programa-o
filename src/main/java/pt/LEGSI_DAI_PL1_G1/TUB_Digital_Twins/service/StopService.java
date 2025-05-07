@@ -29,6 +29,7 @@ public class StopService {
     private final BusRepository busRepository;
     private final BusService busService;
     private static final Logger logger = LoggerFactory.getLogger(StopService.class);
+    private final NotificacaoWebSocketService notificacaoWebSocketService;
 
     public List<StopDTO> getAllStops() {
         return stopRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
@@ -230,13 +231,22 @@ public class StopService {
         );
     }
 
+    @Transactional
     public Optional<AtualizarParagemResponse> processarAtualizacaoParagem(Long id, AtualizarParagemRequest dados) {
         return stopRepository.findById(id).map(paragem -> {
             paragem.setLatitude(dados.latitude());
             paragem.setLongitude(dados.longitude());
+
+            // Verifica mudança de lotação
+            boolean lotacaoAlterada = !paragem.getLotacaoAtual().equals(dados.lotacaoAtual());
             paragem.setLotacaoAtual(dados.lotacaoAtual());
 
-            stopRepository.save(paragem);
+            Stop updated = stopRepository.save(paragem);
+
+            // Envia notificação via WebSocket
+            if (lotacaoAlterada) {
+                notificacaoWebSocketService.notificarMudancaLotacao(updated);
+            }
 
             List<String> novosHorarios = calcularHorariosBaseadosNaLotacao(dados.lotacaoAtual());
 

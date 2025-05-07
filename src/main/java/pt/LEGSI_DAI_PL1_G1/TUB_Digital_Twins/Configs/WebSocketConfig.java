@@ -3,6 +3,7 @@ package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.Configs;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizacaoLotacaoDTO;
 
 @Configuration
 @EnableWebSocketMessageBroker

@@ -5,6 +5,9 @@ import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.EventoRiscoDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.AnomalyMonitorService;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.StopService;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemRequest;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -111,4 +114,13 @@ public class StopController {
     anomalyMonitorService.processarRisco(dto);
     return ResponseEntity.ok("Processamento de risco concluído para paragem " + id);
     }*/
+    @PutMapping("/{id}")
+    public ResponseEntity<AtualizarParagemResponse> atualizarParagem(
+            @PathVariable Long id,
+            @RequestBody AtualizarParagemRequest dados) {
+
+        return stopService.processarAtualizacaoParagem(id, dados)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
