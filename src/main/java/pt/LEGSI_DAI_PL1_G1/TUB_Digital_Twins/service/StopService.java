@@ -178,7 +178,8 @@ public class StopService {
         } else {
             logger.info("Nenhum bilhete validado na paragem {}", stop.getNome());
         }
-
+        // Definir tempo ate proximo autocarro (10 minutos o predefinido)
+        stop.setTempoAteProximoAutocarro(10);
         // Salvar as entidades atualizadas
         Bus updatedBus = busRepository.save(bus);
         Stop updatedStop = stopRepository.save(stop);

@@ -22,8 +22,8 @@ public interface RotaRepository extends JpaRepository<Rota, Long> {
     @Query("SELECT r FROM Rota r JOIN r.trafficLights t WHERE t.id = :trafficLightId")
     List<Rota> findByTrafficLightId(@Param("trafficLightId") Long trafficLightId);
 
+    Optional<Rota> findByNomeAndSentido(String nome, String sentido);
 
-    List<Rota> findByNomeAndSentido(String nome, String sentido);
 
     List<Rota> findByNomeContaining(String nome);
 }

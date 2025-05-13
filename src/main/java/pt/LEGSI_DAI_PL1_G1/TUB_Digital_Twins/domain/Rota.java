@@ -66,11 +66,11 @@ public class Rota {
     private List<Stop> stops = new ArrayList<>();
 
 
-    public boolean addTrafficLight(TrafficLight trafficLight) {
+    public void addTrafficLight(TrafficLight trafficLight) {
         if (trafficLights == null) {
             trafficLights = new ArrayList<>();
         }
-        return trafficLights.add(trafficLight);
+        trafficLights.add(trafficLight);
     }
 
     public boolean removeTrafficLight(TrafficLight trafficLight) {

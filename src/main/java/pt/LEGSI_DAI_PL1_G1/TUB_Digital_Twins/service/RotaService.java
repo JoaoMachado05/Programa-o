@@ -11,7 +11,7 @@ import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.RotaRepository;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.StopRepository;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.TrafficLightRepository;
 
-import java.util.List;
+import java.util.*;
 import java.util.Optional;
 
 @Service
@@ -125,5 +125,87 @@ public class RotaService {
 
         rota.removeTrafficLight(trafficLight);
         return rotaRepository.save(rota);
+    }
+
+
+    public Optional<Rota> definirOrdemParagens(Long rotaId, List<Long> stopIds) {
+        Optional<Rota> rotaOptional = rotaRepository.findById(rotaId);
+
+        if (rotaOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Rota rota = rotaOptional.get();
+
+        // Limpar lista atual de paragens
+        rota.getStops().clear();
+
+        // Adicionar paragens na ordem especificada
+        List<Stop> novasParagens = new ArrayList<>();
+        for (Long stopId : stopIds) {
+            Optional<Stop> stopOptional = stopRepository.findById(stopId);
+            if (stopOptional.isPresent()) {
+                novasParagens.add(stopOptional.get());
+            }
+        }
+
+        // Atualizar a lista de paragens na rota
+        rota.getStops().addAll(novasParagens);
+
+        // Salvar a rota atualizada
+        return Optional.of(rotaRepository.save(rota));
+    }
+
+    public Optional<Rota> getRotaByNomeAndSentido(String nome, String sentido) {
+        return rotaRepository.findByNomeAndSentido(nome, sentido);
+    }
+
+
+    public Optional<Stop> determinarProximaParagem(Long rotaId, Long paragemAtualId) {
+        // 1. Buscar a rota pelo ID
+        Optional<Rota> rotaOptional = rotaRepository.findById(rotaId);
+
+        if (rotaOptional.isEmpty()) {
+            return Optional.empty(); // Rota não encontrada
+        }
+
+        Rota rota = rotaOptional.get();
+        List<Stop> paragens = rota.getStops();
+
+        // Verifica se a lista de paragens não está vazia
+        if (paragens.isEmpty()) {
+            return Optional.empty(); // Não há paragens nesta rota
+        }
+
+        // 2. Encontrar o índice da paragem atual na lista de paragens da rota
+        int indiceAtual = -1;
+        for (int i = 0; i < paragens.size(); i++) {
+            if (paragens.get(i).getId().equals(paragemAtualId)) {
+                indiceAtual = i;
+                break;
+            }
+        }
+
+        // Se a paragem atual não for encontrada na rota ou for a última
+        if (indiceAtual == -1 || indiceAtual >= paragens.size() - 1) {
+            return Optional.empty(); // Não há próxima paragem
+        }
+
+        // 3. Obter a próxima paragem
+        return Optional.of(paragens.get(indiceAtual + 1));
+    }
+
+    public Optional<Stop> determinarProximaParagem(String rotaNome, String sentido, Long paragemAtualId) {
+        // 1. Buscar a rota pelo nome e sentido
+        Optional<Rota> rotaOptional = rotaRepository.findByNomeAndSentido(rotaNome, sentido);
+
+        if (rotaOptional.isEmpty()) {
+            return Optional.empty(); // Rota não encontrada
+        }
+
+        Rota rota = rotaOptional.get();
+
+        // 2. Usar o método que determina a próxima paragem por ID da rota
+        return determinarProximaParagem(rota.getId(), paragemAtualId);
     }
 }

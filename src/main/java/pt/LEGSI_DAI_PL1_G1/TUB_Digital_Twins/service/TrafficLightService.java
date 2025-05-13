@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -119,13 +120,43 @@ public class TrafficLightService {
         ));
         log.debug("Estado salvo: {} com {}s restantes", trafficLight.getCurrentState(), trafficLight.getTimeUntilStateChange());
 
-        // Prioridade: muda para vermelho durante tempo fixo
-        trafficLight.setCurrentState(TrafficLight.State.RED);
-        trafficLight.setTimeUntilStateChange(15);
+        // Prioridade: primeiro muda para amarelo durante 3 segundos
+        trafficLight.setCurrentState(TrafficLight.State.YELLOW);
+        trafficLight.setTimeUntilStateChange(3);
         trafficLight.setBrtPriorityActive(true);
         trafficLight.setPriorityBusId(busId);
 
         trafficLightRepository.save(trafficLight);
+
+        // Agenda uma tarefa para mudar para vermelho após 3 segundos
+        CompletableFuture.runAsync(() -> {
+            try {
+                // Espera 3 segundos
+                Thread.sleep(3000);
+
+                // Busca o semáforo novamente para ter os dados mais recentes
+                TrafficLight updatedTrafficLight = trafficLightRepository.findById(trafficLightId)
+                        .orElseThrow(() -> new TrafficLightNotFound("Semaforo nao encontrado com ID: " + trafficLightId));
+
+                // Verifica se ainda está com prioridade ativa e no estado amarelo
+                if (Boolean.TRUE.equals(updatedTrafficLight.getBrtPriorityActive()) &&
+                        updatedTrafficLight.getCurrentState() == TrafficLight.State.YELLOW) {
+
+                    // Muda para vermelho com duração de 15 segundos
+                    updatedTrafficLight.setCurrentState(TrafficLight.State.RED);
+                    updatedTrafficLight.setTimeUntilStateChange(15);
+
+                    trafficLightRepository.save(updatedTrafficLight);
+                    log.debug("Semaforo ID: {} mudou de amarelo para vermelho após 3 segundos", trafficLightId);
+                }
+            } catch (InterruptedException e) {
+                log.error("Erro ao aguardar transição de amarelo para vermelho: {}", e.getMessage());
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                log.error("Erro ao processar transição de amarelo para vermelho: {}", e.getMessage());
+            }
+        });
+
         log.info("Prioridade BRT ativada com sucesso para semaforo ID: {}", trafficLightId);
         return true;
     }

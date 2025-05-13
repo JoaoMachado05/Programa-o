@@ -5,11 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Rota;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Stop;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.RotaService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rotas")
@@ -128,5 +130,42 @@ public class RotaController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/{id}/definir-ordem-paragens")
+    public ResponseEntity<Rota> definirOrdemParagens(
+            @PathVariable Long id,
+            @RequestBody List<Long> stopIds) {
+
+        Optional<Rota> rotaAtualizada = rotaService.definirOrdemParagens(id, stopIds);
+
+        return rotaAtualizada
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{rotaId}/proxima-paragem")
+    public ResponseEntity<Stop> getProximaParagem(
+            @PathVariable Long rotaId,
+            @RequestParam Long paragemAtualId) {
+
+        Optional<Stop> proximaParagem = rotaService.determinarProximaParagem(rotaId, paragemAtualId);
+
+        return proximaParagem
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/proxima-paragem")
+    public ResponseEntity<Stop> getProximaParagem(
+            @RequestParam String rotaNome,
+            @RequestParam String sentido,
+            @RequestParam Long paragemAtualId) {
+
+        Optional<Stop> proximaParagem = rotaService.determinarProximaParagem(rotaNome, sentido, paragemAtualId);
+
+        return proximaParagem
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
