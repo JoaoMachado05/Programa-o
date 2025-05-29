@@ -53,4 +53,3 @@ function Home({ setIsAuthenticated }) {
 }
 
 export default Home;
-

@@ -8,22 +8,22 @@
 
 /* Container principal - Tela completa */
 .paragens-list-container {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100vh; /* Altura fixa para ocupar toda a tela */
   background-color: #047cb4;
   background-image: linear-gradient(135deg, #047cb4 0%, #0253a4 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px;
-  overflow: hidden;
+  padding: 30px 40px;
+  overflow: hidden; /* Esconde qualquer overflow para evitar scrolling na página principal */
   position: relative;
 }
 
 /* Cabeçalho */
 .paragens-header {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1800px; /* Aumentado para telas maiores */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -31,7 +31,7 @@
 }
 
 .paragens-header h1 {
-  font-size: 2.8rem;
+  font-size: 3rem; /* Título aumentado */
   color: white;
   text-align: center;
   flex-grow: 1;
@@ -43,16 +43,16 @@
 .back-button {
   background-color: #003366;
   color: white;
-  padding: 12px 24px;
+  padding: 12px 24px; /* Botão maior */
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Texto maior */
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 5;
@@ -64,15 +64,10 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.back-button:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
 /* Botões de ação no topo */
 .paragens-actions-top {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1800px; /* Aumentado para telas maiores */
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
@@ -84,16 +79,16 @@
 .add-paragem-button {
   background-color: #003366;
   color: white;
-  padding: 12px 24px;
+  padding: 12px 24px; /* Botão maior */
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Texto maior */
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-decoration: none;
   position: relative;
@@ -106,34 +101,29 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.add-paragem-button:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
 /* Mensagens de carregamento e erro */
 .loading-message {
   color: white;
   text-align: center;
-  padding: 40px;
+  padding: 30px;
   animation: pulse 1.5s infinite;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
 }
 
 .error-message {
   color: white;
   text-align: center;
-  padding: 40px;
+  padding: 30px;
   background-color: rgba(231, 76, 60, 0.3);
   border-radius: 12px;
   backdrop-filter: blur(5px);
   margin: 20px 0;
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px; /* Aumentado para melhor visualização */
 }
 
 .retry-button {
-  margin-top: 20px;
+  margin-top: 15px;
   background-color: #e74c3c;
   color: white;
   padding: 12px 24px;
@@ -141,6 +131,7 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 1.1rem;
   transition: all 0.3s ease;
   position: relative;
   z-index: 5;
@@ -157,26 +148,26 @@
   100% { opacity: 0.6; }
 }
 
-/* Lista de paragens - Otimizada para tela cheia */
+/* Lista de paragens - Ajustada para ocupar o espaço disponível */
 .paragens-list {
   width: 100%;
-  max-width: 1600px;
-  flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+  max-width: 1800px; /* Aumentado para telas maiores */
+  flex: 1; /* Ocupa todo o espaço disponível entre cabeçalho e rodapé */
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 25px;
+  gap: 15px;
+  padding: 20px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  margin-bottom: 25px;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Permite rolagem apenas se necessário */
+  margin-bottom: 25px;
+  height: calc(100vh - 220px); /* Altura calculada para ocupar o espaço disponível */
 }
 
-/* Scroll personalizado - mais proeminente para desktop */
+/* Scroll personalizado */
 .paragens-list::-webkit-scrollbar {
   width: 12px;
 }
@@ -191,61 +182,63 @@
   border-radius: 10px;
 }
 
-/* Linha de paragem - Layout melhorado para desktop */
+/* Linha de paragem - Layout melhorado */
 .paragem-row {
   background-color: white;
   border-radius: 12px;
-  padding: 25px;
+  padding: 24px; /* Padding aumentado */
   display: flex;
-  flex-direction: row; /* Mudança para layout horizontal em desktop */
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
+  min-height: 110px;
+  width: 100%;
 }
 
 .paragem-row:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Cores para diferentes níveis de ocupação */
+/* Cores para diferentes níveis de ocupação com borda mais grossa */
 .baixa-ocupacao {
-  border-left: 5px solid #2ecc71; /* Verde para ocupação baixa */
+  border-left: 8px solid #2ecc71; /* Verde para ocupação baixa - borda mais visível */
 }
 
 .media-ocupacao {
-  border-left: 5px solid #f39c12; /* Amarelo para ocupação média */
+  border-left: 8px solid #f39c12; /* Amarelo para ocupação média - borda mais visível */
 }
 
 .alta-ocupacao {
-  border-left: 5px solid #e74c3c; /* Vermelho para ocupação alta */
+  border-left: 8px solid #e74c3c; /* Vermelho para ocupação alta - borda mais visível */
 }
 
-/* Informações da paragem - Layout melhorado para desktop */
+/* Informações da paragem - Layout aprimorado */
 .paragem-info {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  max-width: 75%;
+  max-width: 75%; /* Mais espaço para as informações */
 }
 
 .paragem-info h3 {
-  font-size: 1.6rem;
+  font-size: 1.5rem; /* Título maior */
   color: #003366;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 15px;
+  padding-bottom: 12px;
 }
 
 .paragem-detalhes {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 colunas em desktop */
+  grid-template-columns: repeat(4, 1fr); /* 4 colunas padrão em telas de PC */
   gap: 20px;
 }
 
@@ -259,9 +252,10 @@
 .detalhe-label {
   color: #666;
   font-size: 1rem;
+  font-weight: 500;
 }
 
-/* Indicadores de ocupação */
+/* Indicadores de ocupação mais visíveis */
 .ocupacao-indicator {
   font-weight: 600;
   border-radius: 6px;
@@ -285,7 +279,7 @@
   color: #e74c3c;
 }
 
-/* Informações especiais */
+/* Informações especiais mais destacadas */
 .tempo-espera {
   font-weight: 600;
   color: #3498db;
@@ -298,42 +292,38 @@
   font-size: 1.1rem;
 }
 
-/* Ações da paragem */
+/* Ações da paragem - Botões maiores */
 .paragem-actions {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   position: relative;
   z-index: 5;
+  flex-wrap: nowrap; /* Evita quebra em PC */
+  justify-content: flex-end;
 }
 
 .view-details-button, .edit-button, .delete-button {
   background-color: #003366;
   color: white;
-  padding: 12px 20px;
+  padding: 10px 18px; /* Botões maiores */
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1rem; /* Texto maior */
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-decoration: none;
-  position: relative;
-  z-index: 10;
+  white-space: nowrap;
 }
 
 .view-details-button:hover, .edit-button:hover, .delete-button:hover {
   background-color: #002244;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.view-details-button:active, .edit-button:active, .delete-button:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .edit-button {
@@ -356,44 +346,44 @@
 .no-results {
   color: white;
   text-align: center;
-  padding: 40px;
-  font-size: 1.4rem;
+  padding: 30px;
+  font-size: 1.3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 }
 
 /* Controles do rodapé */
 .bottom-controls {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1800px; /* Aumentado para telas maiores */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  padding: 15px 25px;
+  padding: 20px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   position: relative;
   z-index: 5;
+  margin-top: auto; /* Empurra para o final do container */
 }
 
 .refresh-button {
   background-color: #003366;
   color: white;
-  padding: 12px 24px;
+  padding: 12px 24px; /* Botão maior */
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Texto maior */
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 5;
@@ -403,11 +393,6 @@
   background-color: #002244;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.refresh-button:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .refresh-button:disabled {
@@ -425,5 +410,24 @@
   border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+}
+
+/* Media query para telas muito grandes - otimiza espaçamento */
+@media (min-width: 1920px) {
+  .paragens-list, .paragens-header, .paragens-actions-top, .bottom-controls {
+    max-width: 1900px;
+  }
+  
+  .paragens-header h1 {
+    font-size: 3.2rem;
+  }
+  
+  .paragem-row {
+    padding: 28px;
+  }
+  
+  .paragens-list {
+    height: calc(100vh - 240px);
+  }
 }
