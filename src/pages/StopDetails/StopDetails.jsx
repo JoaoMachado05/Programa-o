@@ -65,13 +65,60 @@ const MapUpdater = ({ center }) => {
   return null;
 };
 
+// Componente para o alerta sonoro
+const SoundAlert = ({ message, isVisible, onClose }) => {
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (isVisible && audioRef.current) {
+      // Criar um som de alerta usando Web Audio API
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    }
+  }, [isVisible]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="sd-sound-alert-overlay">
+      <div className="sd-sound-alert">
+        <div className="sd-alert-header">
+          <span className="sd-alert-icon">🔊</span>
+          <h3>Alerta Sonoro</h3>
+          <button onClick={onClose} className="sd-alert-close">×</button>
+        </div>
+        <div className="sd-alert-message">
+          {message}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const StopDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [stop, setStop] = useState(null);
+  const [nextBus, setNextBus] = useState(null);
   const [buses, setBuses] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('pt-PT'));
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [showSoundAlert, setShowSoundAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const updateIntervalRef = useRef(null);
 
   // Função para buscar dados da paragem via HTTP
@@ -81,10 +128,38 @@ const StopDetails = () => {
       if (!response.ok) throw new Error("Erro ao buscar detalhes da paragem");
 
       const data = await response.json();
+      
+      // Verificar se previousStop é true e mostrar alerta sonoro
+      if (data.previousStop && data.message) {
+        setAlertMessage(data.message);
+        setShowSoundAlert(true);
+      }
+      
       setStop(data);
       setLastUpdate(new Date());
+      
+      // Buscar próximo autocarro se nextBusId existir
+      if (data.nextBusId) {
+        fetchNextBus(data.nextBusId);
+      } else {
+        setNextBus(null);
+      }
     } catch (error) {
       console.error("Erro ao buscar dados da paragem:", error.message);
+    }
+  };
+
+  // Função para buscar dados do próximo autocarro
+  const fetchNextBus = async (busId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/brts/${busId}`);
+      if (!response.ok) throw new Error("Erro ao buscar próximo autocarro");
+
+      const data = await response.json();
+      setNextBus(data);
+    } catch (error) {
+      console.error("Erro ao buscar dados do próximo autocarro:", error.message);
+      setNextBus(null);
     }
   };
 
@@ -151,6 +226,10 @@ const StopDetails = () => {
     navigate("/");
   };
 
+  const handleCloseSoundAlert = () => {
+    setShowSoundAlert(false);
+  };
+
   if (!stop) return (
     <div className="sd-fullpage-container">
       <header className="sd-header">
@@ -173,7 +252,8 @@ const StopDetails = () => {
   );
 
   // Calcular a percentagem de ocupação
-  const occupancyPercentage = ((stop.lotacaoAtual / stop.capacidadeMaxima) * 100).toFixed(1);
+  const occupancyPercentage = stop.percentagemOcupacao || 
+    ((stop.lotacaoAtual / stop.capacidadeMaxima) * 100).toFixed(1);
   
   // Determinar a classe de cor baseada na ocupação
   let occupancyClass = "sd-low-occupancy";
@@ -274,6 +354,22 @@ const StopDetails = () => {
                     <span className="sd-occupancy-text">{occupancyPercentage}%</span>
                   </div>
                 </div>
+                {stop.estadoOcupacao && (
+                  <div className="sd-status-item">
+                    <span className="sd-status-label">Estado</span>
+                    <div className="sd-status-value-container">
+                      <span className="sd-status-value">{stop.estadoOcupacao}</span>
+                    </div>
+                  </div>
+                )}
+                {stop.bilhetesValidados !== undefined && (
+                  <div className="sd-status-item">
+                    <span className="sd-status-label">Bilhetes Validados</span>
+                    <div className="sd-status-value-container">
+                      <span className="sd-status-value">{stop.bilhetesValidados}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -361,9 +457,49 @@ const StopDetails = () => {
               </div>
             </div>
             
+            {/* Próximo Autocarro */}
+            <div className="sd-buses-card">
+              <h2 className="sd-card-title">Próximo Autocarro</h2>
+              <div className="sd-buses-list">
+                {nextBus ? (
+                  <div className="sd-bus-item sd-next-bus">
+                    <div className="sd-bus-info">
+                      <div className="sd-bus-number">#{nextBus.matricula || nextBus.id}</div>
+                      <div className="sd-bus-details">
+                        <div className="sd-bus-line">
+                          {nextBus.linha && nextBus.destino ? 
+                            `Linha ${nextBus.linha} → ${nextBus.destino}` : 
+                            `Autocarro ID: ${nextBus.id}`
+                          }
+                        </div>
+                        <div className="sd-bus-status">
+                          {stop.tempoAteProximoAutocarro ? (
+                            <span className="sd-arrival-time">Chega em {stop.tempoAteProximoAutocarro} min</span>
+                          ) : (
+                            <span className="sd-arrival-time">Tempo não disponível</span>
+                          )}
+                          <span className="sd-bus-occupancy">
+                            Lotação: {nextBus.lotacaoAtual || 0} pessoas
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : stop.nextBusId ? (
+                  <div className="sd-loading-bus">
+                    <p>A carregar informações do próximo autocarro...</p>
+                  </div>
+                ) : (
+                  <div className="sd-no-buses">
+                    <p>Não há próximo autocarro programado.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Lista de autocarros próximos */}
             <div className="sd-buses-card">
-              <h2 className="sd-card-title">Autocarros a Caminho</h2>
+              <h2 className="sd-card-title">Autocarros nas Proximidades</h2>
               <div className="sd-buses-list">
                 {sortedBuses.length > 0 ? (
                   sortedBuses.map(bus => (
@@ -408,6 +544,13 @@ const StopDetails = () => {
           Atualizado às: {lastUpdate.toLocaleTimeString('pt-PT')}
         </div>
       )}
+
+      {/* Alerta Sonoro */}
+      <SoundAlert 
+        message={alertMessage}
+        isVisible={showSoundAlert}
+        onClose={handleCloseSoundAlert}
+      />
     </div>
   );
 };

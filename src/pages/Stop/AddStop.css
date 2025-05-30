@@ -1,0 +1,121 @@
+/* Stop.css - Versão adaptada para centralizar o formulário e título */
+
+/* Reset global para esta página */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  background-color: #0356ae !important; /* fundo azul */
+  box-sizing: border-box !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+/* Container principal ocupa toda a viewport, centraliza tudo em coluna */
+.form-container {
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: #005BBB !important; /* fundo azul */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px !important;
+}
+
+/* Título em cima, centralizado */
+.form-title {
+  color: white !important;
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 20px !important;
+  text-align: center !important;
+}
+
+/* Caixa do formulário */
+.form-box {
+  width: 700px !important;
+  background: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 25px 30px !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2) !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px !important;
+}
+
+/* Inputs ocupam toda a largura */
+.form-box input {
+  display: block !important;
+  width: 100% !important;
+  padding: 8px 10px !important;
+  font-size: 1rem !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  margin-bottom: 15px !important;
+}
+
+/* Botões alinhados na linha de baixo */
+.form-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 15px !important;
+  margin-top: 20px !important;
+}
+
+/* Botão cancelar */
+.cancel-btn {
+  background-color: #6c757d !important;
+  color: white !important;
+  border: none !important;
+  padding: 10px 18px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  font-weight: 700 !important;
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268 !important;
+}
+
+/* Botão adicionar */
+.submit-btn {
+  background-color: #002d66 !important;
+  color: white !important;
+  border: none !important;
+  padding: 10px 18px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  font-weight: 700 !important;
+}
+
+.submit-btn:hover {
+  background-color: #001a3d !important;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+  .form-box {
+    width: 90% !important;
+    grid-template-columns: 1fr !important;
+  }
+  .form-actions {
+    justify-content: center !important;
+  }
+}
+
+/* Para telas muito pequenas */
+@media (max-width: 480px) {
+  .form-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .form-box input {
+    font-size: 0.9rem !important;
+    padding: 6px 8px !important;
+  }
+}

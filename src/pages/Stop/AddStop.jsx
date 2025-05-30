@@ -1,7 +1,6 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Stop.css";
+import "./AddStop.css";
 
 const AddStop = () => {
   const navigate = useNavigate();
@@ -40,7 +39,7 @@ const AddStop = () => {
 
       if (response.ok) {
         alert("Paragem adicionada com sucesso!");
-        navigate("/stop");
+        navigate("/stop"); // ou outra rota
       } else {
         alert("Erro ao adicionar paragem.");
       }
@@ -49,41 +48,76 @@ const AddStop = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate(-1); // Voltar à página anterior
+  };
+
   return (
     <div className="form-container">
-      <h2>Adicionar Nova Paragem</h2>
-      <form onSubmit={handleSubmit} className="form-grid">
-        <label>
-          Nome*
-          <input type="text" name="nome" value={formData.nome} onChange={handleChange} required />
-        </label>
-        <label>
-          Capacidade Máxima*
-          <input type="number" name="capacidadeMaxima" value={formData.capacidadeMaxima} onChange={handleChange} required />
-        </label>
-        <label>
-          Lotação Atual
-          <input type="number" name="lotacaoAtual" value={formData.lotacaoAtual} onChange={handleChange} />
-        </label>
-        <label>
-          Temperatura Atual
-          <input type="number" step="0.1" name="temperaturaAtual" value={formData.temperaturaAtual} onChange={handleChange} />
-        </label>
-        <label>
-          Longitude*
-          <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} required />
-        </label>
-        <label>
-          Latitude*
-          <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} required />
-        </label>
-        <label>
-          Min. até próximo autocarro
-          <input type="number" name="tempoAteProximoAutocarro" value={formData.tempoAteProximoAutocarro} onChange={handleChange} />
-        </label>
+      <h2 className="form-title">Adicionar Nova Paragem</h2>
+      <form className="form-box" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="nome"
+          placeholder="Nome*"
+          value={formData.nome}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="capacidadeMaxima"
+          placeholder="Capacidade Máxima*"
+          value={formData.capacidadeMaxima}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="lotacaoAtual"
+          placeholder="Lotação Atual"
+          value={formData.lotacaoAtual}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="temperaturaAtual"
+          placeholder="Temperatura Atual"
+          value={formData.temperaturaAtual}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="longitude"
+          placeholder="Longitude*"
+          value={formData.longitude}
+          onChange={handleChange}
+          required
+          step="any"
+        />
+        <input
+          type="number"
+          name="latitude"
+          placeholder="Latitude*"
+          value={formData.latitude}
+          onChange={handleChange}
+          required
+          step="any"
+        />
+        <input
+          type="number"
+          name="tempoAteProximoAutocarro"
+          placeholder="Min. até próximo autocarro"
+          value={formData.tempoAteProximoAutocarro}
+          onChange={handleChange}
+        />
         <div className="form-actions">
-          <button type="button" className="cancel-btn" onClick={() => navigate("/stop")}>Cancelar</button>
-          <button type="submit" className="submit-btn">Adicionar Paragem</button>
+          <button type="button" className="cancel-btn" onClick={handleCancel}>
+            Cancelar
+          </button>
+          <button type="submit" className="submit-btn">
+            Adicionar Paragem
+          </button>
         </div>
       </form>
     </div>

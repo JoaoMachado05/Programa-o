@@ -218,13 +218,6 @@ const Stop = () => {
                       <i className="fas fa-info-circle"></i>
                       Ver Detalhes
                     </button>
-                    <Link 
-                      to={`/stop/edit/${id}`} 
-                      className="edit-button"
-                    >
-                      <i className="fas fa-edit"></i>
-                      Editar
-                    </Link>
                     <button 
                       className="delete-button"
                       onClick={() => handleRemoveStop(id)}
