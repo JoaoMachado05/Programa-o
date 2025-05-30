@@ -73,14 +73,6 @@ public class Bus {
         this.temperatureAction = temperatureAction;
     }
 
-    public void setLastTemperature(Float lastTemperature) {
-        this.lastTemperature = lastTemperature;
-    }
-
-    public void setTemperatureAction(String temperatureAction) {
-        this.temperatureAction = temperatureAction;
-    }
-
     // Enum para o status do autocarro
     public enum StatusBus {
         OPERACIONAL,

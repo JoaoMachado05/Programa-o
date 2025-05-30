@@ -57,6 +57,13 @@ public class BusController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBus);
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<List<BusDTO>> createBuses(@Valid @RequestBody List<BusDTO> busDTOList) {
+        List<BusDTO> savedBuses = busService.saveAll(busDTOList);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedBuses);
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<BusDTO> updateBus(@PathVariable Long id, @Valid @RequestBody BusDTO busDTO) {
         log.debug("REST request para atualizar o autocarro ID: {}", id);

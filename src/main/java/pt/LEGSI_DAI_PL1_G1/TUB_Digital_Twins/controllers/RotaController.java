@@ -144,10 +144,10 @@ public class RotaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{rotaId}/proxima-paragem")
+    @GetMapping("/{rotaId}/proxima-paragem/{paragemAtualId}")
     public ResponseEntity<Stop> getProximaParagem(
             @PathVariable Long rotaId,
-            @RequestParam Long paragemAtualId) {
+            @PathVariable Long paragemAtualId) {
 
         Optional<Stop> proximaParagem = rotaService.determinarProximaParagem(rotaId, paragemAtualId);
 

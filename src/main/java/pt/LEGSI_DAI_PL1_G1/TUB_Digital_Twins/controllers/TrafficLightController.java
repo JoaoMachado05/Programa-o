@@ -32,6 +32,12 @@ public class TrafficLightController {
         return ResponseEntity.ok(trafficLightService.createTrafficLight(dto));
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<List<TrafficLightDTO>> addMultipleTrafficLights(@RequestBody List<TrafficLightDTO> trafficLightDTOs) {
+        List<TrafficLightDTO> savedLights = trafficLightService.saveAll(trafficLightDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedLights);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<TrafficLightDTO> updateTrafficLight(
             @PathVariable Long id, @RequestBody TrafficLightDTO dto) {

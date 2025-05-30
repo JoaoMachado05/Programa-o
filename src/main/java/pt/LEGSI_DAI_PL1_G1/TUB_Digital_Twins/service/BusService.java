@@ -43,6 +43,23 @@ public class BusService {
         return convertToDTO(savedBus);
     }
 
+    @Transactional
+    public List<BusDTO> saveAll(List<BusDTO> busDTOList) {
+        List<Bus> buses = busDTOList.stream()
+                .map(this::convertToEntity)
+                .peek(bus -> {
+                    if (bus.getLinhaAtual() == null || bus.getLinhaAtual().isEmpty()) {
+                        bus.setLinhaAtual("Linha 12");
+                    }
+                })
+                .toList();
+
+        List<Bus> savedBuses = busRepository.saveAll(buses);
+
+        return savedBuses.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 
     @Transactional
     public Optional<BusDTO> update(Long id, BusDTO busDTO) {

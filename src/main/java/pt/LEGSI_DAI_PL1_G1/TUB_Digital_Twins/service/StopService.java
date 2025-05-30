@@ -1,24 +1,20 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Bus;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Rota;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.domain.Stop;
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemRequest;
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemResponse;
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.ChegadaAutocarroDTO;
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.*;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.BusRepository;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.StopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +24,7 @@ public class StopService {
     private final StopRepository stopRepository;
     private final BusRepository busRepository;
     private final BusService busService;
+    private final RotaService rotaService;
     private static final Logger logger = LoggerFactory.getLogger(StopService.class);
     private final NotificacaoWebSocketService notificacaoWebSocketService;
 
@@ -60,23 +57,56 @@ public class StopService {
         Optional<Stop> stopOptional = stopRepository.findById(id);
         if (stopOptional.isPresent()) {
             Stop stop = stopOptional.get();
-            stop.setNome(stopDTO.nome());
-            stop.setCapacidadeMaxima(stopDTO.capacidadeMaxima());
-            stop.setLotacaoAtual(stopDTO.lotacaoAtual());
-            stop.setTemperaturaAtual(stopDTO.temperaturaAtual());
-            stop.setLongitude(stopDTO.longitude());
-            stop.setLatitude(stopDTO.latitude());
 
-            // caso nao seja definido default de 10 minutos definir mais tarde
-            if (stop.getTempoAteProximoAutocarro() == null) {
-                stop.setTempoAteProximoAutocarro(10);
+            // Só atualizar se o valor não for nulo no DTO
+            if (stopDTO.nome() != null) {
+                stop.setNome(stopDTO.nome());
             }
+            if (stopDTO.capacidadeMaxima() != null) {
+                stop.setCapacidadeMaxima(stopDTO.capacidadeMaxima());
+            }
+            if (stopDTO.lotacaoAtual() != null) {
+                stop.setLotacaoAtual(stopDTO.lotacaoAtual());
+            }
+            if (stopDTO.temperaturaAtual() != null) {
+                stop.setTemperaturaAtual(stopDTO.temperaturaAtual());
+            }
+            if (stopDTO.longitude() != null) {
+                stop.setLongitude(stopDTO.longitude());
+            }
+            if (stopDTO.latitude() != null) {
+                stop.setLatitude(stopDTO.latitude());
+            }
+            if (stopDTO.message() != null) {
+                stop.setMessage(stopDTO.message());
+            }
+            if (stopDTO.nextBusId() != null) {
+                stop.setNextBusId(stopDTO.nextBusId());
+            }
+
+            // CRÍTICO: Só atualizar tempo se vier explicitamente no DTO
+            if (stopDTO.tempoAteProximoAutocarro() != null) {
+                stop.setTempoAteProximoAutocarro(stopDTO.tempoAteProximoAutocarro());
+            }
+            // Remover o default de 10 minutos aqui - pode estar a sobrescrever!
 
             Stop updatedStop = stopRepository.save(stop);
             return convertToDTO(updatedStop);
         }
         return null;
     }
+
+    @Transactional
+    public StopDTO atualizarPessoas(Long id, int numPessoas) {
+        Stop stop = stopRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paragem com ID " + id + " não encontrada."));
+
+        stop.setLotacaoAtual(numPessoas);
+        Stop stopAtualizado = stopRepository.save(stop);
+
+        return convertToDTO(stopAtualizado);
+    }
+
 
     @Transactional
     public boolean deleteStop(Long id) {
@@ -178,8 +208,127 @@ public class StopService {
         } else {
             logger.info("Nenhum bilhete validado na paragem {}", stop.getNome());
         }
+
         // Definir tempo ate proximo autocarro (10 minutos o predefinido)
-        stop.setTempoAteProximoAutocarro(10);
+        stop.setTempoAteProximoAutocarro(10); // 20 unidades = 10 minutos
+
+        // Atualizar o nextBus da paragem atual para o próximo autocarro da rota
+        // (remove a referência ao autocarro que acabou de chegar)
+        stop.setNextBusId(null);
+        stop.setMessage(null);
+        stop.setPreviousStop(false);
+
+        // 3. Atualizar nextBus e tempo das próximas paragens na rota
+        Optional<Rota> rotaOpt = rotaService.getRotaByParagem(stop.getId());
+        if (rotaOpt.isPresent()) {
+            Rota rota = rotaOpt.get();
+
+            // Usar o método já definido para obter a próxima paragem
+            Optional<Stop> nextStopOpt = rotaService.determinarProximaParagem(rota.getNome(), rota.getSentido(), stop.getId());
+
+            if (nextStopOpt.isPresent()) {
+                Stop nextStop = nextStopOpt.get();
+
+                // Configurar a próxima paragem com aviso de que o autocarro está na paragem anterior
+                nextStop.setPreviousStop(true);
+
+                // Verificar a lotação do autocarro para personalizar a mensagem
+                double percentagemLotacao = (double) bus.getLotacaoAtual() / bus.getCapacidadeMaxima() * 100;
+
+                if (percentagemLotacao >= 90) {
+                    nextStop.setMessage("Atenção: o autocarro está na paragem anterior com lotação quase completa (" +
+                            Math.round(percentagemLotacao) + "%)");
+                } else {
+                    nextStop.setMessage("Atenção: o autocarro está na paragem anterior");
+                }
+
+                // DIMINUIR 1 MINUTO IMEDIATAMENTE NA PRÓXIMA PARAGEM
+                int tempoAtualProxima = nextStop.getTempoAteProximoAutocarro() != null ?
+                        nextStop.getTempoAteProximoAutocarro() : 10;
+                int novoTempoProxima = Math.max(0, tempoAtualProxima - 1); // -1 minuto
+
+                logger.info("Próxima paragem {} - Tempo diminuído de {} para {} minutos. Lotação: {}%",
+                        nextStop.getNome(),
+                        tempoAtualProxima * 0.5,
+                        novoTempoProxima * 0.5,
+                        Math.round(percentagemLotacao));
+
+                // Salvar a próxima paragem atualizada
+                stopRepository.save(nextStop);
+            }
+
+            List<Stop> paragens = rota.getStops();
+
+            // Encontrar o índice da paragem atual
+            int indiceParagemAtual = -1;
+            for (int i = 0; i < paragens.size(); i++) {
+                if (paragens.get(i).getId().equals(stop.getId())) {
+                    indiceParagemAtual = i;
+                    break;
+                }
+            }
+
+            // Se encontrou a paragem atual, processar as próximas paragens
+            if (indiceParagemAtual != -1) {
+                List<Stop> paragensAtualizadas = new ArrayList<>();
+                int paragensAtualizadasCount = 0;
+
+                // NOVA LÓGICA: Iterar pelas próximas paragens até encontrar nextBusId null
+                for (int i = indiceParagemAtual + 1; i < paragens.size(); i++) {
+                    Stop proximaParagem = paragens.get(i);
+
+                    logger.debug("Processando paragem {}: nextBusId={}, tempo={}",
+                            proximaParagem.getNome(),
+                            proximaParagem.getNextBusId(),
+                            proximaParagem.getTempoAteProximoAutocarro());
+
+                    // Se encontrar uma paragem com nextBus null, definir o bus atual e parar
+                    if (proximaParagem.getNextBusId() == null) {
+                        logger.info("Encontrada paragem {} com nextBus null - definindo para bus {}",
+                                proximaParagem.getNome(), bus.getId());
+
+                        // Definir o nextBusId como o autocarro atual
+                        proximaParagem.setNextBusId(bus.getId());
+
+                        // Definir tempo estimado (10 minutos = 20 unidades)
+                        proximaParagem.setTempoAteProximoAutocarro(10);
+
+                        paragensAtualizadas.add(proximaParagem);
+                        paragensAtualizadasCount++;
+
+                        logger.info("Paragem {} configurada com nextBus {} e tempo 10 minutos",
+                                proximaParagem.getNome(), bus.getId());
+                        break; // Parar após encontrar a primeira paragem null
+                    }
+
+                    // Para paragens que já têm nextBusId, diminuir o tempo gradualmente
+                    int tempoAtual = proximaParagem.getTempoAteProximoAutocarro() != null ?
+                            proximaParagem.getTempoAteProximoAutocarro() : 10;
+
+                    // Diminuir progressivamente: 30 segundos (1 unidade) por paragem
+                    int novoTempo = Math.max(0, tempoAtual - 1);
+                    proximaParagem.setTempoAteProximoAutocarro(novoTempo);
+
+                    paragensAtualizadas.add(proximaParagem);
+                    paragensAtualizadasCount++;
+
+                    logger.info("Paragem {} - Tempo atualizado de {} para {} minutos",
+                            proximaParagem.getNome(),
+                            tempoAtual * 0.5,
+                            novoTempo * 0.5);
+                }
+
+                // Salvar todas as paragens atualizadas
+                if (!paragensAtualizadas.isEmpty()) {
+                    stopRepository.saveAll(paragensAtualizadas);
+                    logger.info("Atualizadas {} paragens na rota {} - Tempos diminuídos e nextBus configurado",
+                            paragensAtualizadasCount, rota.getNome());
+                }
+            }
+        } else {
+            logger.warn("Rota não encontrada para a paragem {}", stop.getNome());
+        }
+
         // Salvar as entidades atualizadas
         Bus updatedBus = busRepository.save(bus);
         Stop updatedStop = stopRepository.save(stop);
@@ -191,29 +340,29 @@ public class StopService {
 
         return Optional.of(resultado);
     }
-    /* Ainda esta sem uso por isso esta comentado
-    public boolean verificarLotacao(StopDTO stopDTO) {
-        if (stopDTO == null || stopDTO.capacidadeMaxima() == null || stopDTO.lotacaoAtual() == null) {
-            return false;
-        }
-        return stopDTO.lotacaoAtual() < stopDTO.capacidadeMaxima();
-    }
 
-    public String executarFluxoSeguranca(Long stopId) {
-        Optional<StopDTO> stopOpt = getStopById(stopId);
+    public Optional<BusDTO> getNextBus(Long paragemId) {
+        logger.info("Buscando próximo autocarro para a paragem ID: {}", paragemId);
+
+        // Buscar a paragem pelo ID
+        Optional<Stop> stopOpt = stopRepository.findById(paragemId);
+
         if (stopOpt.isEmpty()) {
-            return "Paragem não encontrada.";
+            logger.warn("Paragem com ID {} não encontrada", paragemId);
+            throw new IllegalArgumentException("Paragem com ID " + paragemId + " não encontrada");
         }
-        StopDTO paragem = stopOpt.get();
 
-        boolean lotacaoSegura = verificarLotacao(paragem);
+        Stop stop = stopOpt.get();
 
-        String gravidade = lotacaoSegura ? "gravidade_boa" : "gravidade_alta";
+        // Verificar se existe um próximo autocarro definido
+        if (stop.getNextBusId() == null) {
+            logger.info("Nenhum autocarro definido para a paragem {}", stop.getNome());
+            return Optional.empty();
+        }
 
-        logger.info("Fluxo de segurança: Risco com gravidade '{}' para a paragem com ID {}", gravidade, stopId);
+        return busService.findById(stop.getNextBusId());
 
-        return "Fluxo de segurança executado. Gravidade: " + gravidade;
-    }*/
+    }
 
     public StopDTO convertToDTO(Stop stop) {
         return new StopDTO(
@@ -228,7 +377,10 @@ public class StopService {
                 stop.getUltimaAtualizacao(),
                 stop.getPercentagemOcupacao(),
                 stop.getEstadoOcupacao(),
-                stop.getBilhetesValidados()
+                stop.getBilhetesValidados(),
+                stop.getNextBusId(),
+                stop.getMessage(),
+                stop.getPreviousStop()
         );
     }
 

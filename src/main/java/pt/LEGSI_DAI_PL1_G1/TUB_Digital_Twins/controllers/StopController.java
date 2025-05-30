@@ -1,12 +1,9 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.controllers;
 
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.ChegadaAutocarroDTO;
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.EventoRiscoDTO;
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.StopDTO;
+import jakarta.validation.Valid;
+import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.*;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.AnomalyMonitorService;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.service.StopService;
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemRequest;
-import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto.AtualizarParagemResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -80,6 +77,15 @@ public class StopController {
         return ResponseEntity.ok(resultado);
     }
 
+    @PatchMapping("/atualizar-ocupacao/{id}")
+    public ResponseEntity<StopDTO> atualizarOcupacao(
+            @PathVariable Long id,
+            @RequestBody int numPessoas) {
+
+        StopDTO stopAtualizado = stopService.atualizarPessoas(id, numPessoas);
+        return ResponseEntity.ok(stopAtualizado);
+    }
+
     @PostMapping("/{id}/validar-bilhete")
     public ResponseEntity<StopDTO> validarBilhete(@PathVariable Long id) {
         Optional<StopDTO> updatedStop = stopService.validarBilhete(id);
@@ -98,6 +104,14 @@ public class StopController {
         return resultado
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/proximo-autocarro")
+    public ResponseEntity<BusDTO> getNextBus(@PathVariable Long id) {
+
+        Optional<BusDTO> nextBusOpt = stopService.getNextBus(id);
+
+        return nextBusOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     /*

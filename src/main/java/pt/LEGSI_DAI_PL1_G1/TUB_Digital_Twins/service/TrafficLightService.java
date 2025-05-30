@@ -11,6 +11,7 @@ import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.exception.TrafficLightNotFound;
 import pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.repository.TrafficLightRepository;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,54 @@ public class TrafficLightService {
         log.info("Semáforo criado com ID: {}", savedTrafficLight.getId());
         return convertToDTO(savedTrafficLight);
     }
+
+    @Transactional
+    public List<TrafficLightDTO> saveAll(List<TrafficLightDTO> dtos) {
+        List<TrafficLight> entities = dtos.stream()
+                .map(dto -> {
+                    TrafficLight entity = new TrafficLight();
+
+                    // Ignora id (é gerado no BD)
+                    entity.setLatitude(dto.latitude());
+                    entity.setLongitude(dto.longitude());
+                    entity.setCurrentState(dto.currentState());
+                    entity.setOperational(dto.operational());
+                    entity.setLastMaintenance(dto.lastMaintenance());
+                    entity.setTimeUntilStateChange(dto.timeUntilStateChange());
+                    entity.setInAnomaly(dto.inAnomaly());
+                    // Ignora stops: define vazio ou null conforme tua entidade
+                    entity.setStops(Collections.emptyList());
+                    entity.setGreenTime(dto.greenTime());
+                    entity.setRedTime(dto.redTime());
+                    entity.setYellowTime(dto.yellowTime());
+                    entity.setBrtPriorityActive(dto.brtPriorityActive());
+                    entity.setPriorityBusId(dto.priorityBusId());
+
+                    return entity;
+                })
+                .toList();
+
+        List<TrafficLight> savedEntities = trafficLightRepository.saveAll(entities);
+
+        return savedEntities.stream()
+                .map(entity -> TrafficLightDTO.builder()
+                        .latitude(entity.getLatitude())
+                        .longitude(entity.getLongitude())
+                        .currentState(entity.getCurrentState())
+                        .operational(entity.isOperational())
+                        .lastMaintenance(entity.getLastMaintenance())
+                        .timeUntilStateChange(entity.getTimeUntilStateChange())
+                        .inAnomaly(entity.isInAnomaly())
+                        .stops(Collections.emptyList())  // sempre vazio no retorno
+                        .greenTime(entity.getGreenTime())
+                        .redTime(entity.getRedTime())
+                        .yellowTime(entity.getYellowTime())
+                        .brtPriorityActive(entity.getBrtPriorityActive())
+                        .priorityBusId(entity.getPriorityBusId())
+                        .build())
+                .toList();
+    }
+
 
     @Transactional
     public TrafficLightDTO updateTrafficLight(Long id, TrafficLightDTO dto) {
@@ -241,11 +290,14 @@ public class TrafficLightService {
             // Também não atualiza se estiver com prioridade BRT ativa
             if (trafficLight.isOperational() && !trafficLight.isInAnomaly() &&
                     (trafficLight.getBrtPriorityActive() == null || !trafficLight.getBrtPriorityActive())) {
-                trafficLight.tick();
-                trafficLightRepository.save(trafficLight);
+                    trafficLight.tick();
+                    trafficLightRepository.save(trafficLight);
             }
         }
     }
+
+    //trafficLight.isOperational() && !trafficLight.isInAnomaly() &&
+    //                    (trafficLight.getBrtPriorityActive() == null || !trafficLight.getBrtPriorityActive())
 
     private TrafficLightDTO convertToDTO(TrafficLight trafficLight) {
         return TrafficLightDTO.builder()
@@ -277,5 +329,26 @@ public class TrafficLightService {
                 return false;
             }
         }).orElse(false);
+    }
+
+    private TrafficLight convertToEntity(TrafficLightDTO dto) {
+        TrafficLight entity = new TrafficLight();
+
+        entity.setId(dto.id());
+        entity.setLatitude(dto.latitude());
+        entity.setLongitude(dto.longitude());
+        entity.setCurrentState(dto.currentState());
+        entity.setOperational(dto.operational());
+        entity.setLastMaintenance(dto.lastMaintenance());
+        entity.setTimeUntilStateChange(dto.timeUntilStateChange());
+        entity.setInAnomaly(dto.inAnomaly());
+        entity.setStops(dto.stops());  // ajusta se necessário (verifica tipo e deep copy)
+        entity.setGreenTime(dto.greenTime());
+        entity.setRedTime(dto.redTime());
+        entity.setYellowTime(dto.yellowTime());
+        entity.setBrtPriorityActive(dto.brtPriorityActive());
+        entity.setPriorityBusId(dto.priorityBusId());
+
+        return entity;
     }
 }

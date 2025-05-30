@@ -1,5 +1,7 @@
 package pt.LEGSI_DAI_PL1_G1.TUB_Digital_Twins.dto;
 
+import jakarta.persistence.Transient;
+
 import java.time.LocalDateTime;
 
 public record StopDTO(
@@ -14,6 +16,9 @@ public record StopDTO(
         LocalDateTime ultimaAtualizacao,
         double percentagemOcupacao,
         String estadoOcupacao,
-        Integer bilhetesValidados
+        Integer bilhetesValidados,
+        Long nextBusId,
+        String message,
+        Boolean previousStop
 ) {
 }

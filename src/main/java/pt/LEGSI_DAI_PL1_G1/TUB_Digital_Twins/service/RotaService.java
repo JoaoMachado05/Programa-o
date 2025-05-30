@@ -208,4 +208,28 @@ public class RotaService {
         // 2. Usar o método que determina a próxima paragem por ID da rota
         return determinarProximaParagem(rota.getId(), paragemAtualId);
     }
+
+    public Optional<Rota> getRotaByParagem(Long paragemId) {
+        // Verificar se a paragem existe
+        Optional<Stop> stopOptional = stopRepository.findById(paragemId);
+
+        if (stopOptional.isEmpty()) {
+            return Optional.empty(); // Paragem não existe
+        }
+
+        // Buscar todas as rotas e verificar qual contém esta paragem
+        List<Rota> todasRotas = rotaRepository.findAll();
+
+        for (Rota rota : todasRotas) {
+            // Verificar se esta rota contém a paragem
+            boolean contemParagem = rota.getStops().stream()
+                    .anyMatch(stop -> stop.getId().equals(paragemId));
+
+            if (contemParagem) {
+                return Optional.of(rota);
+            }
+        }
+
+        return Optional.empty(); // Paragem não encontrada em nenhuma rota
+    }
 }

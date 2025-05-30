@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -40,9 +39,17 @@ public class Stop {
     @NotNull(message = "Latitude é obrigatória")
     private Double latitude;
 
+    private Long nextBusId;
+
+    private String message;
+
+    private Boolean previousStop;
+
     @NotNull(message = "Tempo até próximo autocarro deve ser definido")
     private Integer tempoAteProximoAutocarro; // Tempo em minutos
 
+    @NotNull(message = "Numero de bilhetes deve ser definido")
+    @Min(value = 0, message = "O número de bilhetes não pode ser nulo")
     private Integer bilhetesValidados;
 
     // Na classe Stop adicione
