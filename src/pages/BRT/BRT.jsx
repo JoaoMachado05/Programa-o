@@ -181,9 +181,6 @@ const BRT = () => {
     return (
       <div className="brt-container">
         <header className="brt-header">
-          <div className="brt-logo-container">
-            <img src="/logo_smart_city.jpg" alt="Logo Smart City" className="brt-logo" />
-          </div>
           <div className="brt-header-actions">
             <button onClick={handleVoltar} className="brt-btn brt-btn-back">Voltar</button>
             <button onClick={handleLogout} className="brt-btn brt-btn-logout">Logout</button>

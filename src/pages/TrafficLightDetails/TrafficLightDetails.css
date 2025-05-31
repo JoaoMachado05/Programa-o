@@ -467,6 +467,9 @@
   }
   
   .traffic-light-details-logo {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
     max-height: 70px;
   }
   

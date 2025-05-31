@@ -65,45 +65,51 @@ const MapUpdater = ({ center }) => {
   return null;
 };
 
-// Componente para o alerta sonoro
-const SoundAlert = ({ message, isVisible, onClose }) => {
+// Componente para a notificação no canto da tela
+const ToastNotification = ({ message, isVisible, onClose }) => {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    if (isVisible && audioRef.current) {
+    if (isVisible) {
       // Criar um som de alerta usando Web Audio API
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+        
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+      } catch (error) {
+        console.log('Audio context não disponível');
+      }
+
+      // Auto-fechar após 5 segundos
+      const timer = setTimeout(() => {
+        onClose();
+      }, 5000);
+
+      return () => clearTimeout(timer);
     }
-  }, [isVisible]);
+  }, [isVisible, onClose]);
 
   if (!isVisible) return null;
 
   return (
-    <div className="sd-sound-alert-overlay">
-      <div className="sd-sound-alert">
-        <div className="sd-alert-header">
-          <span className="sd-alert-icon">🔊</span>
-          <h3>Alerta Sonoro</h3>
-          <button onClick={onClose} className="sd-alert-close">×</button>
-        </div>
-        <div className="sd-alert-message">
-          {message}
-        </div>
+    <div className="sd-toast-notification">
+      <div className="sd-toast-content">
+        <div className="sd-toast-icon">🚌</div>
+        <div className="sd-toast-message">{message}</div>
+        <button onClick={onClose} className="sd-toast-close">×</button>
       </div>
     </div>
   );
@@ -114,11 +120,11 @@ const StopDetails = () => {
   const navigate = useNavigate();
   const [stop, setStop] = useState(null);
   const [nextBus, setNextBus] = useState(null);
-  const [buses, setBuses] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('pt-PT'));
   const [lastUpdate, setLastUpdate] = useState(null);
-  const [showSoundAlert, setShowSoundAlert] = useState(false);
+  const [showToastNotification, setShowToastNotification] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [lastAlertTime, setLastAlertTime] = useState(null); // Controla quando foi mostrado o último alerta
   const updateIntervalRef = useRef(null);
 
   // Função para buscar dados da paragem via HTTP
@@ -129,10 +135,16 @@ const StopDetails = () => {
 
       const data = await response.json();
       
-      // Verificar se previousStop é true e mostrar alerta sonoro
+      // Verificar se previousStop é true e se já passaram 15 segundos desde o último alerta
       if (data.previousStop && data.message) {
-        setAlertMessage(data.message);
-        setShowSoundAlert(true);
+        const currentTime = Date.now();
+        
+        // Se nunca mostrou alerta ou se passaram pelo menos 15 segundos (15000ms)
+        if (!lastAlertTime || (currentTime - lastAlertTime) >= 15000) {
+          setAlertMessage(data.message);
+          setShowToastNotification(true);
+          setLastAlertTime(currentTime);
+        }
       }
       
       setStop(data);
@@ -163,44 +175,14 @@ const StopDetails = () => {
     }
   };
 
-  // Função para buscar dados dos autocarros
-  const fetchBusesData = async () => {
-    try {
-      // Usando o endpoint /brts conforme o controlador fornecido
-      const response = await fetch(`http://localhost:8080/brts`);
-      if (!response.ok) throw new Error("Erro ao buscar autocarros");
-
-      const data = await response.json();
-      setBuses(data);
-    } catch (error) {
-      console.error("Erro ao buscar dados dos autocarros:", error.message);
-    }
-  };
-
-  // Calcular distância entre dois pontos geográficos (usando fórmula de Haversine)
-  const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Raio da Terra em km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2); 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    const distance = R * c; // Distância em km
-    return distance;
-  };
-
   // Busca dados iniciais e configura a atualização em tempo real
   useEffect(() => {
     // Busca inicial de dados
     fetchStopData();
-    fetchBusesData();
     
     // Configurar atualização a cada segundo via polling
     updateIntervalRef.current = setInterval(() => {
       fetchStopData();
-      fetchBusesData();
     }, 1000);
     
     // Atualizações de relógio
@@ -226,8 +208,8 @@ const StopDetails = () => {
     navigate("/");
   };
 
-  const handleCloseSoundAlert = () => {
-    setShowSoundAlert(false);
+  const handleCloseToastNotification = () => {
+    setShowToastNotification(false);
   };
 
   if (!stop) return (
@@ -263,41 +245,6 @@ const StopDetails = () => {
     occupancyClass = "sd-medium-occupancy";
   }
 
-  // Filtrar autocarros que estão próximos à paragem (até 1km de distância)
-  const nearbyBuses = buses.filter(bus => {
-    if (!bus.latitude || !bus.longitude) return false;
-    const distance = calculateDistance(
-      stop.latitude, 
-      stop.longitude, 
-      bus.latitude, 
-      bus.longitude
-    );
-    return distance <= 1; // Distância máxima de 1km
-  });
-
-  // Estimar tempo de chegada baseado na distância (valor aproximado)
-  const busesWithArrivalTime = nearbyBuses.map(bus => {
-    const distance = calculateDistance(
-      stop.latitude, 
-      stop.longitude, 
-      bus.latitude, 
-      bus.longitude
-    );
-    // Velocidade média estimada: 20 km/h (0.33 km/min)
-    const estimatedTimeMin = Math.round(distance / 0.33);
-    return {
-      ...bus,
-      tempoChegada: estimatedTimeMin > 0 ? estimatedTimeMin : null
-    };
-  });
-
-  // Ordenar autocarros por tempo de chegada
-  const sortedBuses = busesWithArrivalTime.sort((a, b) => {
-    if (a.tempoChegada === null) return 1;
-    if (b.tempoChegada === null) return -1;
-    return a.tempoChegada - b.tempoChegada;
-  });
-
   return (
     <div className="sd-fullpage-container">
       <header className="sd-header">
@@ -306,9 +253,7 @@ const StopDetails = () => {
         </div>
         <div className="sd-header-actions">
           <button onClick={handleGoBack} className="sd-btn sd-btn-back">Voltar</button>
-          <Link to={`/monitorizar-risco?idParagem=${stop.id}`}>
-             <button className="sd-btn sd-btn-monitor">Monitorizar Risco ⚠️</button>
-          </Link> 
+          
           <button onClick={handleLogout} className="sd-btn sd-btn-logout">Logout</button>
         </div>
       </header>
@@ -356,7 +301,7 @@ const StopDetails = () => {
                 </div>
                 {stop.estadoOcupacao && (
                   <div className="sd-status-item">
-                    <span className="sd-status-label">Estado</span>
+                    <span className="sd-status-label">Estado Ocupação</span>
                     <div className="sd-status-value-container">
                       <span className="sd-status-value">{stop.estadoOcupacao}</span>
                     </div>
@@ -375,7 +320,7 @@ const StopDetails = () => {
             
             {/* Map card */}
             <div className="sd-map-card">
-              <h2 className="sd-card-title">Localização e Autocarros Próximos</h2>
+              <h2 className="sd-card-title">Localização e Próximo Autocarro</h2>
               <div className="sd-map-container">
                 {stop.latitude && stop.longitude && (
                   <MapContainer 
@@ -401,24 +346,23 @@ const StopDetails = () => {
                       </Popup>
                     </Marker>
                     
-                    {/* Marcadores dos autocarros */}
-                    {sortedBuses.map(bus => (
+                    {/* Marcador do próximo autocarro (apenas se tiver coordenadas) */}
+                    {nextBus && nextBus.latitude && nextBus.longitude && (
                       <Marker 
-                        key={bus.id}
-                        position={[bus.latitude, bus.longitude]} 
+                        position={[nextBus.latitude, nextBus.longitude]} 
                         icon={busIcon}
                       >
                         <Popup>
-                          <strong>Autocarro {bus.matricula || bus.id}</strong><br />
-                          {bus.linha && <div>Linha: {bus.linha}<br /></div>}
-                          {bus.destino && <div>Destino: {bus.destino}<br /></div>}
-                          Lotação: {bus.lotacaoAtual || 0} pessoas<br />
-                          {bus.tempoChegada && (
-                            <>Chegada prevista: {bus.tempoChegada} min</>
+                          <strong>Próximo Autocarro {nextBus.matricula || nextBus.id}</strong><br />
+                          {nextBus.linha && <div>Linha: {nextBus.linha}<br /></div>}
+                          {nextBus.destino && <div>Destino: {nextBus.destino}<br /></div>}
+                          Lotação: {nextBus.lotacaoAtual || 0} pessoas<br />
+                          {stop.tempoAteProximoAutocarro && (
+                            <>Chegada prevista: {stop.tempoAteProximoAutocarro} min</>
                           )}
                         </Popup>
                       </Marker>
-                    ))}
+                    )}
                     
                     <MapUpdater center={[stop.latitude, stop.longitude]} />
                   </MapContainer>
@@ -431,8 +375,8 @@ const StopDetails = () => {
                   <span>Paragem</span>
                 </div>
                 <div className="sd-legend-item">
-                  <img src="/BusMapIcon.png" alt="Autocarro" className="sd-legend-icon" />
-                  <span>Autocarro</span>
+                  <img src="/BusMapIcon.png" alt="Próximo Autocarro" className="sd-legend-icon" />
+                  <span>Próximo Autocarro</span>
                 </div>
               </div>
             </div>
@@ -496,44 +440,6 @@ const StopDetails = () => {
                 )}
               </div>
             </div>
-
-            {/* Lista de autocarros próximos */}
-            <div className="sd-buses-card">
-              <h2 className="sd-card-title">Autocarros nas Proximidades</h2>
-              <div className="sd-buses-list">
-                {sortedBuses.length > 0 ? (
-                  sortedBuses.map(bus => (
-                    <div key={bus.id} className="sd-bus-item">
-                      <div className="sd-bus-info">
-                        <div className="sd-bus-number">#{bus.matricula || bus.id}</div>
-                        <div className="sd-bus-details">
-                          <div className="sd-bus-line">
-                            {bus.linha && bus.destino ? 
-                              `Linha ${bus.linha} → ${bus.destino}` : 
-                              `Autocarro ID: ${bus.id}`
-                            }
-                          </div>
-                          <div className="sd-bus-status">
-                            {bus.tempoChegada ? (
-                              <span className="sd-arrival-time">Chega em {bus.tempoChegada} min</span>
-                            ) : (
-                              <span className="sd-arrival-time">Em aproximação</span>
-                            )}
-                            <span className="sd-bus-occupancy">
-                              Lotação: {bus.lotacaoAtual || 0} pessoas
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="sd-no-buses">
-                    <p>Não há autocarros nas proximidades.</p>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </main>
@@ -545,11 +451,11 @@ const StopDetails = () => {
         </div>
       )}
 
-      {/* Alerta Sonoro */}
-      <SoundAlert 
+      {/* Notificação Toast */}
+      <ToastNotification 
         message={alertMessage}
-        isVisible={showSoundAlert}
-        onClose={handleCloseSoundAlert}
+        isVisible={showToastNotification}
+        onClose={handleCloseToastNotification}
       />
     </div>
   );
