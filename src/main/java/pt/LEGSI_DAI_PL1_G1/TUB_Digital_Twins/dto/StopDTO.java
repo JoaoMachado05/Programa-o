@@ -19,6 +19,7 @@ public record StopDTO(
         Integer bilhetesValidados,
         Long nextBusId,
         String message,
-        Boolean previousStop
+        Boolean previousStop,
+        Integer nivelRisco
 ) {
 }

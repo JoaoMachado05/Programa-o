@@ -80,11 +80,20 @@ public class StopController {
     @PatchMapping("/atualizar-ocupacao/{id}")
     public ResponseEntity<StopDTO> atualizarOcupacao(
             @PathVariable Long id,
-            @RequestBody int numPessoas) {
+            @RequestBody OcupacaoDTO dto) {
 
-        StopDTO stopAtualizado = stopService.atualizarPessoas(id, numPessoas);
+        StopDTO stopAtualizado = stopService.atualizarPessoas(id, dto.getOcupacao());
         return ResponseEntity.ok(stopAtualizado);
     }
+
+    @PatchMapping("/atualizar-nivel-risco/{id}")
+    public ResponseEntity<StopDTO> atualizarNivelRisco(
+            @PathVariable Long id,
+            @RequestBody Integer nivelrisco){
+        StopDTO stopAtualizado = stopService.atualizarNivelRisco(id, nivelrisco);
+        return ResponseEntity.ok(stopAtualizado);
+    }
+
 
     @PostMapping("/{id}/validar-bilhete")
     public ResponseEntity<StopDTO> validarBilhete(@PathVariable Long id) {

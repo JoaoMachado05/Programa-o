@@ -107,6 +107,17 @@ public class StopService {
         return convertToDTO(stopAtualizado);
     }
 
+    @Transactional
+    public StopDTO atualizarNivelRisco(Long id, Integer nivelRisco) {
+        Stop stop = stopRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paragem com ID " + id + " não encontrada."));
+
+        stop.setNivelRisco(nivelRisco);
+        Stop stopAtualizado = stopRepository.save(stop);
+
+        return convertToDTO(stopAtualizado);
+    }
+
 
     @Transactional
     public boolean deleteStop(Long id) {
@@ -380,7 +391,8 @@ public class StopService {
                 stop.getBilhetesValidados(),
                 stop.getNextBusId(),
                 stop.getMessage(),
-                stop.getPreviousStop()
+                stop.getPreviousStop(),
+                stop.getNivelRisco()
         );
     }
 

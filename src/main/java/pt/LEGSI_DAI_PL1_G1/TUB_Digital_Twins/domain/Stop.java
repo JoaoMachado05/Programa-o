@@ -45,6 +45,8 @@ public class Stop {
 
     private Boolean previousStop;
 
+    private Integer nivelRisco;
+
     @NotNull(message = "Tempo até próximo autocarro deve ser definido")
     private Integer tempoAteProximoAutocarro; // Tempo em minutos
 
